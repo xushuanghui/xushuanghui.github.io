@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="在日常开发中，我们可能会用到 NSBlockOperation 来做一些多线程的操作。 12345NSOperationQueue *queue = [[NSOperationQueue alloc] init];NSBlockOperation *operation = [MyBlockOperation blockOperationWithBlock:^&amp;#123;    // do some">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NSBlockOperation">
+<meta property="og:url" content="https://github.com/xushuanghui/2020/12/16/NSBlockOperation/index.html">
+<meta property="og:site_name" content="xushuanghui">
+<meta property="og:description" content="在日常开发中，我们可能会用到 NSBlockOperation 来做一些多线程的操作。 12345NSOperationQueue *queue = [[NSOperationQueue alloc] init];NSBlockOperation *operation = [MyBlockOperation blockOperationWithBlock:^&amp;#123;    // do some">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/3QD99b9DjVEOzrlgORPH1lbgLvcqNV7Mqib2ibPvzEth7h6ib1Ej3UIrAG0YICkxZednBgFzpPptL9tBLtYVCtwAA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/3QD99b9DjVEOzrlgORPH1lbgLvcqNV7MyQQKok7ibzFqdXicTvOgVKPicS7OCnERNNV0829ANCMm3H7gGAOElJfkw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/3QD99b9DjVEOzrlgORPH1lbgLvcqNV7MQ6aYGQarYdWgUFCPpiaKA2Wv70tiakic80ehrfBIibmAbHy3vexiaubHPvg/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/3QD99b9DjVEOzrlgORPH1lbgLvcqNV7MENa9qeV5z47OjBARZXTxUUFfR9dGLXam9kY1RWVAgHibyEMeGvnEnqg/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1">
+<meta property="og:updated_time" content="2020-12-16T07:44:46.830Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="NSBlockOperation">
+<meta name="twitter:description" content="在日常开发中，我们可能会用到 NSBlockOperation 来做一些多线程的操作。 12345NSOperationQueue *queue = [[NSOperationQueue alloc] init];NSBlockOperation *operation = [MyBlockOperation blockOperationWithBlock:^&amp;#123;    // do some">
+<meta name="twitter:image" content="https://mmbiz.qpic.cn/mmbiz_png/3QD99b9DjVEOzrlgORPH1lbgLvcqNV7Mqib2ibPvzEth7h6ib1Ej3UIrAG0YICkxZednBgFzpPptL9tBLtYVCtwAA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://github.com/xushuanghui/2020/12/16/NSBlockOperation/">
+
+
+
+
+
+  <title>NSBlockOperation | xushuanghui</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">xushuanghui</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://github.com/xushuanghui/2020/12/16/NSBlockOperation/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xushuanghui">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xushuanghui">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">NSBlockOperation</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-12-16T15:04:33+08:00">
+                2020-12-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在日常开发中，我们可能会用到 NSBlockOperation 来做一些多线程的操作。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">NSOperationQueue *queue = [[NSOperationQueue alloc] init];</span><br><span class="line">NSBlockOperation *operation = [MyBlockOperation blockOperationWithBlock:^&#123;</span><br><span class="line">    // do something</span><br><span class="line">&#125;];</span><br><span class="line">[queue addOperation:operation];</span><br></pre></td></tr></table></figure>
+<p>因为其使用简单，所以也被广泛使用。</p>
+<p>但这个方法也有一个缺点，当 operation 开始执行后，[operation cancel]; 并不能及时取消。</p>
+<p>同时，blockOperationWithBlock 没有 operation 的回调参数。有些同学想要通过 operation.isCancelled 进行任务的及时取消，不太清楚应该怎么做，要是使用不当甚至会引入 循环引用 问题。</p>
+<p>下面，我们通过几个面试题来一步步了解清楚这个问题。</p>
+<h3 id="1-1"><a href="#1-1" class="headerlink" title="1.1"></a>1.1</h3><p>下面的代码输出什么？</p>
+<ul>
+<li>cancelled</li>
+<li>finish</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">NSOperationQueue *queue = [[NSOperationQueue alloc] init];</span><br><span class="line">NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^&#123;</span><br><span class="line">    sleep(2);</span><br><span class="line">    if (operation.isCancelled) &#123;</span><br><span class="line">        NSLog(@&quot;cancelled&quot;);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        NSLog(@&quot;finish&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;];</span><br><span class="line">[queue addOperation:operation];</span><br><span class="line">dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^&#123;</span><br><span class="line">    [operation cancel];</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p><strong>答案</strong></p>
+<ul>
+<li>finish</li>
+</ul>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/3QD99b9DjVEOzrlgORPH1lbgLvcqNV7Mqib2ibPvzEth7h6ib1Ej3UIrAG0YICkxZednBgFzpPptL9tBLtYVCtwAA/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片"></p>
+<p><strong>分析</strong></p>
+<p>初始化时传入了一个 block，block 中含有 operation 对象的访问，即发生了对象的捕获。但是现在是对象的创建过程中，operation 还没有被初始化出来，block这时捕获的是 operation 当前的值，即 operation = nil。</p>
+<h3 id="1-2"><a href="#1-2" class="headerlink" title="1.2"></a>1.2</h3><p>下面的代码输出什么？</p>
+<ul>
+<li>cancelled</li>
+<li>finish</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">NSOperationQueue *queue = [[NSOperationQueue alloc] init];</span><br><span class="line">__block NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^&#123;</span><br><span class="line">    sleep(2);</span><br><span class="line">    if (operation.isCancelled) &#123;</span><br><span class="line">        NSLog(@&quot;cancelled&quot;);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        NSLog(@&quot;finish&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;];</span><br><span class="line">[queue addOperation:operation];</span><br><span class="line">dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^&#123;</span><br><span class="line">    [operation cancel];</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p><strong>答案</strong></p>
+<ul>
+<li>cancelled</li>
+</ul>
+<p><strong>分析</strong></p>
+<p>这次加入了 <code>__block</code> 修饰符，捕获变为了指针引用，所以这次 [operation cancel]; 生效了。<br>简单来说就是：</p>
+<p>未使用 <code>__block</code> 修饰符，捕获的是当前值。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">int i = 0;</span><br><span class="line">void(^block)(void) = ^&#123;</span><br><span class="line">    i = 1;</span><br><span class="line">    printf(&quot;%d&quot;, i); // 1</span><br><span class="line">&#125;;</span><br><span class="line">i = 2;</span><br><span class="line">block();</span><br></pre></td></tr></table></figure>
+<p>上面这个问题已经有很多文章了，这里不深入说明。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">NSString *str = @&quot;0&quot;;</span><br><span class="line">void(^block)(void) = ^&#123;</span><br><span class="line">    NSLog(@&quot;%@&quot;, str); // 0</span><br><span class="line">&#125;;</span><br><span class="line">str = @&quot;1&quot;;</span><br><span class="line">block();</span><br></pre></td></tr></table></figure>
+<p>部分同学可能对这个有疑问。其实，两种捕获的原理都是对变量的 “值引用” 进行捕获，捕获的是当前对象的值。之后的修改，不会影响到 block 内部的值。</p>
+<h3 id="1-3"><a href="#1-3" class="headerlink" title="1.3"></a>1.3</h3><p>下面的代码输出什么？</p>
+<ul>
+<li>cancelled, -[MyBlockOperation dealloc]</li>
+<li>只有 cancelled</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">@interface MyBlockOperation : NSBlockOperation</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation MyBlockOperation</span><br><span class="line">- (void)dealloc &#123;</span><br><span class="line">    NSLog(@&quot;%s&quot;, __FUNCTION__);</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">NSOperationQueue *queue = [[NSOperationQueue alloc] init];</span><br><span class="line">__block MyBlockOperation *operation = [MyBlockOperation blockOperationWithBlock:^&#123;</span><br><span class="line">    sleep(2);</span><br><span class="line">    if (operation.isCancelled) &#123;</span><br><span class="line">        NSLog(@&quot;cancelled&quot;);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        NSLog(@&quot;finish&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;];</span><br><span class="line">[queue addOperation:operation];</span><br><span class="line">dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^&#123;</span><br><span class="line">    [operation cancel];</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p><strong>答案</strong></p>
+<ul>
+<li>只有 cancelled</li>
+</ul>
+<p><strong>分析</strong></p>
+<p>刚刚分析了 <code>__block</code> 修饰符，捕获变为了指针引用。现在 operation 对象持有 block ，同时 block 通过指针引用捕获了 operation 对象，所以发生了循环引用。</p>
+<p>那可能有些同学就要说了，加上 <code>__weak</code> 不就好了？</p>
+<h3 id="1-4"><a href="#1-4" class="headerlink" title="1.4"></a>1.4</h3><p>下面的代码输出什么？</p>
+<ul>
+<li>cancelled, -[MyBlockOperation dealloc]</li>
+<li>只有 cancelled</li>
+<li>只有 -[MyBlockOperation dealloc]</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">@interface MyBlockOperation : NSBlockOperation</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation MyBlockOperation</span><br><span class="line">- (void)dealloc &#123;</span><br><span class="line">    NSLog(@&quot;%s&quot;, __FUNCTION__);</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">NSOperationQueue *queue = [[NSOperationQueue alloc] init];</span><br><span class="line">__block __weak MyBlockOperation *operation = [MyBlockOperation blockOperationWithBlock:^&#123;</span><br><span class="line">    sleep(2);</span><br><span class="line">    if (operation.isCancelled) &#123;</span><br><span class="line">        NSLog(@&quot;cancelled&quot;);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        NSLog(@&quot;finish&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;];</span><br><span class="line">[queue addOperation:operation];</span><br><span class="line">dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^&#123;</span><br><span class="line">    [operation cancel];</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p><strong>答案</strong></p>
+<ul>
+<li>只有 -[MyBlockOperation dealloc]</li>
+</ul>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/3QD99b9DjVEOzrlgORPH1lbgLvcqNV7MyQQKok7ibzFqdXicTvOgVKPicS7OCnERNNV0829ANCMm3H7gGAOElJfkw/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片"></p>
+<p>这里加入了 __weak 修饰符，对象创建后，发现引用计数为 0 就被释放了，所以 block 不执行。这部分属于内存管理的知识点。</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/3QD99b9DjVEOzrlgORPH1lbgLvcqNV7MQ6aYGQarYdWgUFCPpiaKA2Wv70tiakic80ehrfBIibmAbHy3vexiaubHPvg/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片"></p>
+<p>那么我们要怎么做，才能既捕获到 operation 又不会导致循环引用呢？</p>
+<h3 id="1-5"><a href="#1-5" class="headerlink" title="1.5"></a>1.5</h3><p>下面的代码输出什么？</p>
+<ul>
+<li>cancelled, -[MyBlockOperation dealloc]</li>
+<li>只有 cancelled</li>
+<li>只有 -[MyBlockOperation dealloc]</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">NSOperationQueue *queue = [[NSOperationQueue alloc] init];</span><br><span class="line">__block __weak MyBlockOperation *wkOp;</span><br><span class="line">MyBlockOperation *operation = [MyBlockOperation blockOperationWithBlock:^&#123;</span><br><span class="line">    sleep(2);</span><br><span class="line">    if (wkOp.isCancelled) &#123;</span><br><span class="line">        NSLog(@&quot;cancelled&quot;);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        NSLog(@&quot;finish&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;];</span><br><span class="line">wkOp = operation;</span><br><span class="line">[queue addOperation:operation];</span><br><span class="line">dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^&#123;</span><br><span class="line">    [operation cancel];</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p><strong>答案</strong></p>
+<ul>
+<li>cancelled, -[MyBlockOperation dealloc]</li>
+</ul>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/3QD99b9DjVEOzrlgORPH1lbgLvcqNV7MENa9qeV5z47OjBARZXTxUUFfR9dGLXam9kY1RWVAgHibyEMeGvnEnqg/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片"></p>
+<p><strong>分析</strong></p>
+<p>为了让 block 访问到初始化之后的值，wkOp 用了 <code>__block</code> 修饰符；同时，为了避免循环引用问题，wkOp 还用了 <code>__weak</code> 修饰符。</p>
+<p>operation 初始化后被赋值，这里会有一个隐式的 <code>__strong</code> 修饰，即这里会对 operation 进行强引用，引用计数 +1 。wkOp 为弱引用对象，wkOp = operation; 只是用一个弱引用指针指向 operation ，引用计数不变。与之前不同的是，此时的 operation 的引用计数大于 0，所以不会被立刻释放。</p>
+<h2 id="2-封装"><a href="#2-封装" class="headerlink" title="2. 封装"></a>2. 封装</h2><p>为了日常使用方便封装一下就更香了～</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">@interface MyBlockOperation : NSBlockOperation</span><br><span class="line"></span><br><span class="line">+ (instancetype)blockOperationWithBlock:(void (^)(void))block NS_UNAVAILABLE;</span><br><span class="line">+ (instancetype)blockOperationWithOperationBlock:(void (^)(MyBlockOperation *))block;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation MyBlockOperation</span><br><span class="line">- (void)dealloc &#123;</span><br><span class="line">    NSLog(@&quot;%s&quot;, __FUNCTION__);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">+ (instancetype)blockOperationWithOperationBlock:(void (^)(MyBlockOperation *))block;</span><br><span class="line">&#123;</span><br><span class="line">    __block __weak MyBlockOperation *wkOp;</span><br><span class="line">    MyBlockOperation *op = [super blockOperationWithBlock:^&#123;</span><br><span class="line">        !block ?: block(wkOp);</span><br><span class="line">    &#125;];</span><br><span class="line">    wkOp = op;</span><br><span class="line">    return op;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">NSOperationQueue *queue = [[NSOperationQueue alloc] init];</span><br><span class="line">MyBlockOperation *operation = [MyBlockOperation blockOperationWithOperationBlock:^(MyBlockOperation *op)&#123;</span><br><span class="line">    sleep(2);</span><br><span class="line">    if (op.isCancelled) &#123;</span><br><span class="line">        NSLog(@&quot;cancelled&quot;);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        NSLog(@&quot;finish&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;];</span><br><span class="line">[queue addOperation:operation];</span><br><span class="line">dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^&#123;</span><br><span class="line">    [operation cancel];</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/12/16/hello-world/" rel="next" title="Hello Worlds">
+                <i class="fa fa-chevron-left"></i> Hello Worlds
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/12/16/Runloop/" rel="prev" title="Runloop">
+                Runloop <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">xushuanghui</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1"><span class="nav-number">1.</span> <span class="nav-text">1.1</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2"><span class="nav-number">2.</span> <span class="nav-text">1.2</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3"><span class="nav-number">3.</span> <span class="nav-text">1.3</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4"><span class="nav-number">4.</span> <span class="nav-text">1.4</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5"><span class="nav-number">5.</span> <span class="nav-text">1.5</span></a></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#2-封装"><span class="nav-number"></span> <span class="nav-text">2. 封装</span></a></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xushuanghui</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
