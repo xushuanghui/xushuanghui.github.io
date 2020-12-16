@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="iOS,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="1 分析当前ipa的组成一般一个ipa会包含： 1） 资源文件  本地文件：数据、配置、数据库等等 字体文件 图片资源  2)  源代码 通过生成linkmap文件，分析源代码生成的编译文件的大小。在Build Settings中Write Link Map File设置为Yes (记住release时候不要设置为Yes)。 编译之后会在build目录中生成两个LinkMap文件： XXX-Lin">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="App瘦身">
+<meta property="og:url" content="https://github.com/xushuanghui/2019/09/02/App瘦身/index.html">
+<meta property="og:site_name" content="xushuanghui">
+<meta property="og:description" content="1 分析当前ipa的组成一般一个ipa会包含： 1） 资源文件  本地文件：数据、配置、数据库等等 字体文件 图片资源  2)  源代码 通过生成linkmap文件，分析源代码生成的编译文件的大小。在Build Settings中Write Link Map File设置为Yes (记住release时候不要设置为Yes)。 编译之后会在build目录中生成两个LinkMap文件： XXX-Lin">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://images2017.cnblogs.com/blog/746857/201709/746857-20170906191955007-1995207350.png">
+<meta property="og:image" content="https://github.com/tinymind/LSUnusedResources/raw/master/LSUnusedResourcesExample.gif">
+<meta property="og:image" content="https://images2017.cnblogs.com/blog/746857/201709/746857-20170906192458647-804731014.png">
+<meta property="og:image" content="https://images2017.cnblogs.com/blog/746857/201709/746857-20170906192710054-1516701797.png">
+<meta property="og:updated_time" content="2020-12-16T03:15:42.402Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="App瘦身">
+<meta name="twitter:description" content="1 分析当前ipa的组成一般一个ipa会包含： 1） 资源文件  本地文件：数据、配置、数据库等等 字体文件 图片资源  2)  源代码 通过生成linkmap文件，分析源代码生成的编译文件的大小。在Build Settings中Write Link Map File设置为Yes (记住release时候不要设置为Yes)。 编译之后会在build目录中生成两个LinkMap文件： XXX-Lin">
+<meta name="twitter:image" content="https://images2017.cnblogs.com/blog/746857/201709/746857-20170906191955007-1995207350.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://github.com/xushuanghui/2019/09/02/App瘦身/">
+
+
+
+
+
+  <title>App瘦身 | xushuanghui</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">xushuanghui</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://github.com/xushuanghui/2019/09/02/App瘦身/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xushuanghui">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xushuanghui">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">App瘦身</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-09-02T17:07:21+08:00">
+                2019-09-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="1-分析当前ipa的组成"><a href="#1-分析当前ipa的组成" class="headerlink" title="1 分析当前ipa的组成"></a>1 分析当前ipa的组成</h2><p>一般一个ipa会包含：</p>
+<p>1） 资源文件</p>
+<ul>
+<li>本地文件：数据、配置、数据库等等</li>
+<li>字体文件</li>
+<li>图片资源</li>
+</ul>
+<p>2)  源代码</p>
+<p>通过生成linkmap文件，分析源代码生成的编译文件的大小。在Build Settings中Write Link Map File设置为Yes (记住release时候不要设置为Yes)。</p>
+<p>编译之后会在build目录中生成两个LinkMap文件： XXX-LinkMap-normal-i386和XXX-LinkMap-normal-x86_64，分别代表在模拟器中32位和64位指令集生成的LinkMap文件。关于LinkMap的文件详细结构解释可以参考：<a href="http://blog.cnbang.net/tech/2296/" target="_blank" rel="noopener">http://blog.cnbang.net/tech/2296/</a></p>
+<p>LinkMap会包含每个可执行文件的偏移量及大小，所以可以很方便的知道每个可执行文件的大小。可以使用LinkMap分析工具：<a href="https://github.com/huanxsd/LinkMap">https://github.com/huanxsd/LinkMap</a></p>
+<p><img src="https://images2017.cnblogs.com/blog/746857/201709/746857-20170906191955007-1995207350.png" alt="img"></p>
+<h2 id="2-资源瘦身"><a href="#2-资源瘦身" class="headerlink" title="2 资源瘦身"></a>2 资源瘦身</h2><h3 id="无用的图片文件"><a href="#无用的图片文件" class="headerlink" title="无用的图片文件"></a>无用的图片文件</h3><p>查找无用的图片文件，使用LSUnusedResources（<a href="https://github.com/tinymind/LSUnusedResources）">https://github.com/tinymind/LSUnusedResources）</a></p>
+<p><img src="https://github.com/tinymind/LSUnusedResources/raw/master/LSUnusedResourcesExample.gif" alt="img"></p>
+<h3 id="无损压缩图片"><a href="#无损压缩图片" class="headerlink" title="无损压缩图片"></a>无损压缩图片</h3><p>使用ImageOptim（<a href="https://github.com/ImageOptim/ImageOptim）进行png文件的无损压缩">https://github.com/ImageOptim/ImageOptim）进行png文件的无损压缩</a></p>
+<p><img src="https://images2017.cnblogs.com/blog/746857/201709/746857-20170906192458647-804731014.png" alt="img"></p>
+<h3 id="WebP图片压缩"><a href="#WebP图片压缩" class="headerlink" title="WebP图片压缩"></a>WebP图片压缩</h3><p>WebP是Google提供的一种图片编码格式，通常情况下WebP格式的图片是原始JPG/PNG图片的1/3，所以对于重度依赖图片显示的应用，转换使用WebP可以节省大量的网络传输数据和时间。对于APP瘦身，使用WebP格式可能是一种方式，可以使用WebP格式的图片替代现有的图片资源，可以一定程度的节省空间。</p>
+<p>使用WebP转换工具（<a href="https://developers.google.com/speed/webp/docs/precompiled）尝试转换了几张较大的图片，效果如下：" target="_blank" rel="noopener">https://developers.google.com/speed/webp/docs/precompiled）尝试转换了几张较大的图片，效果如下：</a></p>
+<p><img src="https://images2017.cnblogs.com/blog/746857/201709/746857-20170906192710054-1516701797.png" alt="img"></p>
+<p>iOS原生并不支持WebP格式加载，需要引入SDWebImage/WebP，详细可以参考：<a href="http://blog.devzeng.com/blog/ios-webp-usage.html" target="_blank" rel="noopener">http://blog.devzeng.com/blog/ios-webp-usage.html</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">`NSString *path = [[NSBundle mainBundle] pathForResource:``@&quot;logo&quot;` `ofType:``@&quot;webp&quot;``];``NSData *data = [[NSData alloc] initWithContentsOfFile:path];``UIImage *img = [UIImage sd_imageWithWebPData:data];``self.imageView.image = img;`</span><br></pre></td></tr></table></figure>
+<p>使用WebP格式的图片，似乎就抛弃了iOS @2x @3x按照设备加载对应图片的机制，所以应该还可以删除所有@2x图片，不过加载速度比原生较慢。</p>
+<h2 id="3-代码瘦身"><a href="#3-代码瘦身" class="headerlink" title="3 代码瘦身"></a>3 代码瘦身</h2><h3 id="AppCode代码静态检查"><a href="#AppCode代码静态检查" class="headerlink" title="AppCode代码静态检查"></a>AppCode代码静态检查</h3><p>AppCode提供了非常强大的代码静态检查工具，使用Inspect Code，可以找到很多代码优化的地方。可以参考这篇介绍：<a href="https://blog.jetbrains.com/objc/2014/01/appcode-inspections-for-your-code-perfection/" target="_blank" rel="noopener">AppCode inspections for your code perfection</a></p>
+<h3 id="清除无用代码"><a href="#清除无用代码" class="headerlink" title="清除无用代码"></a>清除无用代码</h3><p>AppCode搜索出来的无用的Class，会有误报需要仔细检查每一个报错的代码。</p>
+<p>使用Fui（<a href="https://github.com/dblock/fui）查找发现下列无用文件，同样需要double">https://github.com/dblock/fui）查找发现下列无用文件，同样需要double</a> check避免误删</p>
+<p><strong>清除无用的Import</strong></p>
+<p>Fui（<a href="https://github.com/dblock/fui）可以用于查找无用的import，同时也提供[xcfui](https://github.com/jcavar/xcfui)">https://github.com/dblock/fui）可以用于查找无用的import，同时也提供[xcfui](https://github.com/jcavar/xcfui)</a> 可以和Xcode集成。</p>
+<p><strong>清除无用的Method</strong></p>
+<p>\1. 基于AppCode的扫描定期做清理</p>
+<p>\2. 这篇文章提供了一个很好的思路可以一键删除无用方法：<a href="http://www.jianshu.com/p/a53480ad0364" target="_blank" rel="noopener">http://www.jianshu.com/p/a53480ad0364</a></p>
+<p><strong>查找相似的代码</strong></p>
+<p>使用SameCodeFinder (<a href="https://github.com/startry/SameCodeFinder)可以查找到相似的代码，最后一位数字代表两个文件的海明距离，数字越小说明两个文件越类似。">https://github.com/startry/SameCodeFinder)可以查找到相似的代码，最后一位数字代表两个文件的海明距离，数字越小说明两个文件越类似。</a></p>
+<p><strong>清理其他无用的代码</strong> </p>
+<p>\1. 已经下线的陈旧代码，AB试验已经下线的代码</p>
+<p>\2. 通过转H5、Hybrid或者RN实现的Native功能，可以定期清理</p>
+<p>\3. 一些非核心Hybrid或者RN模块，可以考虑不要打包进入APP，通过动态下发的方式获取</p>
+<p>\4. 代码的重构，UI组件、业务逻辑的重用等等</p>
+<h2 id=""><a href="#" class="headerlink" title=" "></a> </h2><h2 id="4-一些参考文章"><a href="#4-一些参考文章" class="headerlink" title="4 一些参考文章"></a>4 一些参考文章</h2><ul>
+<li>iOS可执行文件瘦身：<a href="http://blog.cnbang.net/tech/2544/" target="_blank" rel="noopener">http://blog.cnbang.net/tech/2544/</a></li>
+<li>iOS APP瘦身实践：<a href="http://www.jianshu.com/p/c94dedef90b7，资源优化、编译器配置优化、可执行文件优化" target="_blank" rel="noopener">http://www.jianshu.com/p/c94dedef90b7，资源优化、编译器配置优化、可执行文件优化</a></li>
+<li>滴滴出行iOS端瘦身实践: <a href="http://gmtc.geekbang.org/#schedule" target="_blank" rel="noopener">http://gmtc.geekbang.org/#schedule</a>, 提供了查找无用图片的工具、WebP图片压缩、基于clang plugin实现查找无用代码（<a href="https://github.com/kangwang1988/XcodeZombieCode）、查找类似代码（https://github.com/startry/SameCodeFinder）">https://github.com/kangwang1988/XcodeZombieCode）、查找类似代码（https://github.com/startry/SameCodeFinder）</a></li>
+<li><a href="http://mp.weixin.qq.com/s?__biz=MzA3ODg4MDk0Ng==&amp;mid=2651112856&amp;idx=1&amp;sn=b2c74c62a10b4c9a4e7538d1ad7eb739" target="_blank" rel="noopener">基于clang插件的一种iOS包大小瘦身方案</a></li>
+<li><a href="http://jaq.alibaba.com/community/art/show?articleid=229" target="_blank" rel="noopener">减小ipa体积之删除frameWork中无用mach-O文件</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/09/02/编写cocoaPods插件/" rel="next" title="编写cocoaPods插件">
+                <i class="fa fa-chevron-left"></i> 编写cocoaPods插件
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/10/Block/" rel="prev" title="Block">
+                Block <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">xushuanghui</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-分析当前ipa的组成"><span class="nav-number">1.</span> <span class="nav-text">1 分析当前ipa的组成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-资源瘦身"><span class="nav-number">2.</span> <span class="nav-text">2 资源瘦身</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#无用的图片文件"><span class="nav-number">2.1.</span> <span class="nav-text">无用的图片文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#无损压缩图片"><span class="nav-number">2.2.</span> <span class="nav-text">无损压缩图片</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WebP图片压缩"><span class="nav-number">2.3.</span> <span class="nav-text">WebP图片压缩</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-代码瘦身"><span class="nav-number">3.</span> <span class="nav-text">3 代码瘦身</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AppCode代码静态检查"><span class="nav-number">3.1.</span> <span class="nav-text">AppCode代码静态检查</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#清除无用代码"><span class="nav-number">3.2.</span> <span class="nav-text">清除无用代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#null"><span class="nav-number">4.</span> <span class="nav-text"> </span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-一些参考文章"><span class="nav-number">5.</span> <span class="nav-text">4 一些参考文章</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xushuanghui</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
