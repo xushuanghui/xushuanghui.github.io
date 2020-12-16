@@ -86,15 +86,10 @@
 <meta property="og:site_name" content="xushuanghui">
 <meta property="og:description" content="在日常开发中，我们可能会用到 NSBlockOperation 来做一些多线程的操作。 12345NSOperationQueue *queue = [[NSOperationQueue alloc] init];NSBlockOperation *operation = [MyBlockOperation blockOperationWithBlock:^&amp;#123;    // do some">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/3QD99b9DjVEOzrlgORPH1lbgLvcqNV7Mqib2ibPvzEth7h6ib1Ej3UIrAG0YICkxZednBgFzpPptL9tBLtYVCtwAA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1">
-<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/3QD99b9DjVEOzrlgORPH1lbgLvcqNV7MyQQKok7ibzFqdXicTvOgVKPicS7OCnERNNV0829ANCMm3H7gGAOElJfkw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1">
-<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/3QD99b9DjVEOzrlgORPH1lbgLvcqNV7MQ6aYGQarYdWgUFCPpiaKA2Wv70tiakic80ehrfBIibmAbHy3vexiaubHPvg/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1">
-<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/3QD99b9DjVEOzrlgORPH1lbgLvcqNV7MENa9qeV5z47OjBARZXTxUUFfR9dGLXam9kY1RWVAgHibyEMeGvnEnqg/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1">
-<meta property="og:updated_time" content="2020-12-16T07:44:46.830Z">
+<meta property="og:updated_time" content="2020-12-16T08:57:30.803Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="NSBlockOperation">
 <meta name="twitter:description" content="在日常开发中，我们可能会用到 NSBlockOperation 来做一些多线程的操作。 12345NSOperationQueue *queue = [[NSOperationQueue alloc] init];NSBlockOperation *operation = [MyBlockOperation blockOperationWithBlock:^&amp;#123;    // do some">
-<meta name="twitter:image" content="https://mmbiz.qpic.cn/mmbiz_png/3QD99b9DjVEOzrlgORPH1lbgLvcqNV7Mqib2ibPvzEth7h6ib1Ej3UIrAG0YICkxZednBgFzpPptL9tBLtYVCtwAA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1">
 
 
 
@@ -320,7 +315,6 @@
 <ul>
 <li>finish</li>
 </ul>
-<p><img src="https://mmbiz.qpic.cn/mmbiz_png/3QD99b9DjVEOzrlgORPH1lbgLvcqNV7Mqib2ibPvzEth7h6ib1Ej3UIrAG0YICkxZednBgFzpPptL9tBLtYVCtwAA/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片"></p>
 <p><strong>分析</strong></p>
 <p>初始化时传入了一个 block，block 中含有 operation 对象的访问，即发生了对象的捕获。但是现在是对象的创建过程中，operation 还没有被初始化出来，block这时捕获的是 operation 当前的值，即 operation = nil。</p>
 <h3 id="1-2"><a href="#1-2" class="headerlink" title="1.2"></a>1.2</h3><p>下面的代码输出什么？</p>
@@ -364,9 +358,7 @@
 <ul>
 <li>只有 -[MyBlockOperation dealloc]</li>
 </ul>
-<p><img src="https://mmbiz.qpic.cn/mmbiz_png/3QD99b9DjVEOzrlgORPH1lbgLvcqNV7MyQQKok7ibzFqdXicTvOgVKPicS7OCnERNNV0829ANCMm3H7gGAOElJfkw/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片"></p>
 <p>这里加入了 __weak 修饰符，对象创建后，发现引用计数为 0 就被释放了，所以 block 不执行。这部分属于内存管理的知识点。</p>
-<p><img src="https://mmbiz.qpic.cn/mmbiz_png/3QD99b9DjVEOzrlgORPH1lbgLvcqNV7MQ6aYGQarYdWgUFCPpiaKA2Wv70tiakic80ehrfBIibmAbHy3vexiaubHPvg/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片"></p>
 <p>那么我们要怎么做，才能既捕获到 operation 又不会导致循环引用呢？</p>
 <h3 id="1-5"><a href="#1-5" class="headerlink" title="1.5"></a>1.5</h3><p>下面的代码输出什么？</p>
 <ul>
@@ -379,7 +371,6 @@
 <ul>
 <li>cancelled, -[MyBlockOperation dealloc]</li>
 </ul>
-<p><img src="https://mmbiz.qpic.cn/mmbiz_png/3QD99b9DjVEOzrlgORPH1lbgLvcqNV7MENa9qeV5z47OjBARZXTxUUFfR9dGLXam9kY1RWVAgHibyEMeGvnEnqg/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片"></p>
 <p><strong>分析</strong></p>
 <p>为了让 block 访问到初始化之后的值，wkOp 用了 <code>__block</code> 修饰符；同时，为了避免循环引用问题，wkOp 还用了 <code>__weak</code> 修饰符。</p>
 <p>operation 初始化后被赋值，这里会有一个隐式的 <code>__strong</code> 修饰，即这里会对 operation 进行强引用，引用计数 +1 。wkOp 为弱引用对象，wkOp = operation; 只是用一个弱引用指针指向 operation ，引用计数不变。与之前不同的是，此时的 operation 的引用计数大于 0，所以不会被立刻释放。</p>
