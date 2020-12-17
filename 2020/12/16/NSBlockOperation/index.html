@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="xushuanghui">
 <meta property="og:description" content="在日常开发中，我们可能会用到 NSBlockOperation 来做一些多线程的操作。 12345NSOperationQueue *queue = [[NSOperationQueue alloc] init];NSBlockOperation *operation = [MyBlockOperation blockOperationWithBlock:^&amp;#123;    // do some">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2020-12-16T08:57:30.803Z">
+<meta property="og:updated_time" content="2020-12-17T12:54:05.682Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="NSBlockOperation">
 <meta name="twitter:description" content="在日常开发中，我们可能会用到 NSBlockOperation 来做一些多线程的操作。 12345NSOperationQueue *queue = [[NSOperationQueue alloc] init];NSBlockOperation *operation = [MyBlockOperation blockOperationWithBlock:^&amp;#123;    // do some">
@@ -317,6 +317,7 @@
 </ul>
 <p><strong>分析</strong></p>
 <p>初始化时传入了一个 block，block 中含有 operation 对象的访问，即发生了对象的捕获。但是现在是对象的创建过程中，operation 还没有被初始化出来，block这时捕获的是 operation 当前的值，即 operation = nil。</p>
+<a id="more"></a>
 <h3 id="1-2"><a href="#1-2" class="headerlink" title="1.2"></a>1.2</h3><p>下面的代码输出什么？</p>
 <ul>
 <li>cancelled</li>
@@ -488,7 +489,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -501,7 +502,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">tags</span>
                 
               </div>

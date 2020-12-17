@@ -93,7 +93,7 @@
 <meta property="og:image" content="https://i.loli.net/2020/12/16/f8IKlHWxghdbcwS.png">
 <meta property="og:image" content="https://i.loli.net/2020/12/16/8c2TWPbS35avn6t.png">
 <meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/3QD99b9DjVF5ChLqicEMicHL29cjNDL6wJ7qRwaHlZSP7rVd56GTpZD74jXr4mhalibWQgDzwO1OojMYzWmYTGL1g/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1">
-<meta property="og:updated_time" content="2020-12-16T08:56:28.479Z">
+<meta property="og:updated_time" content="2020-12-17T13:00:16.588Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Runloop">
 <meta name="twitter:description" content="概述本篇主要是围绕着项目使用到的Runloop的应用场景及衍生出来的知识点，将讲述以下部分：  控制线程的生命周期【线程保活】 解决NSTimer在滑动过程中停止工作的问题及衍生问题 监控应用卡顿 性能优化   一、线程保活线程保活问题,从字面意思上就是保护线程的生命周期不结束.正常情况下,当线程执行完一次任务之后,需要进行资源回收,但是当有一个任务,随时都有可能去调用,如果在子线程去执行,并且让">
@@ -326,6 +326,7 @@
 <p>通过在run方法中加入上面代码,让线程一直不死,打印屏幕界面:</p>
 <p><img src="https://i.loli.net/2020/12/16/bGvNnoDlcUdYy74.png" alt="2020-12-16-4.14.23.png"></p>
 <p>好像上面已经满足了要求,达到了线程不死的状态,但是能不能在销毁页面控制器的时候,也销毁定时器,并且随时停掉定时器.</p>
+<a id="more"></a>
 <h3 id="情景3"><a href="#情景3" class="headerlink" title="情景3"></a>情景3</h3><p><strong>知识点:</strong> </p>
 <blockquote>
 <p>如何停止runloop?通过<code>CFRunLoopStop(CFRunLoopGetCurrent())</code>方法可停掉定时器,但是对于用<code>[[NSRunLoop currentRunLoop] run]</code>的Runloop是不会停掉的,因为通过<code>CFRunLoopStop(CFRunLoopGetCurrent())</code>方法仅仅是停掉了本次的Runloop,而不是停掉所有的,但是<code>[[NSRunLoop currentRunLoop] run]</code>的run方法是一直有runloop循环,所以通过<code>[[NSRunLoop currentRunLoop] run]</code>方法是不可能被停掉runloop的</p>
@@ -499,6 +500,10 @@
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2020/12/17/Flutter-Tree/" rel="prev" title="Flutter Tree">
+                Flutter Tree <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -574,7 +579,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -587,7 +592,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">tags</span>
                 
               </div>

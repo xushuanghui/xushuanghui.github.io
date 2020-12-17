@@ -91,7 +91,7 @@
 <meta property="og:image" content="https://github.com/tinymind/LSUnusedResources/raw/master/LSUnusedResourcesExample.gif">
 <meta property="og:image" content="https://images2017.cnblogs.com/blog/746857/201709/746857-20170906192458647-804731014.png">
 <meta property="og:image" content="https://images2017.cnblogs.com/blog/746857/201709/746857-20170906192710054-1516701797.png">
-<meta property="og:updated_time" content="2020-12-16T03:15:42.402Z">
+<meta property="og:updated_time" content="2020-12-17T13:01:32.699Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="App瘦身">
 <meta name="twitter:description" content="1 分析当前ipa的组成一般一个ipa会包含： 1） 资源文件  本地文件：数据、配置、数据库等等 字体文件 图片资源  2)  源代码 通过生成linkmap文件，分析源代码生成的编译文件的大小。在Build Settings中Write Link Map File设置为Yes (记住release时候不要设置为Yes)。 编译之后会在build目录中生成两个LinkMap文件： XXX-Lin">
@@ -327,6 +327,7 @@
 <p>iOS原生并不支持WebP格式加载，需要引入SDWebImage/WebP，详细可以参考：<a href="http://blog.devzeng.com/blog/ios-webp-usage.html" target="_blank" rel="noopener">http://blog.devzeng.com/blog/ios-webp-usage.html</a></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">`NSString *path = [[NSBundle mainBundle] pathForResource:``@&quot;logo&quot;` `ofType:``@&quot;webp&quot;``];``NSData *data = [[NSData alloc] initWithContentsOfFile:path];``UIImage *img = [UIImage sd_imageWithWebPData:data];``self.imageView.image = img;`</span><br></pre></td></tr></table></figure>
 <p>使用WebP格式的图片，似乎就抛弃了iOS @2x @3x按照设备加载对应图片的机制，所以应该还可以删除所有@2x图片，不过加载速度比原生较慢。</p>
+ <a id="more"></a>
 <h2 id="3-代码瘦身"><a href="#3-代码瘦身" class="headerlink" title="3 代码瘦身"></a>3 代码瘦身</h2><h3 id="AppCode代码静态检查"><a href="#AppCode代码静态检查" class="headerlink" title="AppCode代码静态检查"></a>AppCode代码静态检查</h3><p>AppCode提供了非常强大的代码静态检查工具，使用Inspect Code，可以找到很多代码优化的地方。可以参考这篇介绍：<a href="https://blog.jetbrains.com/objc/2014/01/appcode-inspections-for-your-code-perfection/" target="_blank" rel="noopener">AppCode inspections for your code perfection</a></p>
 <h3 id="清除无用代码"><a href="#清除无用代码" class="headerlink" title="清除无用代码"></a>清除无用代码</h3><p>AppCode搜索出来的无用的Class，会有误报需要仔细检查每一个报错的代码。</p>
 <p>使用Fui（<a href="https://github.com/dblock/fui）查找发现下列无用文件，同样需要double">https://github.com/dblock/fui）查找发现下列无用文件，同样需要double</a> check避免误删</p>
@@ -468,7 +469,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -481,7 +482,7 @@
               
               <div class="site-state-item site-state-tags">
                 
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">tags</span>
                 
               </div>
