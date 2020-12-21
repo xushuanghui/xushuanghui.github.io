@@ -229,6 +229,145 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://github.com/xushuanghui/2019/09/16/AppDelegate组件解耦/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xushuanghui">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xushuanghui">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/09/16/AppDelegate组件解耦/" itemprop="url">AppDelegate组件解耦</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-09-16T11:29:30+08:00">
+                2019-09-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>在没有实行组件化的项目中，经常会在 AppDelegate 看到各类初始化代码，这一部分代码一般用以配置某些 key 以及 secret ，或者开启某些服务，常见的有第三方推送、统计分析、IM服务等。当然，也有可能是开启一些自身的服务，比如 log 日志、 数据库初始化等。当一个 App 达到一定体量后， 未经整理的 AppDelegate 可能会变得臃肿。那么在实行组件化之后，该如何处理这部分代码呢？</p>
+<h2 id="不管理组件生命周期"><a href="#不管理组件生命周期" class="headerlink" title="不管理组件生命周期"></a>不管理组件生命周期</h2><p>不对组件生命周期进行管理，那么只能继续将这些初始化代码放在主工程的 AppDelegate 中，而针对上文所说的 AppDelegate 臃肿的问题，也可以通过简单的封装来优化。</p>
+<p>但是，这种做法会引发组件独立性问题。比如存在能独立运行的组件 A、B，B 依赖 A， A 生效需要在 App Launch 时调用配置代码 Code-A。如果采用上述做法，那么组件 A 所在示例工程的 AppDelegate 中，需要调用 Code-A 进行配置，而组件 B 因为依赖了 组件 A ，要使组件 B 能成功运行，也需要在 B 的示例工程添加 Code-A 进行配置。同样主工程的 AppDelegate 中也存在一份 Code-A 配置代码。可以看到，这种重复手动配置的做法是比较繁琐和难看的，这也是为什么要对组件生命周期进行管理的原因。</p>
+<h2 id="现有实现管理方案"><a href="#现有实现管理方案" class="headerlink" title="现有实现管理方案"></a>现有实现管理方案</h2><p>从组件和主工程的关系切入，既然组件需要在 App 生命周期的某些阶段处理特定的事务，那么就提供特定的回调方法供组件使用。 App 生命周期各个阶段产生的事件，可以通过让 AppDelegate 遵守 UIApplicationDelegate 协议并实现不同的代理方法进行捕获。</p>
+<p>要想把当前阶段 App 产生的事件分发给各个组件，最简单的方案就是如 <a href="http://limboy.me/tech/2016/03/10/mgj-components.html" target="_blank" rel="noopener">limboy</a> 所说，在 AppDelegate 的各个代理方法里，手动调一遍组件的对应方法，如果组件实现了对应的代理方法，就执行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions</span><br><span class="line">&#123;</span><br><span class="line">    [MGJApp startApp];</span><br><span class="line"></span><br><span class="line">    [[ModuleManager sharedInstance] loadModuleFromPlist:[[NSBundle mainBundle] pathForResource:@&quot;modules&quot; ofType:@&quot;plist&quot;]];</span><br><span class="line">    NSArray *modules = [[ModuleManager sharedInstance] allModules];</span><br><span class="line">    for (id&lt;ModuleProtocol&gt; module in modules) &#123;</span><br><span class="line">        if ([module respondsToSelector:_cmd]) &#123;</span><br><span class="line">            [module application:application didFinishLaunchingWithOptions:launchOptions];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [self trackLaunchTime];</span><br><span class="line">    return YES;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>不过这种方式缺点也很明显，组件需要依赖主工程的 AppDelegate 是否实现了 UIApplicationDelegate 的代理方法，如果没有的话，即使组件方实现了对应的代理方法，依然无法捕获到事件。</p>
+<p>再来看下 <a href="http://www.jianshu.com/u/d8a653fc1cb1" target="_blank" rel="noopener">caojun</a> 的处理方案 <a href="https://github.com/mdsb100/YTXModule">YTXModule</a>。 这个方案主要思路是通过 runtime method swizzling，替换 AppDelegate 中实现的 UIApplicationDelegate 代理方法，然后在 swizzled method 中，执行事件分发。 YTXModule 提供了一些宏定义，精简了方法替换流程：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">@implementation UIApplication (YTXModule)</span><br><span class="line">- (void)module_setDelegate:(id&lt;UIApplicationDelegate&gt;) delegate</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    static dispatch_once_t delegateOnceToken;</span><br><span class="line">    dispatch_once(&amp;delegateOnceToken, ^&#123;</span><br><span class="line">        SWIZZLE_DELEGATE_METHOD(applicationDidFinishLaunching:);</span><br><span class="line">        ...</span><br><span class="line">    &#125;);</span><br><span class="line">    [self module_setDelegate:delegate];</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation YTXModule</span><br><span class="line">...</span><br><span class="line">+ (BOOL)ytxmodule_application:(UIApplication *)application didFinishLaunchingWithOptions:(nullable NSDictionary *)launchOptions</span><br><span class="line">&#123;   </span><br><span class="line">    DEF_APPDELEGATE_METHOD_CONTAIN_RESULT(application, launchOptions);</span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<p>这里需要注意的是，由于 method swizzling 是在不同类型载体（AppDelegate对象 <-> YTXModule类）间交换的方法，所以会造成在 <code>+ytxmodule_applicationDidFinishLaunching:</code> 中调用 <code>self</code> 时，获取的并不是 YTXModule类，而是 AppDelegate对象，因为方法替换实际上替换了 IMP，并没有改变实参，参照 <code>objc_msgSend(id self, SEL op, ... )</code> 的参数排列，可以明确第一个参数是消息接收者，也就是 AppDelegate对象。通过上述分析可以知道，如果直接进行方法替换，不做特殊处理，使用以下代码将会抛出 <code>unrecognized selector</code>异常 ：</-></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">+ (BOOL)ytxmodule_application:(UIApplication *)application didFinishLaunchingWithOptions:(nullable NSDictionary *)launchOptions</span><br><span class="line">&#123;</span><br><span class="line">	// self is AppDelegate instance</span><br><span class="line">    [self ytxmodule_application:application didFinishLaunchingWithOptions:launchOptions];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>而以下代码，是可以正常运行的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">+ (BOOL)ytxmodule_application:(UIApplication *)application didFinishLaunchingWithOptions:(nullable NSDictionary *)launchOptions</span><br><span class="line">&#123;</span><br><span class="line"> 	[YTXModule ytxmodule_application:application didFinishLaunchingWithOptions:launchOptions];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>所以 caojun 在方法替换时，给 AppDelegate 添加了相同命名的实例方法，规避了这个异常 ：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">void Swizzle(Class class, SEL originalSelector, Method swizzledMethod)</span><br><span class="line">&#123;</span><br><span class="line">    Method originalMethod = class_getInstanceMethod(class, originalSelector);</span><br><span class="line">    SEL swizzledSelector = method_getName(swizzledMethod);</span><br><span class="line"></span><br><span class="line">    BOOL didAddMethod =</span><br><span class="line">    class_addMethod(class,</span><br><span class="line">                    originalSelector,</span><br><span class="line">                    method_getImplementation(swizzledMethod),</span><br><span class="line">                    method_getTypeEncoding(swizzledMethod));</span><br><span class="line"></span><br><span class="line">    if (didAddMethod &amp;&amp; originalMethod) &#123;</span><br><span class="line">        class_replaceMethod(class,</span><br><span class="line">                            swizzledSelector,</span><br><span class="line">                            method_getImplementation(originalMethod),</span><br><span class="line">                            method_getTypeEncoding(originalMethod));</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        method_exchangeImplementations(originalMethod, swizzledMethod);</span><br><span class="line">    &#125;</span><br><span class="line">    // 这一步给 AppDelegate 添加相同命名的实例方法，并且其 IMP 是 AppDelegate 自身方法的原实现</span><br><span class="line">    class_addMethod(class,</span><br><span class="line">                    swizzledSelector,</span><br><span class="line">                    method_getImplementation(swizzledMethod),</span><br><span class="line">                    method_getTypeEncoding(swizzledMethod));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>虽说这种方案也能实现事件的分发，但是在不同类型载体间使用 method swizzling 还是应该避免的，对其他开发者不是很友好。并且这种方案也存在依赖 YTXModule 是否替换了 UIApplicationDelegate 的代理方法问题，如果没有，组件方是无法捕获事件的。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/09/16/AppDelegate组件解耦/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://github.com/xushuanghui/2019/09/02/App瘦身/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1476,7 +1615,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
