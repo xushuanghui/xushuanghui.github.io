@@ -90,7 +90,7 @@
 <meta property="og:image" content="https://i.loli.net/2020/12/30/ugBJVTisC4aHG7D.png">
 <meta property="og:image" content="https://i.loli.net/2020/12/30/y7SxN2PdjnOhqaW.png">
 <meta property="og:image" content="https://i.loli.net/2020/12/30/NpR7bYIxrDcyaTe.png">
-<meta property="og:updated_time" content="2020-12-30T09:53:20.294Z">
+<meta property="og:updated_time" content="2020-12-30T09:54:51.458Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="事件传递与响应者链">
 <meta name="twitter:description" content="UIKit 主要是通过响应者（UIResponder）来响应用户事件，那么系统是如何来处理的呢？ 事件类型首先我们看下目前系统的定义的 UIEventType，我们主要通过 UIEventTypeTouches 来了解下事件响应： 123456typedef NS_ENUM(NSInteger, UIEventType) &amp;#123;    UIEventTypeTouches, // 触摸事件">
@@ -321,9 +321,9 @@
 <p>我们通过下面的例子，来详细说明两个原理：</p>
 <ul>
 <li>如何进行遍历？</li>
-<li>hitTest 怎么工作的？</li>
+<li>hitTest 怎么工作的？<a id="more"></a>
+<img src="https://i.loli.net/2020/12/30/ugBJVTisC4aHG7D.png" alt="2020-12-30-3.47.44.png"></li>
 </ul>
-<p><img src="https://i.loli.net/2020/12/30/ugBJVTisC4aHG7D.png" alt="2020-12-30-3.47.44.png"></p>
 <h3 id="遍历查找最佳视图流程图"><a href="#遍历查找最佳视图流程图" class="headerlink" title="遍历查找最佳视图流程图"></a>遍历查找最佳视图流程图</h3><p>如上图例子所示，当我们点击 View B.1 的时候，如何进行遍历来确认该 View 是 first responder？</p>
 <p><img src="https://i.loli.net/2020/12/30/y7SxN2PdjnOhqaW.png" alt="2020-12-30-3.47.58.png"></p>
 <p>系统会根据 view 添加的顺序，确定其在 subview 数组中的顺序。我们将视图的树形结构画出来，针对这个树，是按照逆先序深度优先遍历。根据图上绿色箭头所示的顺序，查找到 B.1 为响应最合适的 view。顺序如下：</p>

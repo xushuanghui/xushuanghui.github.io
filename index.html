@@ -299,8 +299,7 @@
 
       
         
-          
-            <p> UIKit 主要是通过响应者（UIResponder）来响应用户事件，那么系统是如何来处理的呢？</p>
+          <p> UIKit 主要是通过响应者（UIResponder）来响应用户事件，那么系统是如何来处理的呢？</p>
 <h2 id="事件类型"><a href="#事件类型" class="headerlink" title="事件类型"></a>事件类型</h2><p>首先我们看下目前系统的定义的 <code>UIEventType</code>，我们主要通过 UIEventTypeTouches 来了解下事件响应：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">typedef NS_ENUM(NSInteger, UIEventType) &#123;</span><br><span class="line">    UIEventTypeTouches, // 触摸事件</span><br><span class="line">    UIEventTypeMotion, // 晃动事件</span><br><span class="line">    UIEventTypeRemoteControl, // 远程控制事件，主要是外部辅助设备或者耳机的远程命令，例如控制音乐声音的大小，或者下一首歌。</span><br><span class="line">    UIEventTypePresses API_AVAILABLE(iOS(9.0)), // 物理按键事件</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 <h2 id="触摸事件"><a href="#触摸事件" class="headerlink" title="触摸事件"></a>触摸事件</h2><p>我们为了搞清楚事件响应机制，我们用触摸事件来进行举例。当触摸事件发生的时候，一直到找到对应这个事件的响应，我把这个过程分为两步：</p>
@@ -317,83 +316,14 @@
 <p>我们通过下面的例子，来详细说明两个原理：</p>
 <ul>
 <li>如何进行遍历？</li>
-<li>hitTest 怎么工作的？</li>
-</ul>
-<p><img src="https://i.loli.net/2020/12/30/ugBJVTisC4aHG7D.png" alt="2020-12-30-3.47.44.png"></p>
-<h3 id="遍历查找最佳视图流程图"><a href="#遍历查找最佳视图流程图" class="headerlink" title="遍历查找最佳视图流程图"></a>遍历查找最佳视图流程图</h3><p>如上图例子所示，当我们点击 View B.1 的时候，如何进行遍历来确认该 View 是 first responder？</p>
-<p><img src="https://i.loli.net/2020/12/30/y7SxN2PdjnOhqaW.png" alt="2020-12-30-3.47.58.png"></p>
-<p>系统会根据 view 添加的顺序，确定其在 subview 数组中的顺序。我们将视图的树形结构画出来，针对这个树，是按照逆先序深度优先遍历。根据图上绿色箭头所示的顺序，查找到 B.1 为响应最合适的 view。顺序如下：</p>
-<p>注意：先添加的View A, 在添加的View B，View C，mianView查找子视图先遍历后添加ViewC</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">UIWindow -&gt; MainView -&gt; View C -&gt; View B -&gt; View B.2 -&gt; View B.1</span><br></pre></td></tr></table></figure>
-<h3 id="hitTest-withEvent-遍历查找最佳视图"><a href="#hitTest-withEvent-遍历查找最佳视图" class="headerlink" title="hitTest:withEvent:  遍历查找最佳视图"></a>hitTest:withEvent:  遍历查找最佳视图</h3><ul>
-<li>根据如下三个属性判断 view &amp; subview 是否接受事件，若下面三个属性设置如下，则方法会自动忽略该 view &amp; subview<ul>
-<li>isUserInteractionEnabled = false</li>
-<li>isHidden = true</li>
-<li>alpha &lt;= 0.01</li>
-</ul>
-</li>
-<li>根据 <code>pointInside:withEvent:</code> 判断点是否在当前 view 内</li>
-<li>如果在判断是否有 subview，没有 subview 返回自身；有子视图继续遍历</li>
-</ul>
-<p>根据上面的原则，我们可以大概推断出 <code>hitTest:withEvent:</code> 的实现原理代码如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event &#123;</span><br><span class="line">    // 如果控件不允许与用用户交互,那么返回nil</span><br><span class="line">    if (!self.userInteractionEnabled || [self isHidden] || self.alpha &lt;= 0.01) &#123;</span><br><span class="line">        return nil;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //判断当前视图是否在点击范围内</span><br><span class="line">    if ([self pointInside:point withEvent:event]) &#123;</span><br><span class="line">        //遍历当前对象的子视图(倒序)</span><br><span class="line">        __block UIView *hit = nil;</span><br><span class="line">        [self.subviews enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) &#123;</span><br><span class="line">            //坐标转换，把当前坐标系上的点转换成子控件坐标系上的点</span><br><span class="line">            CGPoint convertPoint = [self convertPoint:point toView:obj];</span><br><span class="line">            //调用子视图的hitTest方法，判断自己的子控件是不是最适合的View</span><br><span class="line">            hit = [obj hitTest:convertPoint withEvent:event];</span><br><span class="line">            //如果找到了就停止遍历</span><br><span class="line">            if (hit) *stop = YES;</span><br><span class="line">        &#125;];</span><br><span class="line"></span><br><span class="line">        //返回当前的视图对象</span><br><span class="line">        return hit?hit:self;</span><br><span class="line">    &#125;else &#123;</span><br><span class="line">        return nil;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 该方法判断触摸点是否在控件身上，是则返回YES，否则返回NO，point参数必须是方法调用者的坐标系</span><br><span class="line">- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event &#123;   </span><br><span class="line">    CGFloat x1 = point.x;</span><br><span class="line">    CGFloat y1 = point.y;</span><br><span class="line">    </span><br><span class="line">    CGFloat x2 = self.frame.size.width / 2;</span><br><span class="line">    CGFloat y2 = self.frame.size.height / 2;</span><br><span class="line">    </span><br><span class="line">    //判断是否在圆形区域内</span><br><span class="line">    double dis = sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));</span><br><span class="line">    if (dis &lt;= self.frame.size.width / 2) &#123;</span><br><span class="line">        return YES;</span><br><span class="line">    &#125;</span><br><span class="line">    else&#123;</span><br><span class="line">        return NO;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="事件响应链"><a href="#事件响应链" class="headerlink" title="事件响应链"></a>事件响应链</h2><p><img src="https://i.loli.net/2020/12/30/NpR7bYIxrDcyaTe.png" alt="2020-12-30-4.15.48.png"></p>
-<p>我们发现事件响应链和事件传递完全是相反的过程。最有机会处理事件的就是通过事件传递找到的 first responder，如果没有进行处理，就会沿着事件响应链传递给下一个响应者 nextResponder，一直追溯到最上层 UIApplication。若都没有进行处理，就丢弃事件。</p>
-<h3 id="处理事件"><a href="#处理事件" class="headerlink" title="处理事件"></a>处理事件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- (void)touchesBegan:(NSSet&lt;UITouch *&gt; *)touches withEvent:(UIEvent *)event;</span><br><span class="line">- (void)touchesMoved:(NSSet&lt;UITouch *&gt; *)touches withEvent:(UIEvent *)event;</span><br><span class="line">- (void)touchesEnded:(NSSet&lt;UITouch *&gt; *)touches withEvent:(UIEvent *)event;</span><br><span class="line">- (void)touchesCancelled:(NSSet&lt;UITouch *&gt; *)touches withEvent:(UIEvent *)event;</span><br></pre></td></tr></table></figure>
-<p>对于触摸事件，系统提供了上面四种方法来处理。如果重写了上述方法，那么事件就会在此中断，并且不再沿着事件响应链进行传递；如果需要继续进行传递，则需要调用 <code>super</code> 方法。</p>
-<h3 id="决定第一响应者"><a href="#决定第一响应者" class="headerlink" title="决定第一响应者"></a>决定第一响应者</h3><p>我们上面通过事件传递机制寻找 first responder 主要是针对 UIEventTypeTouches 事件，但是 UIKit 决定 first responder 是根据事件类型来的。</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">Event type</th>
-<th style="text-align:left">First responder</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">Touch events</td>
-<td style="text-align:left">触摸发生的 view</td>
-</tr>
-<tr>
-<td style="text-align:left">Press events</td>
-<td style="text-align:left">聚焦的对象</td>
-</tr>
-<tr>
-<td style="text-align:left">Shake-motion events</td>
-<td style="text-align:left">用户（UIKit）制定的对象</td>
-</tr>
-<tr>
-<td style="text-align:left">Remote-control events</td>
-<td style="text-align:left">用户（UIKit）制定的对象</td>
-</tr>
-<tr>
-<td style="text-align:left">Editing menu messages</td>
-<td style="text-align:left">用户（UIKit）制定的对象</td>
-</tr>
-</tbody>
-</table>
-<blockquote>
-<p>与加速计、陀螺仪、磁力仪相关的运动事件，不遵循事件响应链。Core Motion 直接将这些事件传递给指定的对象。</p>
-</blockquote>
-<h3 id="改变事件传递链"><a href="#改变事件传递链" class="headerlink" title="改变事件传递链"></a>改变事件传递链</h3><p>例：两层重叠视图，让事件由下层视图处理，重写上层视图hitTest方法，</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">-(UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event &#123;</span><br><span class="line">  if (判断上层视图是否需要处理该事件) &#123;</span><br><span class="line">    return nil;//将调用下层试图的hitTest:查找最佳试图</span><br><span class="line">  &#125;</span><br><span class="line">  [super hitTest:point withEvent:event];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">判断上层视图是否处理该事件：循环遍历上层可以处理事件的子视图，是否在该point上，</span><br><span class="line"></span><br><span class="line">-(BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event</span><br></pre></td></tr></table></figure>
-<h3 id="改变响应者链"><a href="#改变响应者链" class="headerlink" title="改变响应者链"></a>改变响应者链</h3><p>在 UIResponse 类中有一个 <code>nextResponder</code> 属性，可以通过重写该属性来改变事件响应链。很多的系统类就通过这个属性改变了 next responder：</p>
-<ul>
-<li><strong>UIView</strong>，如果 view 的 root view 是 UIViewController，则 next responder 是 UIViewController；否则，next responder 是 super view；</li>
-<li>UIViewController<ul>
-<li>如果 view controller 是 UIWindow 的 root view ，那么 next responder 是 UIWindow；</li>
-<li>如果 view controller 是被另一个 view controller presented 出来，那么 next responder 是 presenting view controller；</li>
-</ul>
-</li>
-<li><strong>UIWindow</strong>，next responder 是 UIApplication；</li>
-<li><strong>UIApplication</strong>, next responder 是 app delegate；</li>
-</ul>
-<h2 id="事件是怎么被接收的？"><a href="#事件是怎么被接收的？" class="headerlink" title="事件是怎么被接收的？"></a>事件是怎么被接收的？</h2><p>简单描述 Runloop 机制：</p>
-<blockquote>
-<p>苹果注册了一个 Source1 (基于 mach port 的) 用来接收系统事件，其回调函数为 __IOHIDEventSystemClientQueueCallback()。<br>当一个硬件事件(触摸/锁屏/摇晃等)发生后，首先由 IOKit.framework 生成一个 IOHIDEvent 事件并由 SpringBoard 接收。SpringBoard 只接收按键(锁屏/静音等)，触摸，加速，接近传感器等几种 Event，随后用 mach port 转发给需要的App进程。随后苹果注册的那个 Source1 就会触发回调，并调用 _UIApplicationHandleEventQueue() 进行应用内部的分发。<br>_UIApplicationHandleEventQueue() 会把 IOHIDEvent 处理并包装成 UIEvent 进行处理或分发，其中包括识别 UIGesture/处理屏幕旋转/发送给 UIWindow 等。通常事件比如 UIButton 点击、touchesBegin/Move/End/Cancel 事件都是在这个回调中完成的。</p>
-</blockquote>
-
-          
+<li>hitTest 怎么工作的？</li></ul>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/12/30/事件传递与响应者链/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
