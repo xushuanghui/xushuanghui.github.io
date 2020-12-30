@@ -229,6 +229,324 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://github.com/xushuanghui/2019/09/23/cocoapod加载插件/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xushuanghui">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xushuanghui">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/09/23/cocoapod加载插件/" itemprop="url">cocoapods加载插件</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-09-23T16:28:09+08:00">
+                2019-09-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>CocoaPods 为开发者提供了插件注册功能，可以使用 <code>pod plugins create NAME</code> 命令创建插件，并在 Podfile 中通过 <code>plugin &#39;NAME&#39;</code> 语句引入插件。虽然在一般情况下很少使用这个功能，但在某些场景下，利用插件能比较方便快捷地解决问题。</p>
+<h2 id="实现探索"><a href="#实现探索" class="headerlink" title="实现探索"></a>实现探索</h2><p>首先，由于 <code>pod install</code> 过程会涉及到插件的加载，所以直接查看 <code>installer.rb</code> 文件:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"># Runs the registered callbacks for the plugins post install hooks.</span><br><span class="line">#</span><br><span class="line">def run_plugins_post_install_hooks</span><br><span class="line">  context = PostInstallHooksContext.generate(sandbox, aggregate_targets)</span><br><span class="line">  HooksManager.run(:post_install, context, plugins)</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line"># Runs the registered callbacks for the plugins pre install hooks.</span><br><span class="line">#</span><br><span class="line"># @return [void]</span><br><span class="line">#</span><br><span class="line">def run_plugins_pre_install_hooks</span><br><span class="line">  context = PreInstallHooksContext.generate(sandbox, podfile, lockfile)</span><br><span class="line">  HooksManager.run(:pre_install, context, plugins)</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line"># Ensures that all plugins specified in the &#123;#podfile&#125; are loaded.</span><br><span class="line">#</span><br><span class="line"># @return [void]</span><br><span class="line">#</span><br><span class="line">def ensure_plugins_are_installed!</span><br><span class="line">  require &apos;claide/command/plugin_manager&apos;</span><br><span class="line"></span><br><span class="line">  loaded_plugins = Command::PluginManager.specifications.map(&amp;:name)</span><br><span class="line"></span><br><span class="line">  podfile.plugins.keys.each do |plugin|</span><br><span class="line">    unless loaded_plugins.include? plugin</span><br><span class="line">      raise Informative, &quot;Your Podfile requires that the plugin `#&#123;plugin&#125;` be installed. Please install it and try installation again.&quot;</span><br><span class="line">    end</span><br><span class="line">  end</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<p>其中 <code>run_plugins_pre_install_hooks</code> 和 <code>run_plugins_post_install_hooks</code> 分别执行了插件注册的 <code>pre_install</code> 和 <code>pod_install</code> 方法， <code>ensure_plugins_are_installed</code> 则确认插件是否已被安装。</p>
+<p>接下来看下 <code>Command::PluginManager</code> ，这个类在 <code>claide/command/plugin_manager</code> 文件内，属于 <code>claide</code> gem :</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"># @return [Array&lt;Gem::Specification&gt;] Loads plugins via RubyGems looking</span><br><span class="line">#         for files named after the `PLUGIN_PREFIX_plugin` and returns the</span><br><span class="line">#         specifications of the gems loaded successfully.</span><br><span class="line">#         Plugins are required safely.</span><br><span class="line">#</span><br><span class="line">def self.load_plugins(plugin_prefix)</span><br><span class="line">  loaded_plugins[plugin_prefix] ||=</span><br><span class="line">    plugin_gems_for_prefix(plugin_prefix).map do |spec, paths|</span><br><span class="line">      spec if safe_activate_and_require(spec, paths)</span><br><span class="line">    end.compact</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line"># @group Helper Methods</span><br><span class="line"></span><br><span class="line"># @return [Array&lt;[Gem::Specification, Array&lt;String&gt;]&gt;]</span><br><span class="line">#         Returns an array of tuples containing the specifications and</span><br><span class="line">#         plugin files to require for a given plugin prefix.</span><br><span class="line">#</span><br><span class="line">def self.plugin_gems_for_prefix(prefix)</span><br><span class="line">  glob = &quot;#&#123;prefix&#125;_plugin#&#123;Gem.suffix_pattern&#125;&quot;</span><br><span class="line">  Gem::Specification.latest_specs(true).map do |spec|</span><br><span class="line">    matches = spec.matches_for_glob(glob)</span><br><span class="line">    [spec, matches] unless matches.empty?</span><br><span class="line">  end.compact</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line"># Activates the given spec and requires the given paths.</span><br><span class="line"># If any exception occurs it is caught and an</span><br><span class="line"># informative message is printed.</span><br><span class="line">#</span><br><span class="line"># @param  [Gem::Specification] spec</span><br><span class="line">#         The spec to be activated.</span><br><span class="line">#</span><br><span class="line"># @param  [String] paths</span><br><span class="line">#         The paths to require.</span><br><span class="line">#</span><br><span class="line"># @return [Bool] Whether activation and requiring succeeded.</span><br><span class="line">#</span><br><span class="line">def self.safe_activate_and_require(spec, paths)</span><br><span class="line">  spec.activate</span><br><span class="line">  paths.each &#123; |path| require(path) &#125;</span><br><span class="line">  true</span><br><span class="line">rescue Exception =&gt; exception # rubocop:disable RescueException</span><br><span class="line">  message = &quot;\n---------------------------------------------&quot;</span><br><span class="line">  message &lt;&lt; &quot;\nError loading the plugin `#&#123;spec.full_name&#125;`.\n&quot;</span><br><span class="line">  message &lt;&lt; &quot;\n#&#123;exception.class&#125; - #&#123;exception.message&#125;&quot;</span><br><span class="line">  message &lt;&lt; &quot;\n#&#123;exception.backtrace.join(&quot;\n&quot;)&#125;&quot;</span><br><span class="line">  message &lt;&lt; &quot;\n---------------------------------------------\n&quot;</span><br><span class="line">  warn message.ansi.yellow</span><br><span class="line">  false</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<p>以上代码调用几个的 <code>Gem::Specification</code> 方法如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># 获取最新 spec 集合</span><br><span class="line"># Return the latest specs, optionally including prerelease specs if prerelease is true.</span><br><span class="line">latest_specs(prerelease = false) </span><br><span class="line"></span><br><span class="line"># 获取 gem 中匹配的文件路径</span><br><span class="line"># Return all files in this gem that match for glob.</span><br><span class="line">matches_for_glob(glob) </span><br><span class="line"></span><br><span class="line"># 激活 spec，注册并将其 lib 路径添加到 $LOAD_PATH （$LOAD_PATH 环境变量存储 require 文件时查找的路径）</span><br><span class="line"># Activate this spec, registering it as a loaded spec and adding it&apos;s lib paths to $LOAD_PATH. Returns true if the spec was activated, false if it was previously activated. Freaks out if there are conflicts upon activation.</span><br><span class="line">activate()</span><br></pre></td></tr></table></figure>
+<p>可以看到在 <code>loaded_plugins[plugin_prefix]</code> 为空的情况下，程序会执行 <code>plugin_gems_for_prefix</code> 方法，<code>plugin_gems_for_prefix</code> 方法通过 <code>latest_specs</code> 获取了最新的 spec ，并通过 spec 的 <code>matches_for_glob</code> 方法对文件进行匹配，当 spec 中存在匹配 <code>&quot;#{prefix}_plugin#{Gem.suffix_pattern}&quot;</code> 格式的文件时，则视其为 CocoaPods 插件。在拿到插件及其匹配文件后，<code>safe_activate_and_require</code> 方法将文件加入 $LOAD_PATH 中并 require 之。</p>
+<p>另外 <code>CLAide::Command</code> 类会在 <code>run</code> 类方法中加载所有插件，然后根据解析后的信息，执行对应的命令:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"># @param  [Array, ARGV] argv</span><br><span class="line">#         A list of (remaining) parameters.</span><br><span class="line">#</span><br><span class="line"># @return [Command] An instance of the command class that was matched by</span><br><span class="line">#         going through the arguments in the parameters and drilling down</span><br><span class="line">#         command classes.</span><br><span class="line">#</span><br><span class="line">def self.run(argv = [])</span><br><span class="line">  plugin_prefixes.each do |plugin_prefix|</span><br><span class="line">    PluginManager.load_plugins(plugin_prefix)</span><br><span class="line">  end</span><br><span class="line"></span><br><span class="line">  argv = ARGV.coerce(argv)</span><br><span class="line">  command = parse(argv)</span><br><span class="line">  ANSI.disabled = !command.ansi_output?</span><br><span class="line">  unless command.handle_root_options(argv)</span><br><span class="line">    command.validate!</span><br><span class="line">    command.run</span><br><span class="line">  end</span><br><span class="line">rescue Object =&gt; exception</span><br><span class="line">  handle_exception(command, exception)</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<p>对于通过 <code>pod plugin create</code> 命令创建的插件来说，lib 目录下都会自动生成一个 <code>cocoapods_plugin.rb</code> 文件，这个文件就是用来标识此 gem 为 CocoaPods 插件的。如果想手动创建 CocoaPods 插件，需要满足以下两个条件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># Handles plugin related logic logic for the `Command` class.</span><br><span class="line">#</span><br><span class="line"># Plugins are loaded the first time a command run and are identified by the</span><br><span class="line"># prefix specified in the command class. Plugins must adopt the following</span><br><span class="line"># conventions:</span><br><span class="line">#</span><br><span class="line"># - Support being loaded by a file located under the</span><br><span class="line"># `lib/#&#123;plugin_prefix&#125;_plugin` relative path.</span><br><span class="line"># - Be stored in a folder named after the plugin.</span><br><span class="line"></span><br><span class="line"># - 支持通过 `lib/#&#123;plugin_prefix&#125;_plugin` 路径的文件加载</span><br><span class="line">#   (也就是说，如果要对外暴露插件内部存的方法，需要在此文件中 require 之，比如自定义的 Podfile DSL 文件)</span><br><span class="line"># - 保存在以插件命名的文件夹中</span><br></pre></td></tr></table></figure>
+<p>在 CocoaPods 上下文中，以上的 <code>plugin_prefix</code> 如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">self.plugin_prefixes = %w(claide cocoapods)</span><br></pre></td></tr></table></figure>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>如果需要外部 gem 以插件的形式提供某些功能，可以通过和 CocoaPods 一样的方式实现，即规定特定的命名规则，然后通过 <code>Gem::Specification</code> 提供的方法获取满足条件的 gem ，再 require 入口文件:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">spec = Gem::Specification.find_by_name(&apos;naruto&apos;)</span><br><span class="line">spec.activate</span><br><span class="line">matches = spec.matches_for_glob(&apos;naruto&apos;)</span><br><span class="line">matches.each do |path|</span><br><span class="line">  require(path)</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://github.com/xushuanghui/2019/09/18/随机深林/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xushuanghui">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xushuanghui">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/09/18/随机深林/" itemprop="url">随机深林</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-09-18T11:03:50+08:00">
+                2019-09-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ul>
+<li>要点<ul>
+<li>说名随机森林每棵决策树的建立过程</li>
+<li>知道为什么需要随机有放回(Bootstrap)的抽样</li>
+<li>说明随机森林的超参数</li>
+</ul>
+</li>
+<li>应用<ul>
+<li>泰坦尼克号乘客生存预测</li>
+</ul>
+</li>
+</ul>
+<h2 id="1、-什么是集成学习方法"><a href="#1、-什么是集成学习方法" class="headerlink" title="1、 什么是集成学习方法"></a>1、 什么是集成学习方法</h2><p>集成学习通过建立几个模型组合的来解决单一预测问题。它的工作原理是<strong>生成多个分类器/模型</strong>，各自独立地学习和作出预测。<strong>这些预测最后结合成组合预测，因此优于任何一个单分类的做出预测。</strong></p>
+<h2 id="2、-什么是随机森林"><a href="#2、-什么是随机森林" class="headerlink" title="2、 什么是随机森林"></a>2、 什么是随机森林</h2><p>在机器学习中，<strong>随机森林是一个包含多个决策树的分类器</strong>，并且其输出的类别是由个别树输出的类别的众数而定。</p>
+<p><img src="/xushuanghui/2019/09/18/随机深林/随机森林.png" alt="随机森林"></p>
+<p>例如, 如果你训练了5个树, 其中有4个树的结果是True, 1个数的结果是False, 那么最终投票结果就是True</p>
+<p><img src="/xushuanghui/2019/09/18/随机深林/投票.png" alt="投票"></p>
+<h2 id="3、-随机森林原理过程"><a href="#3、-随机森林原理过程" class="headerlink" title="3、 随机森林原理过程"></a>3、 随机森林原理过程</h2><p>学习算法根据下列算法而建造每棵树：</p>
+<ul>
+<li>用N来表示训练用例（样本）的个数，M表示特征数目。<ul>
+<li>1、一次随机选出一个样本，重复N次， （有可能出现重复的样本）</li>
+<li>2、随机去选出m个特征, m &lt;&lt;M，建立决策树</li>
+</ul>
+</li>
+<li>采取bootstrap抽样1</li>
+</ul>
+<h3 id="3-1-为什么采用BootStrap抽样"><a href="#3-1-为什么采用BootStrap抽样" class="headerlink" title="3.1 为什么采用BootStrap抽样"></a>3.1 为什么采用BootStrap抽样</h3><ul>
+<li>为什么要随机抽样训练集？　　<ul>
+<li>如果不进行随机抽样，每棵树的训练集都一样，那么最终训练出的树分类结果也是完全一样的</li>
+</ul>
+</li>
+<li>为什么要有放回地抽样？<ul>
+<li>如果不是有放回的抽样，那么每棵树的训练样本都是不同的，都是没有交集的，这样每棵树都是“有偏的”，都是绝对“片面的”（当然这样说可能不对），也就是说每棵树训练出来都是有很大的差异的；而随机森林最后分类取决于多棵树（弱分类器）的投票表决。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-2-API"><a href="#3-2-API" class="headerlink" title="3.2 API"></a>3.2 API</h3><ul>
+<li><p>class sklearn.ensemble.RandomForestClassifier(n_estimators=10, criterion=’gini’, max_depth=None, bootstrap=True, random_state=None, min_samples_split=2)</p>
+<ul>
+<li>随机森林分类器</li>
+<li>n_estimators：integer，optional（default = 10）森林里的树木数量120,200,300,500,800,1200</li>
+<li>criteria：string，可选（default =“gini”）分割特征的测量方法</li>
+<li>max_depth：integer或None，可选（默认=无）树的最大深度 5,8,15,25,30</li>
+<li>max_features=”auto”,每个决策树的最大特征数量<ul>
+<li>If “auto”, then <code>max_features=sqrt(n_features)</code>.</li>
+<li>If “sqrt”, then <code>max_features=sqrt(n_features)</code> (same as “auto”).</li>
+<li>If “log2”, then <code>max_features=log2(n_features)</code>.</li>
+<li>If None, then <code>max_features=n_features</code>.</li>
+</ul>
+</li>
+<li>bootstrap：boolean，optional（default = True）是否在构建树时使用放回抽样</li>
+<li>min_samples_split:节点划分最少样本数</li>
+<li>min_samples_leaf:叶子节点的最小样本数</li>
+</ul>
+</li>
+<li><p>超参数：n_estimator, max_depth, min_samples_split,min_samples_leaf</p>
+</li>
+</ul>
+<h3 id="3-3-代码"><a href="#3-3-代码" class="headerlink" title="3.3 代码"></a>3.3 代码</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 随机森林去进行预测</span></span><br><span class="line">rf = RandomForestClassifier()</span><br><span class="line"></span><br><span class="line">param = &#123;<span class="string">"n_estimators"</span>: [<span class="number">120</span>,<span class="number">200</span>,<span class="number">300</span>,<span class="number">500</span>,<span class="number">800</span>,<span class="number">1200</span>], <span class="string">"max_depth"</span>: [<span class="number">5</span>, <span class="number">8</span>, <span class="number">15</span>, <span class="number">25</span>, <span class="number">30</span>]&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 超参数调优</span></span><br><span class="line">gc = GridSearchCV(rf, param_grid=param, cv=<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">gc.fit(x_train, y_train)</span><br><span class="line"></span><br><span class="line">print(<span class="string">"随机森林预测的准确率为："</span>, gc.score(x_test, y_test))</span><br></pre></td></tr></table></figure>
+<h2 id="4、总结"><a href="#4、总结" class="headerlink" title="4、总结"></a>4、总结</h2><ul>
+<li>在当前所有算法中，具有极好的准确率</li>
+<li>能够有效地运行在大数据集上，处理具有高维特征的输入样本，而且不需要降维</li>
+<li>能够评估各个特征在分类问题上的重要性</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://github.com/xushuanghui/2019/09/16/AppDelegate组件解耦/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1312,264 +1630,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://github.com/xushuanghui/2019/02/23/cocoaPods/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="xushuanghui">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="xushuanghui">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/02/23/cocoaPods/" itemprop="url">cocoaPods</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-02-23T15:21:10+08:00">
-                2019-02-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>CocoaPods 是开发 OS X 和 iOS 应用程序的一个第三方库的依赖管理工具。利用 CocoaPods，可以定义自己的依赖关系 (称作 <code>pods</code>)，并且随着时间的变化，以及在整个开发环境中对第三方库的版本管理非常方便。</p>
-<p>CocoaPods 背后的理念主要体现在两个方面。首先，在工程中引入第三方代码会涉及到许多内容。针对 Objective-C 初级开发者来说，工程文件的配置会让人很沮丧。在配置 build phases 和 linker flags 过程中，会引起许多人为因素的错误。CocoaPods 简化了这一切，它能够自动配置编译选项。</p>
-<p>其次，通过 CocoaPods，可以很方便的查找到新的第三方库。当然，这并不是说你可以简单的将别人提供的库拿来拼凑成一个应用程序。它的真正作用是让你能够找到真正好用的库，以此来缩短我们的开发周期和提升软件的质量。</p>
-<p>本文中，我们将通过分析 <code>pod 安装 (</code>pod install<code>)</code> 的过程，一步一步揭示 CocoaPods 背后的技术。</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/02/23/cocoaPods/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://github.com/xushuanghui/2019/02/23/clang/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="xushuanghui">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="xushuanghui">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/02/23/clang/" itemprop="url">编译器做些什么？</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-02-23T15:17:07+08:00">
-                2019-02-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="编译器做些什么？"><a href="#编译器做些什么？" class="headerlink" title="编译器做些什么？"></a>编译器做些什么？</h2><p>本文主要探讨一下编译器主要做些什么，以及如何有效的利用编译器。</p>
-<p>简单的说，编译器有两个职责：把 Objective-C 代码转化成低级代码，以及对代码做分析，确保代码中没有任何明显的错误。</p>
-<p>现在，Xcode 的默认编译器是 clang。本文中我们提到的编译器都表示 clang。clang 的功能是首先对 Objective-C 代码做分析检查，然后将其转换为低级的类汇编代码：LLVM Intermediate Representation(LLVM 中间表达码)。接着 LLVM 会执行相关指令将 LLVM IR 编译成目标平台上的本地字节码，这个过程的完成方式可以是即时编译 (Just-in-time)，或在编译的时候完成。<br></p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/02/23/clang/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1615,7 +1680,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>

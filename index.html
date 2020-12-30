@@ -229,6 +229,435 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://github.com/xushuanghui/2020/12/30/事件传递与响应者链/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xushuanghui">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xushuanghui">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/12/30/事件传递与响应者链/" itemprop="url">事件传递与响应者链</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-12-30T15:24:55+08:00">
+                2020-12-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p> UIKit 主要是通过响应者（UIResponder）来响应用户事件，那么系统是如何来处理的呢？</p>
+<h2 id="事件类型"><a href="#事件类型" class="headerlink" title="事件类型"></a>事件类型</h2><p>首先我们看下目前系统的定义的 <code>UIEventType</code>，我们主要通过 UIEventTypeTouches 来了解下事件响应：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">typedef NS_ENUM(NSInteger, UIEventType) &#123;</span><br><span class="line">    UIEventTypeTouches, // 触摸事件</span><br><span class="line">    UIEventTypeMotion, // 晃动事件</span><br><span class="line">    UIEventTypeRemoteControl, // 远程控制事件，主要是外部辅助设备或者耳机的远程命令，例如控制音乐声音的大小，或者下一首歌。</span><br><span class="line">    UIEventTypePresses API_AVAILABLE(iOS(9.0)), // 物理按键事件</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="触摸事件"><a href="#触摸事件" class="headerlink" title="触摸事件"></a>触摸事件</h2><p>我们为了搞清楚事件响应机制，我们用触摸事件来进行举例。当触摸事件发生的时候，一直到找到对应这个事件的响应，我把这个过程分为两步：</p>
+<p>1、传递链：由系统向离用户最近的view传递。<code>UIKit</code> –&gt; <code>active app&#39;s event queue</code> –&gt; <code>window</code> –&gt; <code>root view</code> –&gt; …… –&gt; <code>lowest view</code></p>
+<p>2、响应链：由离用户最近的<code>view</code>向系统传递。<code>initial view</code> –&gt; <code>super view</code> –&gt; ….. –&gt; <code>view controller</code> –&gt; <code>window</code> –&gt; <code>Application</code> –&gt; <code>AppDelegate</code></p>
+<ul>
+<li>通过事件传递机制找到 First Responder</li>
+<li>First Responder 通过事件响应链找到 Touch Event</li>
+</ul>
+<h2 id="事件传递机制"><a href="#事件传递机制" class="headerlink" title="事件传递机制"></a>事件传递机制</h2><blockquote>
+<p>UIKit uses view-based hit-testing to determine where touch events occur. Specifically, UIKit compares the touch location to the bounds of view objects in the view hierarchy. The <code>hitTest:withEvent:</code> method of UIView traverses the view hierarchy, looking for the deepest subview that contains the specified touch, which becomes the first responder for the touch event.</p>
+</blockquote>
+<p>当点击屏幕时，系统会产生一个触摸事件 UIEvent，系统会把这个 UIEvent 放到 Application 的事件队列中，Application 会把事件分发下去。首先响应的是 UIWindow，他会调用 <code>hitTest:withEvent:</code> ，找到能够响应事件的 UIView。UIView 会通过 <code>hitTest:withEvent:</code> 根据触摸事件的 location 在视图的层级结构中进行遍历，找到包含该触摸的层级最深的子视图，定义这个视图作为响应事件（touch event）的 first responder。</p>
+<p>我们通过下面的例子，来详细说明两个原理：</p>
+<ul>
+<li>如何进行遍历？</li>
+<li>hitTest 怎么工作的？</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/30/ugBJVTisC4aHG7D.png" alt="2020-12-30-3.47.44.png"></p>
+<h3 id="遍历查找最佳视图流程图"><a href="#遍历查找最佳视图流程图" class="headerlink" title="遍历查找最佳视图流程图"></a>遍历查找最佳视图流程图</h3><p>如上图例子所示，当我们点击 View B.1 的时候，如何进行遍历来确认该 View 是 first responder？</p>
+<p><img src="https://i.loli.net/2020/12/30/y7SxN2PdjnOhqaW.png" alt="2020-12-30-3.47.58.png"></p>
+<p>系统会根据 view 添加的顺序，确定其在 subview 数组中的顺序。我们将视图的树形结构画出来，针对这个树，是按照逆先序深度优先遍历。根据图上绿色箭头所示的顺序，查找到 B.1 为响应最合适的 view。顺序如下：</p>
+<p>注意：先添加的View A, 在添加的View B，View C，mianView查找子视图先遍历后添加ViewC</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">UIWindow -&gt; MainView -&gt; View C -&gt; View B -&gt; View B.2 -&gt; View B.1</span><br></pre></td></tr></table></figure>
+<h3 id="hitTest-withEvent-遍历查找最佳视图"><a href="#hitTest-withEvent-遍历查找最佳视图" class="headerlink" title="hitTest:withEvent:  遍历查找最佳视图"></a>hitTest:withEvent:  遍历查找最佳视图</h3><ul>
+<li>根据如下三个属性判断 view &amp; subview 是否接受事件，若下面三个属性设置如下，则方法会自动忽略该 view &amp; subview<ul>
+<li>isUserInteractionEnabled = false</li>
+<li>isHidden = true</li>
+<li>alpha &lt;= 0.01</li>
+</ul>
+</li>
+<li>根据 <code>pointInside:withEvent:</code> 判断点是否在当前 view 内</li>
+<li>如果在判断是否有 subview，没有 subview 返回自身；有子视图继续遍历</li>
+</ul>
+<p>根据上面的原则，我们可以大概推断出 <code>hitTest:withEvent:</code> 的实现原理代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event &#123;</span><br><span class="line">    // 如果控件不允许与用用户交互,那么返回nil</span><br><span class="line">    if (!self.userInteractionEnabled || [self isHidden] || self.alpha &lt;= 0.01) &#123;</span><br><span class="line">        return nil;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    //判断当前视图是否在点击范围内</span><br><span class="line">    if ([self pointInside:point withEvent:event]) &#123;</span><br><span class="line">        //遍历当前对象的子视图(倒序)</span><br><span class="line">        __block UIView *hit = nil;</span><br><span class="line">        [self.subviews enumerateObjectsWithOptions:NSEnumerationReverse usingBlock:^(__kindof UIView * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) &#123;</span><br><span class="line">            //坐标转换，把当前坐标系上的点转换成子控件坐标系上的点</span><br><span class="line">            CGPoint convertPoint = [self convertPoint:point toView:obj];</span><br><span class="line">            //调用子视图的hitTest方法，判断自己的子控件是不是最适合的View</span><br><span class="line">            hit = [obj hitTest:convertPoint withEvent:event];</span><br><span class="line">            //如果找到了就停止遍历</span><br><span class="line">            if (hit) *stop = YES;</span><br><span class="line">        &#125;];</span><br><span class="line"></span><br><span class="line">        //返回当前的视图对象</span><br><span class="line">        return hit?hit:self;</span><br><span class="line">    &#125;else &#123;</span><br><span class="line">        return nil;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 该方法判断触摸点是否在控件身上，是则返回YES，否则返回NO，point参数必须是方法调用者的坐标系</span><br><span class="line">- (BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event &#123;   </span><br><span class="line">    CGFloat x1 = point.x;</span><br><span class="line">    CGFloat y1 = point.y;</span><br><span class="line">    </span><br><span class="line">    CGFloat x2 = self.frame.size.width / 2;</span><br><span class="line">    CGFloat y2 = self.frame.size.height / 2;</span><br><span class="line">    </span><br><span class="line">    //判断是否在圆形区域内</span><br><span class="line">    double dis = sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));</span><br><span class="line">    if (dis &lt;= self.frame.size.width / 2) &#123;</span><br><span class="line">        return YES;</span><br><span class="line">    &#125;</span><br><span class="line">    else&#123;</span><br><span class="line">        return NO;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="事件响应链"><a href="#事件响应链" class="headerlink" title="事件响应链"></a>事件响应链</h2><p><img src="https://i.loli.net/2020/12/30/NpR7bYIxrDcyaTe.png" alt="2020-12-30-4.15.48.png"></p>
+<p>我们发现事件响应链和事件传递完全是相反的过程。最有机会处理事件的就是通过事件传递找到的 first responder，如果没有进行处理，就会沿着事件响应链传递给下一个响应者 nextResponder，一直追溯到最上层 UIApplication。若都没有进行处理，就丢弃事件。</p>
+<h3 id="处理事件"><a href="#处理事件" class="headerlink" title="处理事件"></a>处理事件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">- (void)touchesBegan:(NSSet&lt;UITouch *&gt; *)touches withEvent:(UIEvent *)event;</span><br><span class="line">- (void)touchesMoved:(NSSet&lt;UITouch *&gt; *)touches withEvent:(UIEvent *)event;</span><br><span class="line">- (void)touchesEnded:(NSSet&lt;UITouch *&gt; *)touches withEvent:(UIEvent *)event;</span><br><span class="line">- (void)touchesCancelled:(NSSet&lt;UITouch *&gt; *)touches withEvent:(UIEvent *)event;</span><br></pre></td></tr></table></figure>
+<p>对于触摸事件，系统提供了上面四种方法来处理。如果重写了上述方法，那么事件就会在此中断，并且不再沿着事件响应链进行传递；如果需要继续进行传递，则需要调用 <code>super</code> 方法。</p>
+<h3 id="决定第一响应者"><a href="#决定第一响应者" class="headerlink" title="决定第一响应者"></a>决定第一响应者</h3><p>我们上面通过事件传递机制寻找 first responder 主要是针对 UIEventTypeTouches 事件，但是 UIKit 决定 first responder 是根据事件类型来的。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Event type</th>
+<th style="text-align:left">First responder</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Touch events</td>
+<td style="text-align:left">触摸发生的 view</td>
+</tr>
+<tr>
+<td style="text-align:left">Press events</td>
+<td style="text-align:left">聚焦的对象</td>
+</tr>
+<tr>
+<td style="text-align:left">Shake-motion events</td>
+<td style="text-align:left">用户（UIKit）制定的对象</td>
+</tr>
+<tr>
+<td style="text-align:left">Remote-control events</td>
+<td style="text-align:left">用户（UIKit）制定的对象</td>
+</tr>
+<tr>
+<td style="text-align:left">Editing menu messages</td>
+<td style="text-align:left">用户（UIKit）制定的对象</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>与加速计、陀螺仪、磁力仪相关的运动事件，不遵循事件响应链。Core Motion 直接将这些事件传递给指定的对象。</p>
+</blockquote>
+<h3 id="改变事件传递链"><a href="#改变事件传递链" class="headerlink" title="改变事件传递链"></a>改变事件传递链</h3><p>例：两层重叠视图，让事件由下层视图处理，重写上层视图hitTest方法，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">-(UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event &#123;</span><br><span class="line">  if (判断上层视图是否需要处理该事件) &#123;</span><br><span class="line">    return nil;//将调用下层试图的hitTest:查找最佳试图</span><br><span class="line">  &#125;</span><br><span class="line">  [super hitTest:point withEvent:event];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">判断上层视图是否处理该事件：循环遍历上层可以处理事件的子视图，是否在该point上，</span><br><span class="line"></span><br><span class="line">-(BOOL)pointInside:(CGPoint)point withEvent:(UIEvent *)event</span><br></pre></td></tr></table></figure>
+<h3 id="改变响应者链"><a href="#改变响应者链" class="headerlink" title="改变响应者链"></a>改变响应者链</h3><p>在 UIResponse 类中有一个 <code>nextResponder</code> 属性，可以通过重写该属性来改变事件响应链。很多的系统类就通过这个属性改变了 next responder：</p>
+<ul>
+<li><strong>UIView</strong>，如果 view 的 root view 是 UIViewController，则 next responder 是 UIViewController；否则，next responder 是 super view；</li>
+<li>UIViewController<ul>
+<li>如果 view controller 是 UIWindow 的 root view ，那么 next responder 是 UIWindow；</li>
+<li>如果 view controller 是被另一个 view controller presented 出来，那么 next responder 是 presenting view controller；</li>
+</ul>
+</li>
+<li><strong>UIWindow</strong>，next responder 是 UIApplication；</li>
+<li><strong>UIApplication</strong>, next responder 是 app delegate；</li>
+</ul>
+<h2 id="事件是怎么被接收的？"><a href="#事件是怎么被接收的？" class="headerlink" title="事件是怎么被接收的？"></a>事件是怎么被接收的？</h2><p>简单描述 Runloop 机制：</p>
+<blockquote>
+<p>苹果注册了一个 Source1 (基于 mach port 的) 用来接收系统事件，其回调函数为 __IOHIDEventSystemClientQueueCallback()。<br>当一个硬件事件(触摸/锁屏/摇晃等)发生后，首先由 IOKit.framework 生成一个 IOHIDEvent 事件并由 SpringBoard 接收。SpringBoard 只接收按键(锁屏/静音等)，触摸，加速，接近传感器等几种 Event，随后用 mach port 转发给需要的App进程。随后苹果注册的那个 Source1 就会触发回调，并调用 _UIApplicationHandleEventQueue() 进行应用内部的分发。<br>_UIApplicationHandleEventQueue() 会把 IOHIDEvent 处理并包装成 UIEvent 进行处理或分发，其中包括识别 UIGesture/处理屏幕旋转/发送给 UIWindow 等。通常事件比如 UIButton 点击、touchesBegin/Move/End/Cancel 事件都是在这个回调中完成的。</p>
+</blockquote>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://github.com/xushuanghui/2020/12/22/runtime-1/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xushuanghui">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xushuanghui">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/12/22/runtime-1/" itemprop="url">runtime 1</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-12-22T21:00:00+08:00">
+                2020-12-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ol>
+<li>下面代码执行 ⌘+R 后会 Compile Error 、Runtime Crash 或者 NSLog 输出？</li>
+<li>如果 [(__bridge id)obj speak]; 能调用成功，输出什么？</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">@interface Speaker : NSObject</span><br><span class="line">@property (nonatomic, copy) NSString *name;</span><br><span class="line">- (void)speak;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation Speaker</span><br><span class="line">- (void)speak &#123;</span><br><span class="line">    NSLog(@&quot;Speaker&apos;s name: %@&quot;, self.name);</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation ViewController</span><br><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    id cls = [Speaker class]; // 1</span><br><span class="line">    void *obj = &amp;cls; // 2</span><br><span class="line">    [(__bridge id)obj speak]; // 3</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<p>当然，本着 反正不是真面试 的态度，直接跑一下不就行了，嘿嘿。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//输出</span><br><span class="line">Speaker&apos;s name: &lt;ViewController: 0x7fcc84e09e90&gt;</span><br></pre></td></tr></table></figure>
+<p>可以看到运行时成功的，但输出的结果让我有点懵逼？？？原因有2点：</p>
+<ol>
+<li>为什么 [(__bridge id)obj speak] 不会崩溃，而且感觉看着像给 类对象发消息 ，这应该解析不了啊？</li>
+<li>为什么 self.name 是ViewController对象？</li>
+</ol>
+<p>下面我们仔细分析一下。</p>
+<h2 id="2-分析"><a href="#2-分析" class="headerlink" title="2. 分析"></a>2. 分析</h2><h3 id="2-1-为什么可以发消息？"><a href="#2-1-为什么可以发消息？" class="headerlink" title="2.1 为什么可以发消息？"></a>2.1 为什么可以发消息？</h3><ul>
+<li>第一步</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id cls = [Speaker class]; // 1</span><br></pre></td></tr></table></figure>
+<p>这一步获取到了Speaker的类对象，id表示将其转换为一个对象指针，实际类型为<code>struct objc_object *</code>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">struct objc_object &#123;</span><br><span class="line">    Class _Nonnull isa  OBJC_ISA_AVAILABILITY;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">typedef struct objc_object *id;</span><br></pre></td></tr></table></figure>
+<p>而 [Speaker class] 的返回类型为Class，其实类型为<code>struct objc_class *</code>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">typedef struct objc_class *Class;</span><br></pre></td></tr></table></figure>
+<p>虽然，我们写的类型为<code>struct objc_object *</code>，但其本质还是 <code>struct objc_class *</code>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">id cls = [Speaker class];</span><br><span class="line">if (object_isClass(cls)) &#123;</span><br><span class="line">    NSLog(@&quot;object_isClass&quot;);</span><br><span class="line">&#125;</span><br><span class="line">// 输出</span><br><span class="line">object_isClass</span><br><span class="line">复制代码也就是说这一步拿到的 本质还是类对象。</span><br><span class="line">id cls = [Speaker class];</span><br><span class="line">[cls speak];</span><br><span class="line">// 直接发送消息，是会崩溃的</span><br><span class="line">+[Speaker speak]: unrecognized selector sent to class 0x106824f08</span><br></pre></td></tr></table></figure>
+<ul>
+<li>第二步、第三步</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">void *obj = &amp;cls; // 2</span><br></pre></td></tr></table></figure>
+<p><strong>这一步才是关键。</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">struct objc_object &#123;</span><br><span class="line">    Class _Nonnull isa  OBJC_ISA_AVAILABILITY;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>可以看到struct objc_object这个结构体的首字段是 isa 指向一个Class。</p>
+<p>也就是说，我们如果有一个指向Class的地址的指针，相当于这个对象就已经可以使用了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">@interface Speaker : NSObject</span><br><span class="line">@property (nonatomic, copy) NSString *name;</span><br><span class="line">- (void)speak;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation Speaker</span><br><span class="line">- (void)speak &#123;</span><br><span class="line">    NSLog(@&quot;speak&quot;);</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">struct my_object &#123;</span><br><span class="line">    Class isa;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">struct my_object *getObject() &#123;</span><br><span class="line">    // id cls = [Speaker class]; id类型的实质是一个指针，所以cls是一个指针</span><br><span class="line">    // void *obj = &amp;cls; 这里取cls的地址，相当于[Speaker class]现在被一个 指针 的 指针 所指向</span><br><span class="line">    // 下面 struct my_object * 是一个指针，isa 是一个也是一个指针</span><br><span class="line">    // 所以也等效于[Speaker class]现在被一个 指针 的 指针 所指向</span><br><span class="line">    struct my_object *obj = (struct my_object *)malloc(sizeof(struct my_object));</span><br><span class="line">    obj-&gt;isa = [Speaker class];</span><br><span class="line">    return obj;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    struct my_object *obj = getObject();</span><br><span class="line">    id obj1 = (__bridge id)obj;</span><br><span class="line">    [obj1 speak]; // 3</span><br><span class="line">    free(obj);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/3QD99b9DjVEt0arvL5lpO1qiaOPZyOADE4GamBCqXWPPJZicJbTwiasjvloGP4qBbGRMbf8YJZ1wicMb3UNobJiadQg/640?wx_fmt=png&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片"></p>
+<p>我们可以看到，通过id类型转换obj1也被Xcode识别为了Speaker实例对象，而且我们调用 [obj1 speak] 也顺利输出了。</p>
+<p>相当于消息 objc_msgSend 执行过程中通过 obj1 顺利访问到了 isa 对象，在Speaker类中找到了speak实例方法，并成功调用。</p>
+<h3 id="2-2-为什么输出的name是ViewController实例对象？"><a href="#2-2-为什么输出的name是ViewController实例对象？" class="headerlink" title="2.2 为什么输出的name是ViewController实例对象？"></a>2.2 为什么输出的name是ViewController实例对象？</h3><h4 id="2-2-1-等价代码"><a href="#2-2-1-等价代码" class="headerlink" title="2.2.1 等价代码"></a>2.2.1 等价代码</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;UIKit/UIKit.h&gt;</span><br><span class="line">#import &lt;objc/runtime.h&gt;</span><br><span class="line"></span><br><span class="line">@interface Speaker : NSObject</span><br><span class="line">@property (nonatomic, copy) NSString *name;</span><br><span class="line">- (void)speak;</span><br><span class="line">@end</span><br><span class="line">@implementation Speaker</span><br><span class="line">- (void)speak &#123;</span><br><span class="line">    NSLog(@&quot;my name&apos;s %@&quot;, self.name);</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@interface ViewController : UIViewController</span><br><span class="line">@end</span><br><span class="line">@implementation ViewController</span><br><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    id cls = [Speaker class];</span><br><span class="line">    void *obj = &amp;cls;</span><br><span class="line">    [(__bridge id)obj speak];</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<p>我们将这个 ViewController.m 文件编译为 ViewController.cpp 来看一下。</p>
+<p>在 终端 中切换到 ViewController.m 所在目录，并输入以下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xcrun -sdk iphoneos clang -arch arm64 -w -rewrite-objc -fobjc-arc -mios-version-min=8.0.0 -fobjc-runtime=ios-8.0.0 ViewController.m</span><br></pre></td></tr></table></figure>
+<p>执行完毕后我们可以在同一个目录下找到 ViewController.cpp 文件。</p>
+<p>打开 ViewController.cpp ，并搜索 ViewController_viewDidLoad 即可找到下面的方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">static void _I_ViewController_viewDidLoad(ViewController * self, SEL _cmd) &#123;</span><br><span class="line">    ((void (*)(__rw_objc_super *, SEL))(void *)objc_msgSendSuper)((__rw_objc_super)&#123;(id)self, (id)class_getSuperclass(objc_getClass(&quot;ViewController&quot;))&#125;, sel_registerName(&quot;viewDidLoad&quot;));</span><br><span class="line">    id cls = ((Class (*)(id, SEL))(void *)objc_msgSend)((id)objc_getClass(&quot;Speaker&quot;), sel_registerName(&quot;class&quot;));</span><br><span class="line">    void *obj = &amp;cls;</span><br><span class="line">    ((void (*)(id, SEL))(void *)objc_msgSend)((id)(__bridgeid)obj, sel_registerName(&quot;speak&quot;));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>看起来有点复杂，我们把非必要的格式转换去掉：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">static void _I_ViewController_viewDidLoad(ViewController * self, SEL _cmd) &#123;</span><br><span class="line">    objc_msgSendSuper((__rw_objc_super)&#123;self, class_getSuperclass(objc_getClass(&quot;ViewController&quot;))&#125;, sel_registerName(&quot;viewDidLoad&quot;)); // 1</span><br><span class="line">    id cls = objc_msgSend(objc_getClass(&quot;Speaker&quot;), sel_registerName(&quot;class&quot;)); // 2</span><br><span class="line">    void *obj = &amp;cls; // 3</span><br><span class="line">    objc_msgSend(obj, sel_registerName(&quot;speak&quot;)); // 4</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到：</p>
+<ul>
+<li>对应 [super viewDidLoad]</li>
+<li>对应 id cls = [Speaker class];</li>
+<li>对应 void *obj = &cls;</li>
+<li>对应 [(__bridge id)obj speak];</li>
+</ul>
+<p>objc_msgSend 会传入两个隐式参数self和_cmd，想必大家已经很熟悉了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">objc_msgSend(void /* id self, SEL op, ... */ )</span><br><span class="line">    OBJC_AVAILABLE(10.0, 2.0, 9.0, 1.0, 2.0);</span><br><span class="line"></span><br><span class="line">objc_msgSendSuper(void /* struct objc_super *super, SEL op, ... */ )</span><br><span class="line">    OBJC_AVAILABLE(10.0, 2.0, 9.0, 1.0, 2.0);</span><br></pre></td></tr></table></figure>
+<p>而 objc_msgSendSuper 需要传入另一个结构体 <code>struct objc_super *</code>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">/// Specifies the superclass of an instance.</span><br><span class="line">struct objc_super &#123;</span><br><span class="line">    /// Specifies an instance of a class.</span><br><span class="line">    __unsafe_unretained _Nonnull id receiver;</span><br><span class="line"></span><br><span class="line">    /// Specifies the particular superclass of the instance to message.</span><br><span class="line">#if !defined(__cplusplus)  &amp;&amp;  !__OBJC2__</span><br><span class="line">    /* For compatibility with old objc-runtime.h header */</span><br><span class="line">    __unsafe_unretained _Nonnull Class class;</span><br><span class="line">#else</span><br><span class="line">    __unsafe_unretained _Nonnull Class super_class;</span><br><span class="line">#endif</span><br><span class="line">    /* super_class is the first class to search */</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p><code>{self, class_getSuperclass(objc_getClass(&quot;ViewController&quot;))}</code> 实际上就是在初始化一个struct objc_super结构体。</p>
+<p>知道这些之后，再阅读上面的代码就没有什么难度了。</p>
+<h4 id="2-2-2-参数顺序"><a href="#2-2-2-参数顺序" class="headerlink" title="2.2.2 参数顺序"></a>2.2.2 参数顺序</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">void sum(NSNumber *a, NSNumber *b) &#123;</span><br><span class="line">    NSLog(@&quot;a地址 = %p&quot;, &amp;a);</span><br><span class="line">    NSLog(@&quot;b地址 = %p&quot;, &amp;b);</span><br><span class="line">    printf(&quot;%d&quot;, a.intValue + b.intValue);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    sum(@(1), @(2));</span><br><span class="line">    NSNumber *c = @(4);</span><br><span class="line">    NSLog(@&quot;c地址 = %p&quot;, &amp;c);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们在给函数传入参数时，参数会作为自动变量入栈 ：</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/3QD99b9DjVEt0arvL5lpO1qiaOPZyOADEdiaylVicXsggoAmkodsINeEtFh4tHvw1okaH0XlXvuyz1KoUGibZU1Rwg/640?wx_fmt=png&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片"></p>
+<p>而且我们可以看到入栈的顺序是a先入栈，b后入栈，因为 栈从高地址到低地址分配内存 。</p>
+<p>但是在初始化一个结构体的时候，这个顺序是相反的：</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/3QD99b9DjVEt0arvL5lpO1qiaOPZyOADE8HvxpUHibT35mnxTRutkMCGJrao77NxVdYcgvfuica38G8kl0B418mdg/640?wx_fmt=png&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="图片"></p>
+<p>我们看到 two_number tn = {@(1), @(2)}; 先传入的是1后传入的2，但实际情况是2先入栈，1后入栈。</p>
+<p>按照上面2条规则，下面代码第5步之前的变量入栈的顺序应该是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">static void _I_ViewController_viewDidLoad(ViewController * self, SEL _cmd) &#123; // 1</span><br><span class="line">    objc_msgSendSuper((__rw_objc_super)&#123;self, class_getSuperclass(objc_getClass(&quot;ViewController&quot;))&#125;, sel_registerName(&quot;viewDidLoad&quot;)); // 2</span><br><span class="line">    id cls = objc_msgSend(objc_getClass(&quot;Speaker&quot;), sel_registerName(&quot;class&quot;)); // 3</span><br><span class="line">    void *obj = &amp;cls; // 4</span><br><span class="line">    objc_msgSend(obj, sel_registerName(&quot;speak&quot;)); // 5</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>self、_cmd为函数的隐式参数，依次先入栈。</p>
+</li>
+<li><p>objc_msgSendSuper 初始化了一个结构体，这个结构体的参数会入栈。</p>
+<p>又因为参数入栈是从右到左的顺序入栈：</p>
+</li>
+<li><ul>
+<li>class_getSuperclass(objc_getClass(“ViewController”))</li>
+<li>self后入栈</li>
+</ul>
+</li>
+<li><p>cls本地变量赋值为Speaker类，最后入栈</p>
+</li>
+</ul>
+<p>那么入栈的顺序为self、_cmd、class_getSuperclass(objc_getClass(“ViewController”))、self、Speaker类。下面我们验证一下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">@interface Speaker : NSObject</span><br><span class="line">@property (nonatomic, copy) NSString *name;</span><br><span class="line">- (void)speak;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation Speaker</span><br><span class="line">- (void)speak &#123;</span><br><span class="line">    NSLog(@&quot;Speaker self: %p, _name: %p&quot;, self, &amp;_name);</span><br><span class="line">    NSLog(@&quot;Speaker&apos;s name: %@&quot;, self.name);</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation ViewController</span><br><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    id cls = [Speaker class]; // 1</span><br><span class="line">    void *obj = &amp;cls; // 2</span><br><span class="line">    NSLog(@&quot;栈区变量&quot;);</span><br><span class="line">    void *start = (void *)&amp;self;</span><br><span class="line">    void *end = (void *)&amp;obj;</span><br><span class="line">    long count = (start - end) / 0x8;</span><br><span class="line">    for (long i = 0; i &lt; count; i++) &#123;</span><br><span class="line">        void *address = start - 0x8 * i;</span><br><span class="line">        if (i == 1) &#123;</span><br><span class="line">            NSLog(@&quot;%p: %s&quot;, address, *(char **)(address));</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            NSLog(@&quot;%p: %@&quot;, address, *(void **)address);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    NSLog(@&quot;obj speak&quot;);</span><br><span class="line">    [(__bridge id)obj speak]; // 3</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br><span class="line">// 打印</span><br><span class="line">Demo[32768:1105890] 栈区变量</span><br><span class="line">Demo[32768:1105890] 0x7ffeec17c648: &lt;ViewController: 0x7fb445607ee0&gt;</span><br><span class="line">Demo[32768:1105890] 0x7ffeec17c640: viewDidLoad</span><br><span class="line">Demo[32768:1105890] 0x7ffeec17c638: ViewController //这里比较怪</span><br><span class="line">Demo[32768:1105890] 0x7ffeec17c630: &lt;ViewController: 0x7fb445607ee0&gt;</span><br><span class="line">Demo[32768:1105890] 0x7ffeec17c628: Speaker</span><br><span class="line">Demo[32768:1105890] obj speak</span><br><span class="line">Demo[32768:1105890] Speaker self: 0x7ffeec17c628, _name: 0x7ffeec17c630</span><br><span class="line">Demo[32768:1105890] Speaker&apos;s name: &lt;ViewController: 0x7fb445607ee0&gt;</span><br></pre></td></tr></table></figure>
+<p>从输出可以看到，栈区的打印顺序和我们的分析基本吻合。<br>下面我们看一下为什么Speaker实例对象的 self.name 访问到的是ViewController实例对象。</p>
+<ul>
+<li>Speaker实例对象，如果我们通过 [[Speaker alloc] init] 初始化的话，会在堆区分配内存。但现在，我们是使用栈区指针指向了Speaker类对象地址，”伪装”成了一个Speaker实例对象，所以传入的self值为栈区的地址：0x7ffeec17c628 。</li>
+<li>从上面的输出我们可以看到，name属性的实例变量_name在Speaker实例对象 self + 0x8 的地址，即 0x7ffeec17c630 。</li>
+<li>根据输出_name实例变量访问的地址 0x7ffeec17c630 ，找到栈区对应的数据 0x7ffeec17c630: <code>&lt;ViewController: 0x7fb445607ee0&gt;</code> ，所以输出为 Speaker’s name: <code>&lt;ViewController: 0x7fb445607ee0&gt;</code> 。</li>
+</ul>
+<h2 id="3-总结"><a href="#3-总结" class="headerlink" title="3. 总结"></a>3. 总结</h2><p>通过这个面试题我们得出了一下结论：</p>
+<ul>
+<li>Objective-C中的对象是一个指向class_object地址的变量，即 id obj = &amp;class_object</li>
+<li>对象的实例变量 void *ivar = &amp;obj + offset(N)</li>
+</ul>
+<p>但这里还有一个疑问：</p>
+<p>我们看到直接调用 [super viewDidLoad]; ，栈区的第3个变量为ViewController类。</p>
+<p>但根据我们用Clang重写的代码 [super viewDidLoad]; 实现做替换：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    ((void (*)(struct objc_super *, SEL))(void *)objc_msgSendSuper)(&amp;((struct objc_super)&#123;(id)self, (id)class_getSuperclass(objc_getClass(&quot;ViewController&quot;))&#125;), sel_registerName(&quot;viewDidLoad&quot;));</span><br><span class="line">    </span><br><span class="line">    id cls = [Speaker class]; // 1</span><br><span class="line">    void *obj = &amp;cls; // 2</span><br><span class="line">    NSLog(@&quot;栈区变量&quot;);</span><br><span class="line">    void *start = (void *)&amp;self;</span><br><span class="line">    void *end = (void *)&amp;obj;</span><br><span class="line">    long count = (start - end) / 0x8;</span><br><span class="line">    for (long i = 0; i &lt; count; i++) &#123;</span><br><span class="line">        void *address = start - 0x8 * i;</span><br><span class="line">        if (i == 1) &#123;</span><br><span class="line">            NSLog(@&quot;%p: %s&quot;, address, *(char **)(address));</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            NSLog(@&quot;%p: %@&quot;, address, *(void **)address);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    NSLog(@&quot;obj speak&quot;);</span><br><span class="line">    [(__bridge id)obj speak]; // 3</span><br><span class="line">&#125;</span><br><span class="line">// 输出</span><br><span class="line">Demo[33008:1114325] 栈区变量</span><br><span class="line">Demo[33008:1114325] 0x7ffee4983648: &lt;ViewController: 0x7f9e0bf07fd0&gt;</span><br><span class="line">Demo[33008:1114325] 0x7ffee4983640: viewDidLoad</span><br><span class="line">Demo[33008:1114325] 0x7ffee4983638: UIViewController // 这里符合预期</span><br><span class="line">Demo[33008:1114325] 0x7ffee4983630: &lt;ViewController: 0x7f9e0bf07fd0&gt;</span><br><span class="line">Demo[33008:1114325] 0x7ffee4983628: Speaker</span><br><span class="line">Demo[33008:1114325] obj speak</span><br><span class="line">Demo[33008:1114325] Speaker self: 0x7ffee4983628, _name: 0x7ffee4983630</span><br><span class="line">Demo[33008:1114325] Speaker&apos;s name: &lt;ViewController: 0x7f9e0bf07fd0&gt;</span><br></pre></td></tr></table></figure>
+<p>我们看到栈区的第3个变量为UIViewController类，这个输出是符合预期的，因为<code>class_getSuperclass(objc_getClass(&quot;ViewController&quot;))</code>我们获取的就是父类。</p>
+<p>但为什么直接调用 [super viewDidLoad]; ，栈区的第3个变量为ViewController类，这个问题难道是Xcode的Bug？？？</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://github.com/xushuanghui/2020/12/21/遇见多线程问题记录/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1281,329 +1710,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://github.com/xushuanghui/2019/09/23/cocoapod加载插件/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="xushuanghui">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="xushuanghui">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/09/23/cocoapod加载插件/" itemprop="url">cocoapods加载插件</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-09-23T16:28:09+08:00">
-                2019-09-23
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>CocoaPods 为开发者提供了插件注册功能，可以使用 <code>pod plugins create NAME</code> 命令创建插件，并在 Podfile 中通过 <code>plugin &#39;NAME&#39;</code> 语句引入插件。虽然在一般情况下很少使用这个功能，但在某些场景下，利用插件能比较方便快捷地解决问题。</p>
-<h2 id="实现探索"><a href="#实现探索" class="headerlink" title="实现探索"></a>实现探索</h2><p>首先，由于 <code>pod install</code> 过程会涉及到插件的加载，所以直接查看 <code>installer.rb</code> 文件:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"># Runs the registered callbacks for the plugins post install hooks.</span><br><span class="line">#</span><br><span class="line">def run_plugins_post_install_hooks</span><br><span class="line">  context = PostInstallHooksContext.generate(sandbox, aggregate_targets)</span><br><span class="line">  HooksManager.run(:post_install, context, plugins)</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line"># Runs the registered callbacks for the plugins pre install hooks.</span><br><span class="line">#</span><br><span class="line"># @return [void]</span><br><span class="line">#</span><br><span class="line">def run_plugins_pre_install_hooks</span><br><span class="line">  context = PreInstallHooksContext.generate(sandbox, podfile, lockfile)</span><br><span class="line">  HooksManager.run(:pre_install, context, plugins)</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line"># Ensures that all plugins specified in the &#123;#podfile&#125; are loaded.</span><br><span class="line">#</span><br><span class="line"># @return [void]</span><br><span class="line">#</span><br><span class="line">def ensure_plugins_are_installed!</span><br><span class="line">  require &apos;claide/command/plugin_manager&apos;</span><br><span class="line"></span><br><span class="line">  loaded_plugins = Command::PluginManager.specifications.map(&amp;:name)</span><br><span class="line"></span><br><span class="line">  podfile.plugins.keys.each do |plugin|</span><br><span class="line">    unless loaded_plugins.include? plugin</span><br><span class="line">      raise Informative, &quot;Your Podfile requires that the plugin `#&#123;plugin&#125;` be installed. Please install it and try installation again.&quot;</span><br><span class="line">    end</span><br><span class="line">  end</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
-<p>其中 <code>run_plugins_pre_install_hooks</code> 和 <code>run_plugins_post_install_hooks</code> 分别执行了插件注册的 <code>pre_install</code> 和 <code>pod_install</code> 方法， <code>ensure_plugins_are_installed</code> 则确认插件是否已被安装。</p>
-<p>接下来看下 <code>Command::PluginManager</code> ，这个类在 <code>claide/command/plugin_manager</code> 文件内，属于 <code>claide</code> gem :</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"># @return [Array&lt;Gem::Specification&gt;] Loads plugins via RubyGems looking</span><br><span class="line">#         for files named after the `PLUGIN_PREFIX_plugin` and returns the</span><br><span class="line">#         specifications of the gems loaded successfully.</span><br><span class="line">#         Plugins are required safely.</span><br><span class="line">#</span><br><span class="line">def self.load_plugins(plugin_prefix)</span><br><span class="line">  loaded_plugins[plugin_prefix] ||=</span><br><span class="line">    plugin_gems_for_prefix(plugin_prefix).map do |spec, paths|</span><br><span class="line">      spec if safe_activate_and_require(spec, paths)</span><br><span class="line">    end.compact</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line"># @group Helper Methods</span><br><span class="line"></span><br><span class="line"># @return [Array&lt;[Gem::Specification, Array&lt;String&gt;]&gt;]</span><br><span class="line">#         Returns an array of tuples containing the specifications and</span><br><span class="line">#         plugin files to require for a given plugin prefix.</span><br><span class="line">#</span><br><span class="line">def self.plugin_gems_for_prefix(prefix)</span><br><span class="line">  glob = &quot;#&#123;prefix&#125;_plugin#&#123;Gem.suffix_pattern&#125;&quot;</span><br><span class="line">  Gem::Specification.latest_specs(true).map do |spec|</span><br><span class="line">    matches = spec.matches_for_glob(glob)</span><br><span class="line">    [spec, matches] unless matches.empty?</span><br><span class="line">  end.compact</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line"># Activates the given spec and requires the given paths.</span><br><span class="line"># If any exception occurs it is caught and an</span><br><span class="line"># informative message is printed.</span><br><span class="line">#</span><br><span class="line"># @param  [Gem::Specification] spec</span><br><span class="line">#         The spec to be activated.</span><br><span class="line">#</span><br><span class="line"># @param  [String] paths</span><br><span class="line">#         The paths to require.</span><br><span class="line">#</span><br><span class="line"># @return [Bool] Whether activation and requiring succeeded.</span><br><span class="line">#</span><br><span class="line">def self.safe_activate_and_require(spec, paths)</span><br><span class="line">  spec.activate</span><br><span class="line">  paths.each &#123; |path| require(path) &#125;</span><br><span class="line">  true</span><br><span class="line">rescue Exception =&gt; exception # rubocop:disable RescueException</span><br><span class="line">  message = &quot;\n---------------------------------------------&quot;</span><br><span class="line">  message &lt;&lt; &quot;\nError loading the plugin `#&#123;spec.full_name&#125;`.\n&quot;</span><br><span class="line">  message &lt;&lt; &quot;\n#&#123;exception.class&#125; - #&#123;exception.message&#125;&quot;</span><br><span class="line">  message &lt;&lt; &quot;\n#&#123;exception.backtrace.join(&quot;\n&quot;)&#125;&quot;</span><br><span class="line">  message &lt;&lt; &quot;\n---------------------------------------------\n&quot;</span><br><span class="line">  warn message.ansi.yellow</span><br><span class="line">  false</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
-<p>以上代码调用几个的 <code>Gem::Specification</code> 方法如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># 获取最新 spec 集合</span><br><span class="line"># Return the latest specs, optionally including prerelease specs if prerelease is true.</span><br><span class="line">latest_specs(prerelease = false) </span><br><span class="line"></span><br><span class="line"># 获取 gem 中匹配的文件路径</span><br><span class="line"># Return all files in this gem that match for glob.</span><br><span class="line">matches_for_glob(glob) </span><br><span class="line"></span><br><span class="line"># 激活 spec，注册并将其 lib 路径添加到 $LOAD_PATH （$LOAD_PATH 环境变量存储 require 文件时查找的路径）</span><br><span class="line"># Activate this spec, registering it as a loaded spec and adding it&apos;s lib paths to $LOAD_PATH. Returns true if the spec was activated, false if it was previously activated. Freaks out if there are conflicts upon activation.</span><br><span class="line">activate()</span><br></pre></td></tr></table></figure>
-<p>可以看到在 <code>loaded_plugins[plugin_prefix]</code> 为空的情况下，程序会执行 <code>plugin_gems_for_prefix</code> 方法，<code>plugin_gems_for_prefix</code> 方法通过 <code>latest_specs</code> 获取了最新的 spec ，并通过 spec 的 <code>matches_for_glob</code> 方法对文件进行匹配，当 spec 中存在匹配 <code>&quot;#{prefix}_plugin#{Gem.suffix_pattern}&quot;</code> 格式的文件时，则视其为 CocoaPods 插件。在拿到插件及其匹配文件后，<code>safe_activate_and_require</code> 方法将文件加入 $LOAD_PATH 中并 require 之。</p>
-<p>另外 <code>CLAide::Command</code> 类会在 <code>run</code> 类方法中加载所有插件，然后根据解析后的信息，执行对应的命令:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"># @param  [Array, ARGV] argv</span><br><span class="line">#         A list of (remaining) parameters.</span><br><span class="line">#</span><br><span class="line"># @return [Command] An instance of the command class that was matched by</span><br><span class="line">#         going through the arguments in the parameters and drilling down</span><br><span class="line">#         command classes.</span><br><span class="line">#</span><br><span class="line">def self.run(argv = [])</span><br><span class="line">  plugin_prefixes.each do |plugin_prefix|</span><br><span class="line">    PluginManager.load_plugins(plugin_prefix)</span><br><span class="line">  end</span><br><span class="line"></span><br><span class="line">  argv = ARGV.coerce(argv)</span><br><span class="line">  command = parse(argv)</span><br><span class="line">  ANSI.disabled = !command.ansi_output?</span><br><span class="line">  unless command.handle_root_options(argv)</span><br><span class="line">    command.validate!</span><br><span class="line">    command.run</span><br><span class="line">  end</span><br><span class="line">rescue Object =&gt; exception</span><br><span class="line">  handle_exception(command, exception)</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
-<p>对于通过 <code>pod plugin create</code> 命令创建的插件来说，lib 目录下都会自动生成一个 <code>cocoapods_plugin.rb</code> 文件，这个文件就是用来标识此 gem 为 CocoaPods 插件的。如果想手动创建 CocoaPods 插件，需要满足以下两个条件：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># Handles plugin related logic logic for the `Command` class.</span><br><span class="line">#</span><br><span class="line"># Plugins are loaded the first time a command run and are identified by the</span><br><span class="line"># prefix specified in the command class. Plugins must adopt the following</span><br><span class="line"># conventions:</span><br><span class="line">#</span><br><span class="line"># - Support being loaded by a file located under the</span><br><span class="line"># `lib/#&#123;plugin_prefix&#125;_plugin` relative path.</span><br><span class="line"># - Be stored in a folder named after the plugin.</span><br><span class="line"></span><br><span class="line"># - 支持通过 `lib/#&#123;plugin_prefix&#125;_plugin` 路径的文件加载</span><br><span class="line">#   (也就是说，如果要对外暴露插件内部存的方法，需要在此文件中 require 之，比如自定义的 Podfile DSL 文件)</span><br><span class="line"># - 保存在以插件命名的文件夹中</span><br></pre></td></tr></table></figure>
-<p>在 CocoaPods 上下文中，以上的 <code>plugin_prefix</code> 如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">self.plugin_prefixes = %w(claide cocoapods)</span><br></pre></td></tr></table></figure>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>如果需要外部 gem 以插件的形式提供某些功能，可以通过和 CocoaPods 一样的方式实现，即规定特定的命名规则，然后通过 <code>Gem::Specification</code> 提供的方法获取满足条件的 gem ，再 require 入口文件:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">spec = Gem::Specification.find_by_name(&apos;naruto&apos;)</span><br><span class="line">spec.activate</span><br><span class="line">matches = spec.matches_for_glob(&apos;naruto&apos;)</span><br><span class="line">matches.each do |path|</span><br><span class="line">  require(path)</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://github.com/xushuanghui/2019/09/18/随机深林/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="xushuanghui">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="xushuanghui">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/09/18/随机深林/" itemprop="url">随机深林</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-09-18T11:03:50+08:00">
-                2019-09-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <ul>
-<li>要点<ul>
-<li>说名随机森林每棵决策树的建立过程</li>
-<li>知道为什么需要随机有放回(Bootstrap)的抽样</li>
-<li>说明随机森林的超参数</li>
-</ul>
-</li>
-<li>应用<ul>
-<li>泰坦尼克号乘客生存预测</li>
-</ul>
-</li>
-</ul>
-<h2 id="1、-什么是集成学习方法"><a href="#1、-什么是集成学习方法" class="headerlink" title="1、 什么是集成学习方法"></a>1、 什么是集成学习方法</h2><p>集成学习通过建立几个模型组合的来解决单一预测问题。它的工作原理是<strong>生成多个分类器/模型</strong>，各自独立地学习和作出预测。<strong>这些预测最后结合成组合预测，因此优于任何一个单分类的做出预测。</strong></p>
-<h2 id="2、-什么是随机森林"><a href="#2、-什么是随机森林" class="headerlink" title="2、 什么是随机森林"></a>2、 什么是随机森林</h2><p>在机器学习中，<strong>随机森林是一个包含多个决策树的分类器</strong>，并且其输出的类别是由个别树输出的类别的众数而定。</p>
-<p><img src="/xushuanghui/2019/09/18/随机深林/随机森林.png" alt="随机森林"></p>
-<p>例如, 如果你训练了5个树, 其中有4个树的结果是True, 1个数的结果是False, 那么最终投票结果就是True</p>
-<p><img src="/xushuanghui/2019/09/18/随机深林/投票.png" alt="投票"></p>
-<h2 id="3、-随机森林原理过程"><a href="#3、-随机森林原理过程" class="headerlink" title="3、 随机森林原理过程"></a>3、 随机森林原理过程</h2><p>学习算法根据下列算法而建造每棵树：</p>
-<ul>
-<li>用N来表示训练用例（样本）的个数，M表示特征数目。<ul>
-<li>1、一次随机选出一个样本，重复N次， （有可能出现重复的样本）</li>
-<li>2、随机去选出m个特征, m &lt;&lt;M，建立决策树</li>
-</ul>
-</li>
-<li>采取bootstrap抽样1</li>
-</ul>
-<h3 id="3-1-为什么采用BootStrap抽样"><a href="#3-1-为什么采用BootStrap抽样" class="headerlink" title="3.1 为什么采用BootStrap抽样"></a>3.1 为什么采用BootStrap抽样</h3><ul>
-<li>为什么要随机抽样训练集？　　<ul>
-<li>如果不进行随机抽样，每棵树的训练集都一样，那么最终训练出的树分类结果也是完全一样的</li>
-</ul>
-</li>
-<li>为什么要有放回地抽样？<ul>
-<li>如果不是有放回的抽样，那么每棵树的训练样本都是不同的，都是没有交集的，这样每棵树都是“有偏的”，都是绝对“片面的”（当然这样说可能不对），也就是说每棵树训练出来都是有很大的差异的；而随机森林最后分类取决于多棵树（弱分类器）的投票表决。</li>
-</ul>
-</li>
-</ul>
-<h3 id="3-2-API"><a href="#3-2-API" class="headerlink" title="3.2 API"></a>3.2 API</h3><ul>
-<li><p>class sklearn.ensemble.RandomForestClassifier(n_estimators=10, criterion=’gini’, max_depth=None, bootstrap=True, random_state=None, min_samples_split=2)</p>
-<ul>
-<li>随机森林分类器</li>
-<li>n_estimators：integer，optional（default = 10）森林里的树木数量120,200,300,500,800,1200</li>
-<li>criteria：string，可选（default =“gini”）分割特征的测量方法</li>
-<li>max_depth：integer或None，可选（默认=无）树的最大深度 5,8,15,25,30</li>
-<li>max_features=”auto”,每个决策树的最大特征数量<ul>
-<li>If “auto”, then <code>max_features=sqrt(n_features)</code>.</li>
-<li>If “sqrt”, then <code>max_features=sqrt(n_features)</code> (same as “auto”).</li>
-<li>If “log2”, then <code>max_features=log2(n_features)</code>.</li>
-<li>If None, then <code>max_features=n_features</code>.</li>
-</ul>
-</li>
-<li>bootstrap：boolean，optional（default = True）是否在构建树时使用放回抽样</li>
-<li>min_samples_split:节点划分最少样本数</li>
-<li>min_samples_leaf:叶子节点的最小样本数</li>
-</ul>
-</li>
-<li><p>超参数：n_estimator, max_depth, min_samples_split,min_samples_leaf</p>
-</li>
-</ul>
-<h3 id="3-3-代码"><a href="#3-3-代码" class="headerlink" title="3.3 代码"></a>3.3 代码</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 随机森林去进行预测</span></span><br><span class="line">rf = RandomForestClassifier()</span><br><span class="line"></span><br><span class="line">param = &#123;<span class="string">"n_estimators"</span>: [<span class="number">120</span>,<span class="number">200</span>,<span class="number">300</span>,<span class="number">500</span>,<span class="number">800</span>,<span class="number">1200</span>], <span class="string">"max_depth"</span>: [<span class="number">5</span>, <span class="number">8</span>, <span class="number">15</span>, <span class="number">25</span>, <span class="number">30</span>]&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 超参数调优</span></span><br><span class="line">gc = GridSearchCV(rf, param_grid=param, cv=<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">gc.fit(x_train, y_train)</span><br><span class="line"></span><br><span class="line">print(<span class="string">"随机森林预测的准确率为："</span>, gc.score(x_test, y_test))</span><br></pre></td></tr></table></figure>
-<h2 id="4、总结"><a href="#4、总结" class="headerlink" title="4、总结"></a>4、总结</h2><ul>
-<li>在当前所有算法中，具有极好的准确率</li>
-<li>能够有效地运行在大数据集上，处理具有高维特征的输入样本，而且不需要降维</li>
-<li>能够评估各个特征在分类问题上的重要性</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1649,7 +1760,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">20</span>
+                  <span class="site-state-item-count">22</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
