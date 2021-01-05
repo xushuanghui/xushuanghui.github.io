@@ -87,14 +87,14 @@
 <meta property="og:site_name" content="xushuanghui">
 <meta property="og:description" content="UIKit 主要是通过响应者（UIResponder）来响应用户事件，那么系统是如何来处理的呢？ 事件类型首先我们看下目前系统的定义的 UIEventType，我们主要通过 UIEventTypeTouches 来了解下事件响应： 123456typedef NS_ENUM(NSInteger, UIEventType) &amp;#123;    UIEventTypeTouches, // 触摸事件">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="https://i.loli.net/2020/12/30/ugBJVTisC4aHG7D.png">
+<meta property="og:image" content="https://i.loli.net/2021/01/04/WeafExlQ4bGXZtr.png">
 <meta property="og:image" content="https://i.loli.net/2020/12/30/y7SxN2PdjnOhqaW.png">
 <meta property="og:image" content="https://i.loli.net/2020/12/30/NpR7bYIxrDcyaTe.png">
-<meta property="og:updated_time" content="2020-12-30T09:54:51.458Z">
+<meta property="og:updated_time" content="2021-01-04T08:40:32.582Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="事件传递与响应者链">
 <meta name="twitter:description" content="UIKit 主要是通过响应者（UIResponder）来响应用户事件，那么系统是如何来处理的呢？ 事件类型首先我们看下目前系统的定义的 UIEventType，我们主要通过 UIEventTypeTouches 来了解下事件响应： 123456typedef NS_ENUM(NSInteger, UIEventType) &amp;#123;    UIEventTypeTouches, // 触摸事件">
-<meta name="twitter:image" content="https://i.loli.net/2020/12/30/ugBJVTisC4aHG7D.png">
+<meta name="twitter:image" content="https://i.loli.net/2021/01/04/WeafExlQ4bGXZtr.png">
 
 
 
@@ -320,11 +320,15 @@
 <p>当点击屏幕时，系统会产生一个触摸事件 UIEvent，系统会把这个 UIEvent 放到 Application 的事件队列中，Application 会把事件分发下去。首先响应的是 UIWindow，他会调用 <code>hitTest:withEvent:</code> ，找到能够响应事件的 UIView。UIView 会通过 <code>hitTest:withEvent:</code> 根据触摸事件的 location 在视图的层级结构中进行遍历，找到包含该触摸的层级最深的子视图，定义这个视图作为响应事件（touch event）的 first responder。</p>
 <p>我们通过下面的例子，来详细说明两个原理：</p>
 <ul>
-<li>如何进行遍历？</li>
-<li>hitTest 怎么工作的？<a id="more"></a>
-<img src="https://i.loli.net/2020/12/30/ugBJVTisC4aHG7D.png" alt="2020-12-30-3.47.44.png"></li>
+<li><p>如何进行遍历？</p>
+</li>
+<li><p>hitTest 怎么工作的？</p>
+</li>
 </ul>
-<h3 id="遍历查找最佳视图流程图"><a href="#遍历查找最佳视图流程图" class="headerlink" title="遍历查找最佳视图流程图"></a>遍历查找最佳视图流程图</h3><p>如上图例子所示，当我们点击 View B.1 的时候，如何进行遍历来确认该 View 是 first responder？</p>
+<p>  <img src="https://i.loli.net/2021/01/04/WeafExlQ4bGXZtr.png" alt="2021-01-04-4.38.32.png"></p>
+  <a id="more"></a>
+<p>  遍历查找最佳视图流程图</p>
+<p>如上图例子所示，当我们点击 View B.1 的时候，如何进行遍历来确认该 View 是 first responder？</p>
 <p><img src="https://i.loli.net/2020/12/30/y7SxN2PdjnOhqaW.png" alt="2020-12-30-3.47.58.png"></p>
 <p>系统会根据 view 添加的顺序，确定其在 subview 数组中的顺序。我们将视图的树形结构画出来，针对这个树，是按照逆先序深度优先遍历。根据图上绿色箭头所示的顺序，查找到 B.1 为响应最合适的 view。顺序如下：</p>
 <p>注意：先添加的View A, 在添加的View B，View C，mianView查找子视图先遍历后添加ViewC</p>
@@ -436,6 +440,10 @@
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2021/01/04/OC接入swift/" rel="prev" title="OC接入swift">
+                OC接入swift <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -511,7 +519,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-count">24</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -557,7 +565,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#事件类型"><span class="nav-number">1.</span> <span class="nav-text">事件类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#触摸事件"><span class="nav-number">2.</span> <span class="nav-text">触摸事件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事件传递机制"><span class="nav-number">3.</span> <span class="nav-text">事件传递机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#遍历查找最佳视图流程图"><span class="nav-number">3.1.</span> <span class="nav-text">遍历查找最佳视图流程图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hitTest-withEvent-遍历查找最佳视图"><span class="nav-number">3.2.</span> <span class="nav-text">hitTest:withEvent:  遍历查找最佳视图</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事件响应链"><span class="nav-number">4.</span> <span class="nav-text">事件响应链</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#处理事件"><span class="nav-number">4.1.</span> <span class="nav-text">处理事件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#决定第一响应者"><span class="nav-number">4.2.</span> <span class="nav-text">决定第一响应者</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#改变事件传递链"><span class="nav-number">4.3.</span> <span class="nav-text">改变事件传递链</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#改变响应者链"><span class="nav-number">4.4.</span> <span class="nav-text">改变响应者链</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事件是怎么被接收的？"><span class="nav-number">5.</span> <span class="nav-text">事件是怎么被接收的？</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#事件类型"><span class="nav-number">1.</span> <span class="nav-text">事件类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#触摸事件"><span class="nav-number">2.</span> <span class="nav-text">触摸事件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事件传递机制"><span class="nav-number">3.</span> <span class="nav-text">事件传递机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#hitTest-withEvent-遍历查找最佳视图"><span class="nav-number">3.1.</span> <span class="nav-text">hitTest:withEvent:  遍历查找最佳视图</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事件响应链"><span class="nav-number">4.</span> <span class="nav-text">事件响应链</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#处理事件"><span class="nav-number">4.1.</span> <span class="nav-text">处理事件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#决定第一响应者"><span class="nav-number">4.2.</span> <span class="nav-text">决定第一响应者</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#改变事件传递链"><span class="nav-number">4.3.</span> <span class="nav-text">改变事件传递链</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#改变响应者链"><span class="nav-number">4.4.</span> <span class="nav-text">改变响应者链</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事件是怎么被接收的？"><span class="nav-number">5.</span> <span class="nav-text">事件是怎么被接收的？</span></a></li></ol></div>
             
 
           </div>
@@ -577,7 +585,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
