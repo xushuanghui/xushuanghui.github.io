@@ -87,7 +87,7 @@
 <meta property="og:site_name" content="xushuanghui">
 <meta property="og:description" content="工程配置桥接文件当我们在Swift项目（OC项目）中首次添加OC文件（Swift文件）时，Xcode会自动弹出桥接文件创建的提示， 这里我们可以选择Xcode自动创建或者手动创建，创建完成后系统会自动生成2个桥接文件, $(SWIFT_MODULE_NAME)-Bridging-Header.h，这个头文件直接在目录中 $(SWIFT_MODULE_NAME)-Swift.h在目录中不可见. 如果">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2021-01-05T09:35:10.157Z">
+<meta property="og:updated_time" content="2021-01-05T09:43:07.105Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="OC接入swift">
 <meta name="twitter:description" content="工程配置桥接文件当我们在Swift项目（OC项目）中首次添加OC文件（Swift文件）时，Xcode会自动弹出桥接文件创建的提示， 这里我们可以选择Xcode自动创建或者手动创建，创建完成后系统会自动生成2个桥接文件, $(SWIFT_MODULE_NAME)-Bridging-Header.h，这个头文件直接在目录中 $(SWIFT_MODULE_NAME)-Swift.h在目录中不可见. 如果">
@@ -315,6 +315,7 @@
 <p>找到target中的Swift Complier - Search Path，在Import Paths项中添加$(inherited)</p>
 <p>重新pod，消除警告后，即可使用Swift三方库.</p>
 <p>在cocoaPod更新到1.5之前，OC与Swift混编比较头疼的一个问题就是pod库的集成，历史原因这里就不赘述了语法混编</p>
+<a id="more"></a>
 <h2 id="OC调用Swift"><a href="#OC调用Swift" class="headerlink" title="OC调用Swift"></a>OC调用Swift</h2><p>简单说下OC调用Swift需要注意的点：</p>
 <p>1.import $(SWIFT_MODULE_NAME)-Swift.h</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;OCAndSwift-Swift.h&quot;</span><br></pre></td></tr></table></figure>
@@ -332,7 +333,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let contentAry = info[&quot;content&quot;] as? [String]titleLabel.text = title as? String ?? &quot;&quot;if let failedWith = error as? Error &#123;&#125;</span><br></pre></td></tr></table></figure>
 <p>4.OC宏的使用，Swift使用OC的宏，只能直接使用非常简单的值类型宏，对于复杂的宏方法则需要自己重写一个全局方法替代，全局静态常量可以直接使用.</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define kExpireTime 60  // √#define sharedAppDelegate ((AppDelegate *)([UIApplication sharedApplication].delegate)) // X</span><br></pre></td></tr></table></figure>
-<a id="more"></a>
+<!--more-->
 <h2 id="Swift特性"><a href="#Swift特性" class="headerlink" title="Swift特性"></a>Swift特性</h2><h3 id="Optional"><a href="#Optional" class="headerlink" title="Optional"></a>Optional</h3><p>1.简单介绍一下Optional-可选类型，Optional实际上是一个枚举类型：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public enum Optional&lt;Wrapped&gt; : ExpressibleByNilLiteral &#123;case nonecase some(Wrapped)...&#125;</span><br></pre></td></tr></table></figure>
 <p>表示一个数据可能有值也可能为空即nil，类型可以用Optional或者T?（常用）表示.</p>
@@ -529,7 +530,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-count">26</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>

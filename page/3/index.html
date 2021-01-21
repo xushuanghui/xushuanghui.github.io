@@ -229,6 +229,149 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://github.com/xushuanghui/2019/04/01/Sarsa算法/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xushuanghui">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xushuanghui">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/01/Sarsa算法/" itemprop="url">Sarsa算法</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-04-01T17:27:08+08:00">
+                2019-04-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Sarsa-更新行为准则"><a href="#Sarsa-更新行为准则" class="headerlink" title="Sarsa 更新行为准则"></a>Sarsa 更新行为准则</h2><p><a href="https://morvanzhou.github.io/static/results/ML-intro/s3.png" target="_blank" rel="noopener"><img src="https://morvanzhou.github.io/static/results/ML-intro/s3.png" alt="Sarsa"></a></p>
+<p>同样, 我们会经历正在写作业的状态 s1, 然后再挑选一个带来最大潜在奖励的动作 a2, 这样我们就到达了 继续写作业状态 s2, 而在这一步, 如果你用的是 Q learning, 你会观看一下在 s2 上选取哪一个动作会带来最大的奖励, 但是在真正要做决定时, 却不一定会选取到那个带来最大奖励的动作, Q-learning 在这一步只是估计了一下接下来的动作值. 而 Sarsa 是实践派, 他说到做到, 在 s2 这一步估算的动作也是接下来要做的动作. 所以 Q(s1, a2) 现实的计算值, 我们也会稍稍改动, 去掉maxQ, 取而代之的是在 s2 上我们实实在在选取的 a2 的 Q 值. 最后像 Q learning 一样, 求出现实和估计的差距 并更新 Q 表里的 Q(s1, a2).</p>
+<h2 id="对比-Sarsa-和-Q-learning-算法"><a href="#对比-Sarsa-和-Q-learning-算法" class="headerlink" title="对比 Sarsa 和 Q-learning 算法"></a>对比 Sarsa 和 Q-learning 算法</h2><p><a href="https://morvanzhou.github.io/static/results/ML-intro/s4.png" target="_blank" rel="noopener"><img src="https://morvanzhou.github.io/static/results/ML-intro/s4.png" alt="Sarsa"></a></p>
+<p>从算法来看, 这就是他们两最大的不同之处了. 因为 Sarsa 是说到做到型, 所以我们也叫他 on-policy, 在线学习, 学着自己在做的事情. 而 Q learning 是说到但并不一定做到, 所以它也叫作 Off-policy, 离线学习. 而因为有了 maxQ, Q-learning 也是一个特别勇敢的算法.</p>
+<p><a href="https://morvanzhou.github.io/static/results/ML-intro/s5.png" target="_blank" rel="noopener"><img src="https://morvanzhou.github.io/static/results/ML-intro/s5.png" alt="Sarsa"></a></p>
+<p>为什么说他勇敢呢, 因为 Q learning 机器人 永远都会选择最近的一条通往成功的道路, 不管这条路会有多危险. 而 Sarsa 则是相当保守, 他会选择离危险远远的, 拿到宝藏是次要的, 保住自己的小命才是王道. 这就是使用 Sarsa 方法的不同之处.</p>
+<h2 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h2><p><a href="https://morvanzhou.github.io/static/results/reinforcement-learning/3-1-1.png" target="_blank" rel="noopener"><img src="https://morvanzhou.github.io/static/results/reinforcement-learning/3-1-1.png" alt="Sarsa 算法更新"></a></p>
+<p>整个算法还是一直不断更新 Q table 里的值, 然后再根据新的值来判断要在某个 state 采取怎样的 action. 不过于 Qlearning 不同之处:</p>
+<ul>
+<li>他在当前 <code>state</code> 已经想好了 <code>state</code> 对应的 <code>action</code>, 而且想好了 下一个 <code>state_</code> 和下一个 <code>action_</code> (Qlearning 还没有想好下一个 <code>action_</code>)</li>
+<li>更新 <code>Q(s,a)</code> 的时候基于的是下一个 <code>Q(s_, a_)</code> (Qlearning 是基于 <code>maxQ(s_)</code>)</li>
+</ul>
+<p>这种不同之处使得 Sarsa 相对于 Qlearning, 更加的胆小. 因为 Qlearning 永远都是想着 <code>maxQ</code> 最大化, 因为这个 <code>maxQ</code> 而变得贪婪, 不考虑其他非 <code>maxQ</code> 的结果. 我们可以理解成 Qlearning 是一种贪婪, 大胆, 勇敢的算法, 对于错误, 死亡并不在乎. 而 Sarsa 是一种保守的算法, 他在乎每一步决策, 对于错误和死亡比较铭感. 这一点我们会在可视化的部分看出他们的不同. 两种算法都有他们的好处, 比如在实际中, 你比较在乎机器的损害, 用一种保守的算法, 在训练时就能减少损坏的次数.</p>
+<h2 id="算法的代码形式"><a href="#算法的代码形式" class="headerlink" title="算法的代码形式"></a>算法的代码形式</h2><p>首先我们先 import 两个模块, <code>maze_env</code> 是我们的环境模块, 已经编写好了, <code>maze_env</code> 模块，我们可以不深入研究, 如果你对编辑环境感兴趣, 可以去看看如何使用 python 自带的简单 GUI 模块 <code>tkinter</code> 来编写虚拟环境.<code>maze_env</code> 就是用 <code>tkinter</code> 编写的. 而 <code>RL_brain</code> 这个模块是 RL 的大脑部分, 我们下节会讲.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">from maze_env import Maze</span><br><span class="line">from RL_brain import SarsaTable</span><br></pre></td></tr></table></figure>
+<p>下面的代码, 我们可以根据上面的图片中的算法对应起来, 这就是整个 Sarsa 最重要的迭代更新部分啦.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">def update():</span><br><span class="line">    for episode in range(100):</span><br><span class="line">        # 初始化环境</span><br><span class="line">        observation = env.reset()</span><br><span class="line"></span><br><span class="line">        # Sarsa 根据 state 观测选择行为</span><br><span class="line">        action = RL.choose_action(str(observation))</span><br><span class="line"></span><br><span class="line">        while True:</span><br><span class="line">            # 刷新环境</span><br><span class="line">            env.render()</span><br><span class="line"></span><br><span class="line">            # 在环境中采取行为, 获得下一个 state_ (obervation_), reward, 和是否终止</span><br><span class="line">            observation_, reward, done = env.step(action)</span><br><span class="line"></span><br><span class="line">            # 根据下一个 state (obervation_) 选取下一个 action_</span><br><span class="line">            action_ = RL.choose_action(str(observation_))</span><br><span class="line"></span><br><span class="line">            # 从 (s, a, r, s, a) 中学习, 更新 Q_tabel 的参数 ==&gt; Sarsa</span><br><span class="line">            RL.learn(str(observation), action, reward, str(observation_), action_)</span><br><span class="line"></span><br><span class="line">            # 将下一个当成下一步的 state (observation) and action</span><br><span class="line">            observation = observation_</span><br><span class="line">            action = action_</span><br><span class="line"></span><br><span class="line">            # 终止时跳出循环</span><br><span class="line">            if done:</span><br><span class="line">                break</span><br><span class="line"></span><br><span class="line">    # 大循环完毕</span><br><span class="line">    print(&apos;game over&apos;)</span><br><span class="line">    env.destroy()</span><br><span class="line"></span><br><span class="line">if __name__ == &quot;__main__&quot;:</span><br><span class="line">    env = Maze()</span><br><span class="line">    RL = SarsaTable(actions=list(range(env.n_actions)))</span><br><span class="line"></span><br><span class="line">    env.after(100, update)</span><br><span class="line">    env.mainloop()</span><br></pre></td></tr></table></figure>
+<h2 id="代码主结构"><a href="#代码主结构" class="headerlink" title="代码主结构"></a>代码主结构</h2><p>和之前定义 Qlearning 中的 <code>QLearningTable</code> 一样, 因为使用 tabular 方式的 <code>Sarsa</code> 和 <code>Qlearning</code> 的相似度极高,</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">class SarsaTable:</span><br><span class="line">    # 初始化 (与之前一样)</span><br><span class="line">    def __init__(self, actions, learning_rate=0.01, reward_decay=0.9, e_greedy=0.9):</span><br><span class="line"></span><br><span class="line">    # 选行为 (与之前一样)</span><br><span class="line">    def choose_action(self, observation):</span><br><span class="line"></span><br><span class="line">    # 学习更新参数 (有改变)</span><br><span class="line">    def learn(self, s, a, r, s_):</span><br><span class="line"></span><br><span class="line">    # 检测 state 是否存在 (与之前一样)</span><br><span class="line">    def check_state_exist(self, state):</span><br></pre></td></tr></table></figure>
+<p>我们甚至可以定义一个 主class <code>RL</code>, 然后将 <code>QLearningTable</code> 和 <code>SarsaTable</code> 作为 主class <code>RL</code> 的衍生, 这个主 <code>RL</code> 可以这样定义. 所以我们将之前的 <code>__init__</code>, <code>check_state_exist</code>, <code>choose_action</code>, <code>learn</code> 全部都放在这个主结构中, 之后根据不同的算法更改对应的内容就好了. 所以还没弄懂这些功能的朋友们, 请回到之前的教程再看一遍.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">import numpy as np</span><br><span class="line">import pandas as pd</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class RL(object):</span><br><span class="line">    def __init__(self, action_space, learning_rate=0.01, reward_decay=0.9, e_greedy=0.9):</span><br><span class="line">        ... # 和 QLearningTable 中的代码一样</span><br><span class="line"></span><br><span class="line">    def check_state_exist(self, state):</span><br><span class="line">        ... # 和 QLearningTable 中的代码一样</span><br><span class="line"></span><br><span class="line">    def choose_action(self, observation):</span><br><span class="line">        ... # 和 QLearningTable 中的代码一样</span><br><span class="line"></span><br><span class="line">    def learn(self, *args):</span><br><span class="line">        pass # 每种的都有点不同, 所以用 pass</span><br></pre></td></tr></table></figure>
+<p>如果是这样定义父类的 <code>RL</code> class, 通过继承关系, 那之子类 <code>QLearningTable</code> class 就能简化成这样:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">class QLearningTable(RL):   # 继承了父类 RL</span><br><span class="line">    def __init__(self, actions, learning_rate=0.01, reward_decay=0.9, e_greedy=0.9):</span><br><span class="line">        super(QLearningTable, self).__init__(actions, learning_rate, reward_decay, e_greedy)    # 表示继承关系</span><br><span class="line"></span><br><span class="line">    def learn(self, s, a, r, s_):   # learn 的方法在每种类型中有不一样, 需重新定义</span><br><span class="line">        self.check_state_exist(s_)</span><br><span class="line">        q_predict = self.q_table.loc[s, a]</span><br><span class="line">        if s_ != &apos;terminal&apos;:</span><br><span class="line">            q_target = r + self.gamma * self.q_table.loc[s_, :].max()</span><br><span class="line">        else:</span><br><span class="line">            q_target = r</span><br><span class="line">        self.q_table.loc[s, a] += self.lr * (q_target - q_predict)</span><br></pre></td></tr></table></figure>
+<h2 id="学习"><a href="#学习" class="headerlink" title="学习"></a>学习</h2><p>有了父类的 <code>RL</code>, 我们这次的编写就很简单, 只需要编写 <code>SarsaTable</code> 中 <code>learn</code> 这个功能就完成了. 因为其他功能都和父类是一样的. 这就是我们所有的 <code>SarsaTable</code> 于父类 <code>RL</code> 不同之处的代码. 是不是很简单.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">class SarsaTable(RL):   # 继承 RL class</span><br><span class="line"></span><br><span class="line">    def __init__(self, actions, learning_rate=0.01, reward_decay=0.9, e_greedy=0.9):</span><br><span class="line">        super(SarsaTable, self).__init__(actions, learning_rate, reward_decay, e_greedy)    # 表示继承关系</span><br><span class="line"></span><br><span class="line">    def learn(self, s, a, r, s_, a_):</span><br><span class="line">        self.check_state_exist(s_)</span><br><span class="line">        q_predict = self.q_table.loc[s, a]</span><br><span class="line">        if s_ != &apos;terminal&apos;:</span><br><span class="line">            q_target = r + self.gamma * self.q_table.loc[s_, a_]  # q_target 基于选好的 a_ 而不是 Q(s_) 的最大值</span><br><span class="line">        else:</span><br><span class="line">            q_target = r  # 如果 s_ 是终止符</span><br><span class="line">        self.q_table.loc[s, a] += self.lr * (q_target - q_predict)  # 更新 q_table</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://github.com/xushuanghui/2019/04/01/buildProcess/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -902,7 +1045,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-count">26</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>

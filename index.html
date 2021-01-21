@@ -229,6 +229,158 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://github.com/xushuanghui/2021/01/21/检测私有API/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xushuanghui">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xushuanghui">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/01/21/检测私有API/" itemprop="url">检测私有API</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-01-21T15:17:06+08:00">
+                2021-01-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="preg"><a href="#preg" class="headerlink" title="preg"></a>preg</h1><ol>
+<li>cd到工程根目录</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> 工程根目录</span><br></pre></td></tr></table></figure>
+<ol>
+<li>遍历查找关键字</li>
+</ol>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">grep</span> 关键字 <span class="selector-tag">-r</span> .</span><br><span class="line">以上面的邮件举例的话：”<span class="selector-tag">grep</span> <span class="selector-tag">com</span><span class="selector-class">.apple</span><span class="selector-class">.springboard</span><span class="selector-class">.complete</span> <span class="selector-tag">-r</span> .“</span><br></pre></td></tr></table></figure>
+<p>此命令会查找根目录以及多级目录以下的所有文件，包括.framework和.a库，找到匹配结果的话，会打印出来。<br> -r参数表示会遍历多级目录下的文件。<br> 注意:-r和.之间有个空格</p>
+<h1 id="strings"><a href="#strings" class="headerlink" title="strings"></a>strings</h1><p>首先需要找到app对应的一个Unix可执行文件，可以从两个途径获取这个文件。</p>
+<h4 id="工程中获取"><a href="#工程中获取" class="headerlink" title="工程中获取"></a>工程中获取</h4><ol>
+<li>在Xcode文件树中搜索“.app”</li>
+<li>找到对应文件，右键“Show in Finder”</li>
+<li>选中.app文件，右键“显示包内容”</li>
+<li>下拉可找到一个跟app名字一致的Unix执行文件</li>
+</ol>
+<h4 id="ipa文件中获取"><a href="#ipa文件中获取" class="headerlink" title="ipa文件中获取"></a>ipa文件中获取</h4><ol>
+<li>将.ipa改变成.zip后缀</li>
+<li>解压文件，进入文件夹，进入Payload子文件，找到.app文件</li>
+<li>选中.app文件，右键“显示包内容”</li>
+<li>下拉可找到一个跟app名字一致的Unix执行文件</li>
+</ol>
+<h4 id="查找指令"><a href="#查找指令" class="headerlink" title="查找指令"></a>查找指令</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">strings - -a -arch armv7 Unix可执行文件 | grep 关键字</span><br></pre></td></tr></table></figure>
+<p>-a、-arch、armv7这几个参数作用未知，此处只是做一个简单记录，以后有空再做学习。</p>
+<h1 id="otool"><a href="#otool" class="headerlink" title="otool"></a>otool</h1><p>跟strings一样，需要先找到Unix可执行文件，然后运行指令。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">otool -L Unix可执行文件</span><br></pre></td></tr></table></figure>
+<p>会打印出工程中用到的系统库，我尝试的结果是只有系统库，可以在打印结果中检查是否引入了私有库。</p>
+<h1 id="nm"><a href="#nm" class="headerlink" title="nm"></a>nm</h1><p>跟strings一样，需要先找到Unix可执行文件，然后运行指令。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nm Unix可执行文件 | grep 关键字</span><br></pre></td></tr></table></figure>
+<p>会打印关键字对应的方法调用的位置等，未仔细研究，暂且做记录。</p>
+<h1 id="检查私有API的开源库"><a href="#检查私有API的开源库" class="headerlink" title="检查私有API的开源库"></a>检查私有API的开源库</h1><p>查资料过程中，发现一个开源库iOS-private-api-checker，可以用来检查app是否使用了私有API，并定位调用位置。</p>
+<p>进入开源库的GitHub界面，显示“Deprecated”状态，最终测试结果，不能检测出私有API的问题，不知道是否我的配置有问题。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>在查找“定位调用私有API位置的方法”的过程，发现大多数文章的作者通过grep的方式就可以定位到问题所在。我之所以查找了其他工具的使用方法，是因为我用grep的方式没有查找到问题，最终花了很多时间来查找问题，结果是让人很无奈。<br> 原因竟然是提交审核的包跟我查找问题的包不是同一份代码，最后用提交审核对应的工程马上就定位到问题了，工作中很多时候，一个异常查找很久没有定位到问题的时候，需要跳出来，考虑一下是否是源头出了问题。</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://github.com/xushuanghui/2020/12/30/事件传递与响应者链/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -320,7 +472,6 @@
 <li><p>hitTest 怎么工作的？</p>
 </li>
 </ul>
-<p>  <img src="https://i.loli.net/2021/01/04/WeafExlQ4bGXZtr.png" alt="2021-01-04-4.38.32.png"></p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2020/12/30/事件传递与响应者链/#more" rel="contents">
@@ -994,8 +1145,7 @@
 
       
         
-          
-            <ol>
+          <ol>
 <li>下面代码执行 ⌘+R 后会 Compile Error 、Runtime Crash 或者 NSLog 输出？</li>
 <li>如果 [(__bridge id)obj speak]; 能调用成功，输出什么？</li>
 </ol>
@@ -1008,94 +1158,13 @@
 <li>为什么 self.name 是ViewController对象？</li>
 </ol>
 <p>下面我们仔细分析一下。</p>
-<h2 id="2-分析"><a href="#2-分析" class="headerlink" title="2. 分析"></a>2. 分析</h2><h3 id="2-1-为什么可以发消息？"><a href="#2-1-为什么可以发消息？" class="headerlink" title="2.1 为什么可以发消息？"></a>2.1 为什么可以发消息？</h3><ul>
-<li>第一步</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">id cls = [Speaker class]; // 1</span><br></pre></td></tr></table></figure>
-<p>这一步获取到了Speaker的类对象，id表示将其转换为一个对象指针，实际类型为<code>struct objc_object *</code>。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">struct objc_object &#123;</span><br><span class="line">    Class _Nonnull isa  OBJC_ISA_AVAILABILITY;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">typedef struct objc_object *id;</span><br></pre></td></tr></table></figure>
-<p>而 [Speaker class] 的返回类型为Class，其实类型为<code>struct objc_class *</code>。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">typedef struct objc_class *Class;</span><br></pre></td></tr></table></figure>
-<p>虽然，我们写的类型为<code>struct objc_object *</code>，但其本质还是 <code>struct objc_class *</code>。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">id cls = [Speaker class];</span><br><span class="line">if (object_isClass(cls)) &#123;</span><br><span class="line">    NSLog(@&quot;object_isClass&quot;);</span><br><span class="line">&#125;</span><br><span class="line">// 输出</span><br><span class="line">object_isClass</span><br><span class="line">复制代码也就是说这一步拿到的 本质还是类对象。</span><br><span class="line">id cls = [Speaker class];</span><br><span class="line">[cls speak];</span><br><span class="line">// 直接发送消息，是会崩溃的</span><br><span class="line">+[Speaker speak]: unrecognized selector sent to class 0x106824f08</span><br></pre></td></tr></table></figure>
-<ul>
-<li>第二步、第三步</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">void *obj = &amp;cls; // 2</span><br></pre></td></tr></table></figure>
-<p><strong>这一步才是关键。</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">struct objc_object &#123;</span><br><span class="line">    Class _Nonnull isa  OBJC_ISA_AVAILABILITY;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>可以看到struct objc_object这个结构体的首字段是 isa 指向一个Class。</p>
-<p>也就是说，我们如果有一个指向Class的地址的指针，相当于这个对象就已经可以使用了。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">![2020-12-30-8.58.27.png](https://i.loli.net/2020/12/30/vfXLpJNrD4Och7s.png)@interface Speaker : NSObject</span><br><span class="line">@property (nonatomic, copy) NSString *name;</span><br><span class="line">- (void)speak;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation Speaker</span><br><span class="line">- (void)speak &#123;</span><br><span class="line">    NSLog(@&quot;speak&quot;);</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">struct my_object &#123;</span><br><span class="line">    Class isa;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">struct my_object *getObject() &#123;</span><br><span class="line">    // id cls = [Speaker class]; id类型的实质是一个指针，所以cls是一个指针</span><br><span class="line">    // void *obj = &amp;cls; 这里取cls的地址，相当于[Speaker class]现在被一个 指针 的 指针 所指向</span><br><span class="line">    // 下面 struct my_object * 是一个指针，isa 是一个也是一个指针</span><br><span class="line">    // 所以也等效于[Speaker class]现在被一个 指针 的 指针 所指向</span><br><span class="line">    struct my_object *obj = (struct my_object *)malloc(sizeof(struct my_object));</span><br><span class="line">    obj-&gt;isa = [Speaker class];</span><br><span class="line">    return obj;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    struct my_object *obj = getObject();</span><br><span class="line">    id obj1 = (__bridge id)obj;</span><br><span class="line">    [obj1 speak]; // 3</span><br><span class="line">    free(obj);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><img src="https://i.loli.net/2020/12/30/vfXLpJNrD4Och7s.png" alt="2020-12-30-8.58.27.png"></p>
-<p>我们可以看到，通过id类型转换obj1也被Xcode识别为了Speaker实例对象，而且我们调用 [obj1 speak] 也顺利输出了。</p>
-<p>相当于消息 objc_msgSend 执行过程中通过 obj1 顺利访问到了 isa 对象，在Speaker类中找到了speak实例方法，并成功调用。</p>
-<h3 id="2-2-为什么输出的name是ViewController实例对象？"><a href="#2-2-为什么输出的name是ViewController实例对象？" class="headerlink" title="2.2 为什么输出的name是ViewController实例对象？"></a>2.2 为什么输出的name是ViewController实例对象？</h3><h4 id="2-2-1-等价代码"><a href="#2-2-1-等价代码" class="headerlink" title="2.2.1 等价代码"></a>2.2.1 等价代码</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;UIKit/UIKit.h&gt;</span><br><span class="line">#import &lt;objc/runtime.h&gt;</span><br><span class="line"></span><br><span class="line">@interface Speaker : NSObject</span><br><span class="line">@property (nonatomic, copy) NSString *name;</span><br><span class="line">- (void)speak;</span><br><span class="line">@end</span><br><span class="line">@implementation Speaker</span><br><span class="line">- (void)speak &#123;</span><br><span class="line">    NSLog(@&quot;my name&apos;s %@&quot;, self.name);</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@interface ViewController : UIViewController</span><br><span class="line">@end</span><br><span class="line">@implementation ViewController</span><br><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    id cls = [Speaker class];</span><br><span class="line">    void *obj = &amp;cls;</span><br><span class="line">    [(__bridge id)obj speak];</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
-<p>我们将这个 ViewController.m 文件编译为 ViewController.cpp 来看一下。</p>
-<p>在 终端 中切换到 ViewController.m 所在目录，并输入以下命令：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xcrun -sdk iphoneos clang -arch arm64 -w -rewrite-objc -fobjc-arc -mios-version-min=8.0.0 -fobjc-runtime=ios-8.0.0 ViewController.m</span><br></pre></td></tr></table></figure>
-<p>执行完毕后我们可以在同一个目录下找到 ViewController.cpp 文件。</p>
-<p>打开 ViewController.cpp ，并搜索 ViewController_viewDidLoad 即可找到下面的方法：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">static void _I_ViewController_viewDidLoad(ViewController * self, SEL _cmd) &#123;</span><br><span class="line">    ((void (*)(__rw_objc_super *, SEL))(void *)objc_msgSendSuper)((__rw_objc_super)&#123;(id)self, (id)class_getSuperclass(objc_getClass(&quot;ViewController&quot;))&#125;, sel_registerName(&quot;viewDidLoad&quot;));</span><br><span class="line">    id cls = ((Class (*)(id, SEL))(void *)objc_msgSend)((id)objc_getClass(&quot;Speaker&quot;), sel_registerName(&quot;class&quot;));</span><br><span class="line">    void *obj = &amp;cls;</span><br><span class="line">    ((void (*)(id, SEL))(void *)objc_msgSend)((id)(__bridgeid)obj, sel_registerName(&quot;speak&quot;));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>看起来有点复杂，我们把非必要的格式转换去掉：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">static void _I_ViewController_viewDidLoad(ViewController * self, SEL _cmd) &#123;</span><br><span class="line">    objc_msgSendSuper((__rw_objc_super)&#123;self, class_getSuperclass(objc_getClass(&quot;ViewController&quot;))&#125;, sel_registerName(&quot;viewDidLoad&quot;)); // 1</span><br><span class="line">    id cls = objc_msgSend(objc_getClass(&quot;Speaker&quot;), sel_registerName(&quot;class&quot;)); // 2</span><br><span class="line">    void *obj = &amp;cls; // 3</span><br><span class="line">    objc_msgSend(obj, sel_registerName(&quot;speak&quot;)); // 4</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>可以看到：</p>
-<ul>
-<li>对应 [super viewDidLoad]</li>
-<li>对应 id cls = [Speaker class];</li>
-<li>对应 void *obj = &cls;</li>
-<li>对应 [(__bridge id)obj speak];</li>
-</ul>
-<p>objc_msgSend 会传入两个隐式参数self和_cmd，想必大家已经很熟悉了。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">objc_msgSend(void /* id self, SEL op, ... */ )</span><br><span class="line">    OBJC_AVAILABLE(10.0, 2.0, 9.0, 1.0, 2.0);</span><br><span class="line"></span><br><span class="line">objc_msgSendSuper(void /* struct objc_super *super, SEL op, ... */ )</span><br><span class="line">    OBJC_AVAILABLE(10.0, 2.0, 9.0, 1.0, 2.0);</span><br></pre></td></tr></table></figure>
-<p>而 objc_msgSendSuper 需要传入另一个结构体 <code>struct objc_super *</code>。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">/// Specifies the superclass of an instance.</span><br><span class="line">struct objc_super &#123;</span><br><span class="line">    /// Specifies an instance of a class.</span><br><span class="line">    __unsafe_unretained _Nonnull id receiver;</span><br><span class="line"></span><br><span class="line">    /// Specifies the particular superclass of the instance to message.</span><br><span class="line">#if !defined(__cplusplus)  &amp;&amp;  !__OBJC2__</span><br><span class="line">    /* For compatibility with old objc-runtime.h header */</span><br><span class="line">    __unsafe_unretained _Nonnull Class class;</span><br><span class="line">#else</span><br><span class="line">    __unsafe_unretained _Nonnull Class super_class;</span><br><span class="line">#endif</span><br><span class="line">    /* super_class is the first class to search */</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p><code>{self, class_getSuperclass(objc_getClass(&quot;ViewController&quot;))}</code> 实际上就是在初始化一个struct objc_super结构体。</p>
-<p>知道这些之后，再阅读上面的代码就没有什么难度了。</p>
-<h4 id="2-2-2-参数顺序"><a href="#2-2-2-参数顺序" class="headerlink" title="2.2.2 参数顺序"></a>2.2.2 参数顺序</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">void sum(NSNumber *a, NSNumber *b) &#123;</span><br><span class="line">    NSLog(@&quot;a地址 = %p&quot;, &amp;a);</span><br><span class="line">    NSLog(@&quot;b地址 = %p&quot;, &amp;b);</span><br><span class="line">    printf(&quot;%d&quot;, a.intValue + b.intValue);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    sum(@(1), @(2));</span><br><span class="line">    NSNumber *c = @(4);</span><br><span class="line">    NSLog(@&quot;c地址 = %p&quot;, &amp;c);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>我们在给函数传入参数时，参数会作为自动变量入栈 ：</p>
-<p><img src="https://i.loli.net/2020/12/30/Mm6yB5NUKei1Gu7.png" alt="2020-12-30-8.58.19.png"></p>
-<p>而且我们可以看到入栈的顺序是a先入栈，b后入栈，因为 栈从高地址到低地址分配内存 。</p>
-<p>但是在初始化一个结构体的时候，这个顺序是相反的：</p>
-<p><img src="https://i.loli.net/2020/12/30/vfXLpJNrD4Och7s.png" alt="2020-12-30-8.58.27.png"></p>
-<p>我们看到 two_number tn = {@(1), @(2)}; 先传入的是1后传入的2，但实际情况是2先入栈，1后入栈。</p>
-<p>按照上面2条规则，下面代码第5步之前的变量入栈的顺序应该是：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">static void _I_ViewController_viewDidLoad(ViewController * self, SEL _cmd) &#123; // 1</span><br><span class="line">    objc_msgSendSuper((__rw_objc_super)&#123;self, class_getSuperclass(objc_getClass(&quot;ViewController&quot;))&#125;, sel_registerName(&quot;viewDidLoad&quot;)); // 2</span><br><span class="line">    id cls = objc_msgSend(objc_getClass(&quot;Speaker&quot;), sel_registerName(&quot;class&quot;)); // 3</span><br><span class="line">    void *obj = &amp;cls; // 4</span><br><span class="line">    objc_msgSend(obj, sel_registerName(&quot;speak&quot;)); // 5</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li><p>self、_cmd为函数的隐式参数，依次先入栈。</p>
-</li>
-<li><p>objc_msgSendSuper 初始化了一个结构体，这个结构体的参数会入栈。</p>
-<p>又因为参数入栈是从右到左的顺序入栈：</p>
-</li>
-<li><ul>
-<li>class_getSuperclass(objc_getClass(“ViewController”))</li>
-<li>self后入栈</li>
-</ul>
-</li>
-<li><p>cls本地变量赋值为Speaker类，最后入栈</p>
-</li>
-</ul>
-<p>那么入栈的顺序为self、_cmd、class_getSuperclass(objc_getClass(“ViewController”))、self、Speaker类。下面我们验证一下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">@interface Speaker : NSObject</span><br><span class="line">@property (nonatomic, copy) NSString *name;</span><br><span class="line">- (void)speak;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation Speaker</span><br><span class="line">- (void)speak &#123;</span><br><span class="line">    NSLog(@&quot;Speaker self: %p, _name: %p&quot;, self, &amp;_name);</span><br><span class="line">    NSLog(@&quot;Speaker&apos;s name: %@&quot;, self.name);</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation ViewController</span><br><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    id cls = [Speaker class]; // 1</span><br><span class="line">    void *obj = &amp;cls; // 2</span><br><span class="line">    NSLog(@&quot;栈区变量&quot;);</span><br><span class="line">    void *start = (void *)&amp;self;</span><br><span class="line">    void *end = (void *)&amp;obj;</span><br><span class="line">    long count = (start - end) / 0x8;</span><br><span class="line">    for (long i = 0; i &lt; count; i++) &#123;</span><br><span class="line">        void *address = start - 0x8 * i;</span><br><span class="line">        if (i == 1) &#123;</span><br><span class="line">            NSLog(@&quot;%p: %s&quot;, address, *(char **)(address));</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            NSLog(@&quot;%p: %@&quot;, address, *(void **)address);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    NSLog(@&quot;obj speak&quot;);</span><br><span class="line">    [(__bridge id)obj speak]; // 3</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br><span class="line">// 打印</span><br><span class="line">Demo[32768:1105890] 栈区变量</span><br><span class="line">Demo[32768:1105890] 0x7ffeec17c648: &lt;ViewController: 0x7fb445607ee0&gt;</span><br><span class="line">Demo[32768:1105890] 0x7ffeec17c640: viewDidLoad</span><br><span class="line">Demo[32768:1105890] 0x7ffeec17c638: ViewController //这里比较怪</span><br><span class="line">Demo[32768:1105890] 0x7ffeec17c630: &lt;ViewController: 0x7fb445607ee0&gt;</span><br><span class="line">Demo[32768:1105890] 0x7ffeec17c628: Speaker</span><br><span class="line">Demo[32768:1105890] obj speak</span><br><span class="line">Demo[32768:1105890] Speaker self: 0x7ffeec17c628, _name: 0x7ffeec17c630</span><br><span class="line">Demo[32768:1105890] Speaker&apos;s name: &lt;ViewController: 0x7fb445607ee0&gt;</span><br></pre></td></tr></table></figure>
-<p>从输出可以看到，栈区的打印顺序和我们的分析基本吻合。<br>下面我们看一下为什么Speaker实例对象的 self.name 访问到的是ViewController实例对象。</p>
-<ul>
-<li>Speaker实例对象，如果我们通过 [[Speaker alloc] init] 初始化的话，会在堆区分配内存。但现在，我们是使用栈区指针指向了Speaker类对象地址，”伪装”成了一个Speaker实例对象，所以传入的self值为栈区的地址：0x7ffeec17c628 。</li>
-<li>从上面的输出我们可以看到，name属性的实例变量_name在Speaker实例对象 self + 0x8 的地址，即 0x7ffeec17c630 。</li>
-<li>根据输出_name实例变量访问的地址 0x7ffeec17c630 ，找到栈区对应的数据 0x7ffeec17c630: <code>&lt;ViewController: 0x7fb445607ee0&gt;</code> ，所以输出为 Speaker’s name: <code>&lt;ViewController: 0x7fb445607ee0&gt;</code> 。</li>
-</ul>
-<h2 id="3-总结"><a href="#3-总结" class="headerlink" title="3. 总结"></a>3. 总结</h2><p>通过这个面试题我们得出了一下结论：</p>
-<ul>
-<li>Objective-C中的对象是一个指向class_object地址的变量，即 id obj = &amp;class_object</li>
-<li>对象的实例变量 void *ivar = &amp;obj + offset(N)</li>
-</ul>
-<p>但这里还有一个疑问：</p>
-<p>我们看到直接调用 [super viewDidLoad]; ，栈区的第3个变量为ViewController类。</p>
-<p>但根据我们用Clang重写的代码 [super viewDidLoad]; 实现做替换：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    ((void (*)(struct objc_super *, SEL))(void *)objc_msgSendSuper)(&amp;((struct objc_super)&#123;(id)self, (id)class_getSuperclass(objc_getClass(&quot;ViewController&quot;))&#125;), sel_registerName(&quot;viewDidLoad&quot;));</span><br><span class="line">    </span><br><span class="line">    id cls = [Speaker class]; // 1</span><br><span class="line">    void *obj = &amp;cls; // 2</span><br><span class="line">    NSLog(@&quot;栈区变量&quot;);</span><br><span class="line">    void *start = (void *)&amp;self;</span><br><span class="line">    void *end = (void *)&amp;obj;</span><br><span class="line">    long count = (start - end) / 0x8;</span><br><span class="line">    for (long i = 0; i &lt; count; i++) &#123;</span><br><span class="line">        void *address = start - 0x8 * i;</span><br><span class="line">        if (i == 1) &#123;</span><br><span class="line">            NSLog(@&quot;%p: %s&quot;, address, *(char **)(address));</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            NSLog(@&quot;%p: %@&quot;, address, *(void **)address);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    NSLog(@&quot;obj speak&quot;);</span><br><span class="line">    [(__bridge id)obj speak]; // 3</span><br><span class="line">&#125;</span><br><span class="line">// 输出</span><br><span class="line">Demo[33008:1114325] 栈区变量</span><br><span class="line">Demo[33008:1114325] 0x7ffee4983648: &lt;ViewController: 0x7f9e0bf07fd0&gt;</span><br><span class="line">Demo[33008:1114325] 0x7ffee4983640: viewDidLoad</span><br><span class="line">Demo[33008:1114325] 0x7ffee4983638: UIViewController // 这里符合预期</span><br><span class="line">Demo[33008:1114325] 0x7ffee4983630: &lt;ViewController: 0x7f9e0bf07fd0&gt;</span><br><span class="line">Demo[33008:1114325] 0x7ffee4983628: Speaker</span><br><span class="line">Demo[33008:1114325] obj speak</span><br><span class="line">Demo[33008:1114325] Speaker self: 0x7ffee4983628, _name: 0x7ffee4983630</span><br><span class="line">Demo[33008:1114325] Speaker&apos;s name: &lt;ViewController: 0x7f9e0bf07fd0&gt;</span><br></pre></td></tr></table></figure>
-<p>我们看到栈区的第3个变量为UIViewController类，这个输出是符合预期的，因为<code>class_getSuperclass(objc_getClass(&quot;ViewController&quot;))</code>我们获取的就是父类。</p>
-<p>但为什么直接调用 [super viewDidLoad]; ，栈区的第3个变量为ViewController类，这个问题难道是Xcode的Bug？？？</p>
-
-          
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/09/22/runtime-1/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1222,24 +1291,18 @@
 <p>其中 <code>/Users/hubery/dev_supports/flutter</code> 为 1.1 中下载下来的 flutter 路径</p>
 </blockquote>
 <p>然后在终端中输入 <code>flutter</code> 验证环境变量是否配置成功，出现如下类似信息时表示配置是OK的</p>
-<p><img src="https://raw.githubusercontent.com/HuberyYang/graphic/imgs/20201108/01.jpg" alt="img"></p>
-<h4 id="1-3-flutter-module-创建"><a href="#1-3-flutter-module-创建" class="headerlink" title="1.3 flutter module 创建"></a>1.3 flutter module 创建</h4><p>可以使用 Android Studio 创建 flutter module<img src="https://raw.githubusercontent.com/HuberyYang/graphic/imgs/20201108/02.jpg" alt="img"></p>
+<h4 id="1-3-flutter-module-创建"><a href="#1-3-flutter-module-创建" class="headerlink" title="1.3 flutter module 创建"></a>1.3 flutter module 创建</h4><p>可以使用 Android Studio 创建 flutter module</p>
 <p>或者在目标目录下使用命令创建 <code>flutter create -t module flutter_demo_module_ios</code></p>
 <p>创建的过程需要梯子从外网获取 flutter 相关资源。 这里推荐使用 Android Studio，操作方便，flutter 相关的插件支持的也挺好</p>
 <h4 id="1-4-Android-Studio-上-flutter-项目配置"><a href="#1-4-Android-Studio-上-flutter-项目配置" class="headerlink" title="1.4 Android Studio 上 flutter 项目配置"></a>1.4 Android Studio 上 flutter 项目配置</h4><ul>
 <li><p>使用 Android Studio 打开刚才创建的 module, 在 Project 栏可以看到项目目录结构</p>
-<p><img src="https://raw.githubusercontent.com/HuberyYang/graphic/imgs/20201108/03.jpg" alt="img"></p>
+<p>Android Studio –&gt; Preferences –&gt; Plugins –&gt; Marketplace 搜索 <code>Dart</code> 和 <code>Flutter</code> 插件并下载</p>
 </li>
-<li><p>Android Studio –&gt; Preferences –&gt; Plugins –&gt; Marketplace 搜索 <code>Dart</code> 和 <code>Flutter</code> 插件并下载</p>
-<p><img src="https://raw.githubusercontent.com/HuberyYang/graphic/imgs/20201108/04.jpg" alt="img"></p>
-</li>
-<li><p>配置 <code>Dart SDK path</code>, 设置入口为： Android Studio –&gt; Preferences –&gt; Languages &amp; Frameworks –&gt; Dart<img src="https://raw.githubusercontent.com/HuberyYang/graphic/imgs/20201108/05.jpg" alt="img"></p>
+<li><p>配置 <code>Dart SDK path</code>, 设置入口为： Android Studio –&gt; Preferences –&gt; Languages &amp; Frameworks –&gt; Dart</p>
 <p>配置完成后，Android Studio 工具栏就可以看到选择 devices 的选项啦，如果没出现可以重启 Android Studio</p>
 </li>
 </ul>
-<p><img src="https://raw.githubusercontent.com/HuberyYang/graphic/imgs/20201108/06.jpg" alt="img"></p>
 <h4 id="1-5-检查-flutter-运行环境是否可用"><a href="#1-5-检查-flutter-运行环境是否可用" class="headerlink" title="1.5 检查 flutter 运行环境是否可用"></a>1.5 检查 flutter 运行环境是否可用</h4><p>执行命令 <code>flutter doctor</code></p>
-<p><img src="https://raw.githubusercontent.com/HuberyYang/graphic/imgs/20201108/07.jpg" alt="img"></p>
 <h4 id="1-6-如果flutter中插件安装，可在-pubspec-yaml-文件中添加需要的插件"><a href="#1-6-如果flutter中插件安装，可在-pubspec-yaml-文件中添加需要的插件" class="headerlink" title="1.6 如果flutter中插件安装，可在 pubspec.yaml 文件中添加需要的插件"></a>1.6 如果flutter中插件安装，可在 pubspec.yaml 文件中添加需要的插件</h4><ul>
 <li>安装: <code>flutter pub get</code></li>
 <li>更新: <code>flutter pub upgrade</code></li>
@@ -1252,7 +1315,6 @@
 <p>如需了解 CocoaPods，请戳传送门：<a href="https://www.jianshu.com/p/6d51362b7e64" target="_blank" rel="noopener">CocoaPods 攻略</a></p>
 <h4 id="2-2-使用-Cocoapods-引入-flutter-module"><a href="#2-2-使用-Cocoapods-引入-flutter-module" class="headerlink" title="2.2 使用 Cocoapods 引入 flutter module"></a>2.2 使用 Cocoapods 引入 flutter module</h4><ul>
 <li><p>先执行编译该 <code>flutter_demo_module_ios</code> 项目, 终端执行 <code>flutter build ios --debug --no-codesign</code></p>
-<p><img src="https://raw.githubusercontent.com/HuberyYang/graphic/imgs/20201108/08.jpg" alt="img"></p>
 </li>
 <li><p>iOS 项目中 Podfile 文件中添加如下命令:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># Flutter</span><br><span class="line">flutter_application_path = &apos;../flutter_demo_module_ios/&apos;</span><br><span class="line">load File.join(flutter_application_path, &apos;.ios&apos;, &apos;Flutter&apos;, &apos;podhelper.rb&apos;)</span><br><span class="line">  	</span><br><span class="line">  	</span><br><span class="line">target &apos;FlutterDemoIOSApp&apos; do</span><br><span class="line">  # Comment the next line if you don&apos;t want to use dynamic frameworks</span><br><span class="line">  use_frameworks!</span><br><span class="line">  	</span><br><span class="line">  # Flutter</span><br><span class="line">  install_all_flutter_pods(flutter_application_path)</span><br><span class="line">  	</span><br><span class="line">  	</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
@@ -1395,23 +1457,6 @@
 <p>找到target中的Swift Complier - Search Path，在Import Paths项中添加$(inherited)</p>
 <p>重新pod，消除警告后，即可使用Swift三方库.</p>
 <p>在cocoaPod更新到1.5之前，OC与Swift混编比较头疼的一个问题就是pod库的集成，历史原因这里就不赘述了语法混编</p>
-<h2 id="OC调用Swift"><a href="#OC调用Swift" class="headerlink" title="OC调用Swift"></a>OC调用Swift</h2><p>简单说下OC调用Swift需要注意的点：</p>
-<p>1.import $(SWIFT_MODULE_NAME)-Swift.h</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;OCAndSwift-Swift.h&quot;</span><br></pre></td></tr></table></figure>
-<p>2.调用Swift类时，Swift类必须继承自NSObject</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">class SwiftClass: NSObject &#123; var claseName = &quot;SwiftClass&quot;&#125;</span><br></pre></td></tr></table></figure>
-<p>3.调用Swift类的方法，属性时，Swift类的方法属性都必须加上@objc关键字</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@objc var retrainConfirmBlock: (() -&gt; Void)?@objc convenience init()</span><br></pre></td></tr></table></figure>
-<p>4.如果使用KVC，KVO等监听，需要对监听的属性加上dynamic关键字，因为Swift并不是动态派发的语言，dynamic关键字会让编译器进行动态分发而不是静态分发.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@objc dynamic var orderNumber: NSNumber?</span><br></pre></td></tr></table></figure>
-<h2 id="Swift调用OC"><a href="#Swift调用OC" class="headerlink" title="Swift调用OC"></a>Swift调用OC</h2><p>Swift调用OC需要注意的点：</p>
-<p>1.$(SWIFT_MODULE_NAME)-Bridging-Header.h引入OC类头文件.</p>
-<p>2.OC类的相关属性及方法在Swift类中都可以直接调用，只需要注意Swift语法即可.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">UIView.animate(withDuration: TimeInterval(time), delay: 0, options: UIView.AnimationOptions.curveLinear, animations: &#123;// animate &#125;) &#123;(finish) in//finish&#125;</span><br></pre></td></tr></table></figure>
-<p>3.OC类的多数基本类型如NSArray，NSDictionay，NSError等对象(Object) 都可以通过 as? 和Swift中的基础类型Array，Dictionary，Error等值类型互换.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let contentAry = info[&quot;content&quot;] as? [String]titleLabel.text = title as? String ?? &quot;&quot;if let failedWith = error as? Error &#123;&#125;</span><br></pre></td></tr></table></figure>
-<p>4.OC宏的使用，Swift使用OC的宏，只能直接使用非常简单的值类型宏，对于复杂的宏方法则需要自己重写一个全局方法替代，全局静态常量可以直接使用.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#define kExpireTime 60  // √#define sharedAppDelegate ((AppDelegate *)([UIApplication sharedApplication].delegate)) // X</span><br></pre></td></tr></table></figure>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2020/08/04/OC接入swift/#more" rel="contents">
@@ -1578,178 +1623,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://github.com/xushuanghui/2019/11/05/动态库与静态库/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="xushuanghui">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="xushuanghui">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/11/05/动态库与静态库/" itemprop="url">动态库与静态库</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-11-05T17:25:43+08:00">
-                2019-11-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h4 id="dymanic-framework原因"><a href="#dymanic-framework原因" class="headerlink" title="dymanic framework原因"></a>dymanic framework原因</h4><p>在iOS8以前,苹果只允许发布静态库,当然cocoapods只支持静态库,但是在iOS8苹果推出了APP extension的概念,可以对项目进行扩展,感兴趣的可以看<a href="https://developer.apple.com/library/content/documentation/General/Conceptual/ExtensibilityPG/index.html" target="_blank" rel="noopener">APP extension</a>.<br> 因为APP extension和主项目是两个独立的进程,为了共享代码,苹果允许我们创建动态库,即<code>dynamic framework</code>.</p>
-<h4 id="swift第三方库"><a href="#swift第三方库" class="headerlink" title="swift第三方库"></a>swift第三方库</h4><p>在swift语言日益优化的前提下,我们想要进行项目swift化,但是在Xcode 6.0 Beta 4的 Release Notes 中，可以找到这句话：<br> <code>Xcode does not support building `</code>static<code></code>libraries that include Swift code. (17181019)`</p>
-<h4 id="动态库导致的static-library报错"><a href="#动态库导致的static-library报错" class="headerlink" title="动态库导致的static library报错"></a>动态库导致的static library报错</h4><p>看了上面的原因,你会问pod直接使用动态库不就好了,但是对于pod来说,有这么几个问题</p>
-<ul>
-<li>包含静态库报错<br> <code>The &#39;xxx&#39; target has transitive dependencies that include static binaries</code></li>
-<li>动态库不能依赖静态库</li>
-</ul>
-<p>ok,介绍完历史原因,我们继续看,在讲解适配前,先了解几个概念.</p>
-<h1 id="基础介绍"><a href="#基础介绍" class="headerlink" title="基础介绍"></a>基础介绍</h1><p>项目都使用cocoapods进行第三方库的管理,pod可以实现依赖管理,版本控制等功能,对于主项目X依赖A,A内部A-&gt;B,A-&gt;C,B→D,这类的依赖情况,主项目只需要引入A,在安装时就会检测其他的依赖pod是否存在,不存在进行安装.</p>
-<p>pod的管理,使得项目中同一类的库只存在一份,cocoapods的项目可以<strong>静态库</strong> <strong>动态库</strong>二选其一,关于这两种的区别下面会做详细解释</p>
-<p>默认使用静态库管理,如果想改为动态,需要在podfile内部添加use_frameworks!字段,该字段告诉pod,使用框架的方式,安装和管理第三方库</p>
-<p>静态库不能包含swift文件,pod将第三方编译为static library,不能支持swift语言,新版的改为了framework的形式,下面介绍library和framework的区别.</p>
-<h1 id="library和framework"><a href="#library和framework" class="headerlink" title="library和framework"></a>library和framework</h1><p><strong>library</strong>仅能包含编译后的代码,即.a文件,不能包含其他的资源文件.</p>
-<p>但是我们封装的第三方库,有时需要包含.h文件,.nib文件,图片,文档扥g</p>
-<p><strong>framework</strong>可以包含以上所有类型.且支持包含swift代码.</p>
-<p><strong>framework</strong>支持iOS8以后,而static library可以追溯到iOS6.</p>
-<p>由于 iOS 的沙盒机制,自己创建的 Framework 和系统Framework 不同,App 中使用的 Framework 运行在沙盒里,而不是系统中.每个 App 都只能用自己对应签名的动态库,做不到多个 App 使用一个动态库</p>
-<h1 id="区别总结"><a href="#区别总结" class="headerlink" title="区别总结"></a>区别总结</h1><p>动态库和静态库的区别如下</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>动态库</th>
-<th>静态库</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>命名空间</td>
-<td>有单独的命名空间,不同库同名文件不会冲突 使用import&lt;XXX/xxx.h&gt;的方式引入</td>
-<td>没有单独命名空间,同名文件冲突 引入方式import”xxx.h”</td>
-</tr>
-<tr>
-<td>加载时机</td>
-<td>在启动时加载,加载时间较长</td>
-<td>构建时加载</td>
-</tr>
-<tr>
-<td>依赖关系</td>
-<td>可以依赖动态库,不能依赖静态库</td>
-<td>可以依赖动态库和静态库</td>
-</tr>
-<tr>
-<td>是否能使用swift</td>
-<td>可以包含swift文件</td>
-<td>在cocoapods1.4.0之后,可以使用use_framework!的方式包含swift文件 framework支持static_framework</td>
-</tr>
-</tbody>
-</table>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/11/05/动态库与静态库/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1800,7 +1673,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-count">26</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>

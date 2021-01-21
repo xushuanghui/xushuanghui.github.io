@@ -86,19 +86,10 @@
 <meta property="og:site_name" content="xushuanghui">
 <meta property="og:description" content="1. flutter module 创建与配置1.1 下载 flutter 基础包从 github 下载代码 git clone -b beta https//github.com/flutter/flutter.git 但是 github 可能会很慢，可以从码云上下 git clone https://gitee.com/mirrors/Flutter.git 1.2 配置 flutter 环境">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="https://raw.githubusercontent.com/HuberyYang/graphic/imgs/20201108/01.jpg">
-<meta property="og:image" content="https://raw.githubusercontent.com/HuberyYang/graphic/imgs/20201108/02.jpg">
-<meta property="og:image" content="https://raw.githubusercontent.com/HuberyYang/graphic/imgs/20201108/03.jpg">
-<meta property="og:image" content="https://raw.githubusercontent.com/HuberyYang/graphic/imgs/20201108/04.jpg">
-<meta property="og:image" content="https://raw.githubusercontent.com/HuberyYang/graphic/imgs/20201108/05.jpg">
-<meta property="og:image" content="https://raw.githubusercontent.com/HuberyYang/graphic/imgs/20201108/06.jpg">
-<meta property="og:image" content="https://raw.githubusercontent.com/HuberyYang/graphic/imgs/20201108/07.jpg">
-<meta property="og:image" content="https://raw.githubusercontent.com/HuberyYang/graphic/imgs/20201108/08.jpg">
-<meta property="og:updated_time" content="2021-01-05T09:34:58.375Z">
+<meta property="og:updated_time" content="2021-01-05T09:40:11.198Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="iOS接入flutter">
 <meta name="twitter:description" content="1. flutter module 创建与配置1.1 下载 flutter 基础包从 github 下载代码 git clone -b beta https//github.com/flutter/flutter.git 但是 github 可能会很慢，可以从码云上下 git clone https://gitee.com/mirrors/Flutter.git 1.2 配置 flutter 环境">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/HuberyYang/graphic/imgs/20201108/01.jpg">
 
 
 
@@ -318,24 +309,18 @@
 <p>其中 <code>/Users/hubery/dev_supports/flutter</code> 为 1.1 中下载下来的 flutter 路径</p>
 </blockquote>
 <p>然后在终端中输入 <code>flutter</code> 验证环境变量是否配置成功，出现如下类似信息时表示配置是OK的</p>
-<p><img src="https://raw.githubusercontent.com/HuberyYang/graphic/imgs/20201108/01.jpg" alt="img"></p>
-<h4 id="1-3-flutter-module-创建"><a href="#1-3-flutter-module-创建" class="headerlink" title="1.3 flutter module 创建"></a>1.3 flutter module 创建</h4><p>可以使用 Android Studio 创建 flutter module<img src="https://raw.githubusercontent.com/HuberyYang/graphic/imgs/20201108/02.jpg" alt="img"></p>
+<h4 id="1-3-flutter-module-创建"><a href="#1-3-flutter-module-创建" class="headerlink" title="1.3 flutter module 创建"></a>1.3 flutter module 创建</h4><p>可以使用 Android Studio 创建 flutter module</p>
 <p>或者在目标目录下使用命令创建 <code>flutter create -t module flutter_demo_module_ios</code></p>
 <p>创建的过程需要梯子从外网获取 flutter 相关资源。 这里推荐使用 Android Studio，操作方便，flutter 相关的插件支持的也挺好</p>
 <h4 id="1-4-Android-Studio-上-flutter-项目配置"><a href="#1-4-Android-Studio-上-flutter-项目配置" class="headerlink" title="1.4 Android Studio 上 flutter 项目配置"></a>1.4 Android Studio 上 flutter 项目配置</h4><ul>
 <li><p>使用 Android Studio 打开刚才创建的 module, 在 Project 栏可以看到项目目录结构</p>
-<p><img src="https://raw.githubusercontent.com/HuberyYang/graphic/imgs/20201108/03.jpg" alt="img"></p>
+<p>Android Studio –&gt; Preferences –&gt; Plugins –&gt; Marketplace 搜索 <code>Dart</code> 和 <code>Flutter</code> 插件并下载</p>
 </li>
-<li><p>Android Studio –&gt; Preferences –&gt; Plugins –&gt; Marketplace 搜索 <code>Dart</code> 和 <code>Flutter</code> 插件并下载</p>
-<p><img src="https://raw.githubusercontent.com/HuberyYang/graphic/imgs/20201108/04.jpg" alt="img"></p>
-</li>
-<li><p>配置 <code>Dart SDK path</code>, 设置入口为： Android Studio –&gt; Preferences –&gt; Languages &amp; Frameworks –&gt; Dart<img src="https://raw.githubusercontent.com/HuberyYang/graphic/imgs/20201108/05.jpg" alt="img"></p>
+<li><p>配置 <code>Dart SDK path</code>, 设置入口为： Android Studio –&gt; Preferences –&gt; Languages &amp; Frameworks –&gt; Dart</p>
 <p>配置完成后，Android Studio 工具栏就可以看到选择 devices 的选项啦，如果没出现可以重启 Android Studio</p>
 </li>
 </ul>
-<p><img src="https://raw.githubusercontent.com/HuberyYang/graphic/imgs/20201108/06.jpg" alt="img"></p>
 <h4 id="1-5-检查-flutter-运行环境是否可用"><a href="#1-5-检查-flutter-运行环境是否可用" class="headerlink" title="1.5 检查 flutter 运行环境是否可用"></a>1.5 检查 flutter 运行环境是否可用</h4><p>执行命令 <code>flutter doctor</code></p>
-<p><img src="https://raw.githubusercontent.com/HuberyYang/graphic/imgs/20201108/07.jpg" alt="img"></p>
 <h4 id="1-6-如果flutter中插件安装，可在-pubspec-yaml-文件中添加需要的插件"><a href="#1-6-如果flutter中插件安装，可在-pubspec-yaml-文件中添加需要的插件" class="headerlink" title="1.6 如果flutter中插件安装，可在 pubspec.yaml 文件中添加需要的插件"></a>1.6 如果flutter中插件安装，可在 pubspec.yaml 文件中添加需要的插件</h4><ul>
 <li>安装: <code>flutter pub get</code></li>
 <li>更新: <code>flutter pub upgrade</code></li>
@@ -348,7 +333,6 @@
 <p>如需了解 CocoaPods，请戳传送门：<a href="https://www.jianshu.com/p/6d51362b7e64" target="_blank" rel="noopener">CocoaPods 攻略</a></p>
 <h4 id="2-2-使用-Cocoapods-引入-flutter-module"><a href="#2-2-使用-Cocoapods-引入-flutter-module" class="headerlink" title="2.2 使用 Cocoapods 引入 flutter module"></a>2.2 使用 Cocoapods 引入 flutter module</h4><ul>
 <li><p>先执行编译该 <code>flutter_demo_module_ios</code> 项目, 终端执行 <code>flutter build ios --debug --no-codesign</code></p>
-<p><img src="https://raw.githubusercontent.com/HuberyYang/graphic/imgs/20201108/08.jpg" alt="img"></p>
 </li>
 <li><p>iOS 项目中 Podfile 文件中添加如下命令:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># Flutter</span><br><span class="line">flutter_application_path = &apos;../flutter_demo_module_ios/&apos;</span><br><span class="line">load File.join(flutter_application_path, &apos;.ios&apos;, &apos;Flutter&apos;, &apos;podhelper.rb&apos;)</span><br><span class="line">  	</span><br><span class="line">  	</span><br><span class="line">target &apos;FlutterDemoIOSApp&apos; do</span><br><span class="line">  # Comment the next line if you don&apos;t want to use dynamic frameworks</span><br><span class="line">  use_frameworks!</span><br><span class="line">  	</span><br><span class="line">  # Flutter</span><br><span class="line">  install_all_flutter_pods(flutter_application_path)</span><br><span class="line">  	</span><br><span class="line">  	</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
@@ -488,7 +472,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-count">26</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
