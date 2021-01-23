@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="iOS,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="名词解释先介绍一些和启动相关的名词。 Mach-OMach-O 是 iOS 系统不同运行时期可执行的文件的文件类型统称。主要分以下三类:  Executable - 可执行文件，是 App 中的主要二进制文件 Dylib - 动态库，在其他平台也叫 DSO 或者 DLL Bundle - 苹果平台特有的类型，是无法被连接的 Dylib。只能在运行时通过 dlopen() 加载  Mach-O 的基">
+<meta name="keywords" content="iOS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="优化app启动速度">
+<meta property="og:url" content="https://github.com/xushuanghui/2020/03/22/优化app启动速度/index.html">
+<meta property="og:site_name" content="xushuanghui">
+<meta property="og:description" content="名词解释先介绍一些和启动相关的名词。 Mach-OMach-O 是 iOS 系统不同运行时期可执行的文件的文件类型统称。主要分以下三类:  Executable - 可执行文件，是 App 中的主要二进制文件 Dylib - 动态库，在其他平台也叫 DSO 或者 DLL Bundle - 苹果平台特有的类型，是无法被连接的 Dylib。只能在运行时通过 dlopen() 加载  Mach-O 的基">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://i.loli.net/2021/01/23/UdWFSXmfPsquVt7.png">
+<meta property="og:image" content="https://i.loli.net/2021/01/23/Ot2WamfiK7jHcwS.png">
+<meta property="og:image" content="https://i.loli.net/2021/01/23/qPM7wQ2J3DWfhyL.png">
+<meta property="og:image" content="https://i.loli.net/2021/01/23/auR342AWPdGgoCQ.png">
+<meta property="og:image" content="https://i.loli.net/2021/01/23/pSZiUwWMomR2P4l.png">
+<meta property="og:image" content="https://i.loli.net/2021/01/23/j1FSiAJROEM2INn.png">
+<meta property="og:image" content="https://i.loli.net/2021/01/23/PyLlbhdJkYjN1n7.png">
+<meta property="og:updated_time" content="2021-01-23T06:49:54.414Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="优化app启动速度">
+<meta name="twitter:description" content="名词解释先介绍一些和启动相关的名词。 Mach-OMach-O 是 iOS 系统不同运行时期可执行的文件的文件类型统称。主要分以下三类:  Executable - 可执行文件，是 App 中的主要二进制文件 Dylib - 动态库，在其他平台也叫 DSO 或者 DLL Bundle - 苹果平台特有的类型，是无法被连接的 Dylib。只能在运行时通过 dlopen() 加载  Mach-O 的基">
+<meta name="twitter:image" content="https://i.loli.net/2021/01/23/UdWFSXmfPsquVt7.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://github.com/xushuanghui/2020/03/22/优化app启动速度/">
+
+
+
+
+
+  <title>优化app启动速度 | xushuanghui</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">xushuanghui</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://github.com/xushuanghui/2020/03/22/优化app启动速度/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xushuanghui">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xushuanghui">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">优化app启动速度</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-03-22T17:37:24+08:00">
+                2020-03-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="名词解释"><a href="#名词解释" class="headerlink" title="名词解释"></a>名词解释</h2><p>先介绍一些和启动相关的名词。</p>
+<h3 id="Mach-O"><a href="#Mach-O" class="headerlink" title="Mach-O"></a>Mach-O</h3><p>Mach-O 是 iOS 系统不同运行时期可执行的文件的文件类型统称。主要分以下三类:</p>
+<ul>
+<li><strong>Executable</strong> - 可执行文件，是 App 中的主要二进制文件</li>
+<li><strong>Dylib</strong> - 动态库，在其他平台也叫 DSO 或者 DLL</li>
+<li><strong>Bundle</strong> - 苹果平台特有的类型，是无法被连接的 Dylib。只能在运行时通过 dlopen() 加载</li>
+</ul>
+<p>Mach-O 的基本结构如下图所示，分为三个部分：</p>
+<p><img src="https://i.loli.net/2021/01/23/UdWFSXmfPsquVt7.png" alt="5.43.13.png"></p>
+<ul>
+<li><strong>Header</strong> 包含了 Mach-O 文件的基本信息，如 CPU 架构，文件类型，加载指令数量等</li>
+<li><strong>Load Commands</strong> 是跟在 Header 后面的加载命令区，包含文件的组织架构和在虚拟内存中的布局方式，在调用的时候知道如何设置和加载二进制数据</li>
+<li><strong>Data</strong> 包含 Load Commands 中需要的各个 Segment 的数据。</li>
+</ul>
+<p>绝大多数 Mach-O 文件包括以下三种 <strong>Segment</strong>：</p>
+<ul>
+<li><strong>__TEXT</strong> - 代码段，包括头文件、代码和常量。只读不可修改。</li>
+<li><strong>__DATA</strong> - 数据段，包括全局变量, 静态变量等。可读可写。</li>
+<li><strong>__LINKEDIT</strong> - 如何加载程序, 包含了方法和变量的元数据（位置，偏移量），以及代码签名等信息。只读不可修改。</li>
+</ul>
+<h3 id="Image"><a href="#Image" class="headerlink" title="Image"></a>Image</h3><p>指的是 Executable，Dylib 或者 Bundle 的一种。</p>
+<h3 id="Framework"><a href="#Framework" class="headerlink" title="Framework"></a>Framework</h3><p>有很多东西都叫做 Framework，但在本文中，Framework 指的是一个 dylib，它周围有一个特殊的目录结构来保存该 dylib 所需的文件。</p>
+<h3 id="虚拟内存（Virtual-Memory）"><a href="#虚拟内存（Virtual-Memory）" class="headerlink" title="虚拟内存（Virtual Memory）"></a>虚拟内存（Virtual Memory）</h3><p>虚拟内存是建立在物理内存和进程之间的中间层。是一个连续的逻辑地址空间，而且逻辑地址可以没有对应的实际物理内存地址，也可以让多个逻辑地址对应到一个物理内存地址上。</p>
+<h4 id="Page-Fault"><a href="#Page-Fault" class="headerlink" title="Page Fault"></a>Page Fault</h4><p>当进程访问一个没有对应物理地址的逻辑地址时，会发生 Page Fault</p>
+<h4 id="Lazy-Reading"><a href="#Lazy-Reading" class="headerlink" title="Lazy Reading"></a>Lazy Reading</h4><p>某个想要读取的页没有在内存中就会触发 Page Fault，系统通过调用 mmap() 函数读取指定页，这个过程叫做 Lazy Reading</p>
+<h4 id="COW（Copy-On-Write）"><a href="#COW（Copy-On-Write）" class="headerlink" title="COW（Copy-On-Write）"></a>COW（Copy-On-Write）</h4><p>当进程需要对某一页内容进行修改时，内核会把需要修改的部分先复制一份，然后再修改，并把逻辑地址重新映射到新的物理内存去。这个过程叫做 Copy-On-Write</p>
+<h4 id="Dirty-Page-amp-Clean-Page"><a href="#Dirty-Page-amp-Clean-Page" class="headerlink" title="Dirty Page &amp; Clean Page"></a>Dirty Page &amp; Clean Page</h4><p>Image 加载后，被修改过内容的 Page 叫做 Dirty Page，会包含着进程特定的信息。与之相对的叫 Clean Page，可以从磁盘重新生成。</p>
+<h4 id="共享内存（Share-RAM）"><a href="#共享内存（Share-RAM）" class="headerlink" title="共享内存（Share RAM）"></a>共享内存（Share RAM）</h4><p>当多个 Mach-O 都依赖同一个 Dylib（eg. UIKit）时，系统会让这几个 Mach-O 的调用 Dylib 的逻辑地址都指向同一块物理内存区域，从而实现内存共享。Dirty Page 为进程独有，不能被共享。</p>
+<h3 id="地址空间布局随机化（ASLR）"><a href="#地址空间布局随机化（ASLR）" class="headerlink" title="地址空间布局随机化（ASLR）"></a>地址空间布局随机化（ASLR）</h3><p>当 Image 加载到逻辑地址空间的时候，系统会利用 ASLR 技术，使得 Image 的起始地址总是随机的，以避免黑客通过起始地址 + 偏移量找到函数的地址</p>
+<p>当系统利用 ASLR 分配了随机地址后，从 0 到该地址的整个区间会被标记为不可访问，意味着不可读，不可写，不可被执行。这个区域就是 <code>__PAGEZERO</code> 段，它的大小在 32 位系统是 4KB+，而在 64 位系统是 4GB+</p>
+<h3 id="代码签名（Code-Sign）"><a href="#代码签名（Code-Sign）" class="headerlink" title="代码签名（Code Sign）"></a>代码签名（Code Sign）</h3><p>代码签名可以让 iOS 系统确保要被加载的 Image 的安全性，用 Code Sign 设置签名时，每页内容都会生成一个单独的加密散列值，并存储到 <code>__LINKEDIT</code> 中去，系统在加载时会校验每页内容确保没有被篡改。</p>
+<h3 id="dyld（dynamic-loader）"><a href="#dyld（dynamic-loader）" class="headerlink" title="dyld（dynamic loader）"></a>dyld（dynamic loader）</h3><p>dyld 是 iOS 上的二进制加载器，用于加载 Image。有不少人认为 dyld 只负责加载应用依赖的所有动态链接库，这个理解是错误的。dyld 工作的具体流程如下：</p>
+<p><img src="https://i.loli.net/2021/01/23/Ot2WamfiK7jHcwS.png" alt="5.46.09.png"></p>
+<p>参考：dyld 启动流程 [3]</p>
+<h4 id="Load-dylibs"><a href="#Load-dylibs" class="headerlink" title="Load dylibs"></a>Load dylibs</h4><p>dyld 在加载 Mach-O 之前会先解析 Header 和 Load Commands, 然后就知道了这个 Mach-O 所依赖的 dylibs，以此类推，通过递归的方式把全部需要的 dylib 都加载进来。</p>
+<p>一般来说，一个 App 所依赖的 dylib 在 100 - 400 左右，其中大多数都是系统的 dylib，因为有缓存和共享的缘故，读取速度比较高。</p>
+<h4 id="Fix-ups"><a href="#Fix-ups" class="headerlink" title="Fix-ups"></a>Fix-ups</h4><p>因为 ASLR 和 Code Sign 的原因，刚被加载进来的 dylib 都处于相对独立的状态，为了把它们绑定起来，需要经过一个 Fix-ups 过程。Fix-ups 主要有两种类型：Rebase 和 Bind。</p>
+<h4 id="PIC（Position-Independent-Code）"><a href="#PIC（Position-Independent-Code）" class="headerlink" title="PIC（Position Independent Code）"></a>PIC（Position Independent Code）</h4><p>因为代码签名的原因，dyld 无法直接修改指令，但是为了实现在运行时可以 Fix-ups，在 code gen 时，通过动态 PIC（Position Independent Code）技术，使本来因为代码签名限制不能再修改的代码，可以被加载到间接地址上。当要调用一个方法时，会先在 <code>__DATA</code> 段中建立一个指针指向这个方法，再通过这个指针实现间接调用。</p>
+<h4 id="Rebase"><a href="#Rebase" class="headerlink" title="Rebase"></a>Rebase</h4><p>Rebase 就是针对 “因为 ASLR 导致 Mach-O 在加载到内存中是一个随机的首地址” 这一个问题做一个数据修正的过程。会将内部指针地址都加上一个偏移量，偏移量的计算方法如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Slide = actual_address - preferred_address</span><br></pre></td></tr></table></figure>
+<p>所有需要 Rebase 的指针信息已经被编码到 <code>__LINKEDIT</code> 里。然后就是不断重复地对 <code>__DATA</code> 中需要 Rebase 的指针加上这个偏移量。这个过程中可能会不断发生 Page Fault 和 COW，从而导致 I/0 的性能损耗问题，不过因为 Rebase 处理的是连续地址，所以内核会预先读取数据，减少 I/O 的消耗。</p>
+<h4 id="Binding"><a href="#Binding" class="headerlink" title="Binding"></a>Binding</h4><p>Binding 就是对调用的外部符号进行绑定的过程。比如我们要使用到 <code>UITableView</code>，即符号 <code>_OBJC_CLASS_$_UITableView</code>, 但这个符号又不在 Mach-O 中，需要从 UIKit.framework 中获取，因此需要通过 Binding 把这个对应关系绑定到一起。</p>
+<p>在运行时，dyld 需要找到符号名对应的实现。而这需要很多计算，包括去符号表里找。找到后就会将对应的值记录到 <code>__DATA</code> 的那个指针里。Binding 的计算量虽然比 Rebasing 更多，但实际需要的 I/O 操作很少，因为之前 Rebasing 已经做过了。</p>
+<h4 id="dyld2-amp-dyld3"><a href="#dyld2-amp-dyld3" class="headerlink" title="dyld2 &amp; dyld3"></a>dyld2 &amp; dyld3</h4><p><img src="https://i.loli.net/2021/01/23/qPM7wQ2J3DWfhyL.png" alt="5.46.27.png"></p>
+<p>在 iOS 13 之前，所有的第三方 App 都是通过 dyld 2 来启动 App 的，主要过程如下：</p>
+<ul>
+<li>解析 Mach-O 的 Header 和 Load Commands，找到其依赖的库，并递归找到所有依赖的库</li>
+<li>加载 Mach-O 文件</li>
+<li>进行符号查找</li>
+<li>绑定和变基</li>
+<li>运行初始化程序</li>
+</ul>
+<p>上面的所有过程都发生在 App 启动时，包含了大量的计算和 I/O，所以苹果开发团队为了加快启动速度，在 WWDC2017 - 413 - App Startup Time: Past, Present, and Future[4] 上正式提出了 dyld3。</p>
+<p>dyld3 被分为了三个组件：</p>
+<p>一个进程外的 MachO 解析器</p>
+<ul>
+<li><ul>
+<li>预先处理了所有可能影响启动速度的 search path、@rpaths 和环境变量</li>
+<li>然后分析 Mach-O 的 Header 和依赖，并完成了所有符号查找的工作</li>
+<li>最后将这些结果创建成了一个启动闭包</li>
+<li>这是一个普通的 daemon 进程，可以使用通常的测试架构</li>
+</ul>
+</li>
+<li><p>一个进程内的引擎，用来运行启动闭包</p>
+</li>
+<li><ul>
+<li>这部分在进程中处理</li>
+<li>验证启动闭包的安全性，然后映射到 dylib 之中，再跳转到 main 函数</li>
+<li>不需要解析 Mach-O 的 Header 和依赖，也不需要符号查找。</li>
+</ul>
+</li>
+<li><p>一个启动闭包缓存服务</p>
+</li>
+<li><ul>
+<li>系统 App 的启动闭包被构建在一个 Shared Cache 中， 我们甚至不需要打开一个单独的文件</li>
+<li>对于第三方的 App，我们会在 App 安装或者升级的时候构建这个启动闭包。</li>
+<li>在 iOS、tvOS、watchOS 中，这这一切都是 App 启动之前完成的。在 macOS 上，由于有 Side Load App，进程内引擎会在首次启动的时候启动一个 daemon 进程，之后就可以使用启动闭包启动了。</li>
+</ul>
+</li>
+</ul>
+<p>dyld 3 把很多耗时的查找、计算和 I/O 的事前都预先处理好了，这使得启动速度有了很大的提升。</p>
+<h2 id="App-启动"><a href="#App-启动" class="headerlink" title="App 启动"></a>App 启动</h2><p>介绍完上面这一大堆名词之后，我们正式进入主题。</p>
+<h3 id="App-启动为什么这么重要？"><a href="#App-启动为什么这么重要？" class="headerlink" title="App 启动为什么这么重要？"></a>App 启动为什么这么重要？</h3><ul>
+<li>App 启动是和用户的第一个交互过程，所以要尽量缩短这个过程的时间，给用户一个良好的第一印象</li>
+<li>启动代表了你的代码的整体性能，如果启动的性能不好，其他部分的性能可能也不会太好</li>
+<li>启动会占用 CPU 和内存，从而影响系统性能和电池</li>
+</ul>
+<p>所以我们要好好优化启动时间。</p>
+<h3 id="启动类型"><a href="#启动类型" class="headerlink" title="启动类型"></a>启动类型</h3><p>App 的启动类型分为三类</p>
+<ul>
+<li><p><strong>Cold Launch</strong> 也就是冷启动，冷启动需要满足以下几个条件：</p>
+</li>
+<li><ul>
+<li>重启之后</li>
+<li>App 不在内存中</li>
+<li>没有相关的进程存在</li>
+</ul>
+</li>
+<li><p><strong>Warm Launch</strong> 也就是热启动，热启动需要满足以下几个条件：</p>
+</li>
+<li><ul>
+<li>App 刚被终止</li>
+<li>App 还没完全从内存中移除</li>
+<li>没有相关的进程存在</li>
+</ul>
+</li>
+<li><p><strong>Resume Launch</strong> 指的是被挂起的 App 继续的过程，需要满足以下几个条件：</p>
+</li>
+<li><ul>
+<li>App 被挂起</li>
+<li>App 还全部都在内存中X</li>
+<li>还存在相关的进程</li>
+</ul>
+</li>
+</ul>
+<h3 id="App-启动阶段"><a href="#App-启动阶段" class="headerlink" title="App 启动阶段"></a>App 启动阶段</h3><p>App 启动分为三个阶段</p>
+<p>初始化 App 的准备工作</p>
+<ul>
+<li>绘制第一帧 App 的准备工作及绘制（这里的第一帧并不是获取到数据之后的第一帧，可以是一张占位视图），这时候用户与 App 已经可以交互了，比如 tabbar 切换</li>
+<li>获取到页面的所有数据之后的完整的绘制第一帧页面</li>
+</ul>
+<p>在这个地方，苹果再次强调了一下，<strong>建议「用户从点击 App 图标到可以再次交互，也就是第二阶段结束」的时间最好在 400ms 以内</strong>。目前来看，大部分 App 都没有达到这个目标。</p>
+<p>下面，我们把上面三个阶段分成下面这 6 个部分，讲一下这几个阶段做了什么以及有什么可以优化的地方。</p>
+<p><img src="https://i.loli.net/2021/01/23/auR342AWPdGgoCQ.png" alt="5.46.38.png"></p>
+<h4 id="System-Interface"><a href="#System-Interface" class="headerlink" title="System Interface"></a>System Interface</h4><p>初始化 App 的准备工作，系统主要做了两个事情：Load dylibs 和 libSystem init</p>
+<p>在 2017 年苹果介绍过 dyld3 给系统 App 带来了多少优化，今年 dyld3 正式开发给开发者使用，这意味着 iOS 系统会将你热启动的运行时依赖给缓存起来。以达到减少启动时间的目的。这也就是提升 200% 的原因之一。</p>
+<p>视频中只说优化了热启动时间，理论上对于 iOS 系统来说 dyld3 应该还可以优化冷启动时间，所以不知道是因为给 iPad 增加了多任务功能的原因，还是没有把所有功能开放的原因，作者只提了热启动这个原因暂时还不太清楚。</p>
+<p>除此之外，在 Load dylibs 阶段，开发者还可以做以下优化：</p>
+<ul>
+<li>避免链接无用的 frameworks，在 Xcode 中检查一下项目中的「Linked Frameworks and Librares」部分是否有无用的链接。</li>
+<li>避免在启动时加载动态库，将项目的 Pods 以静态编译的方式打包，尤其是 Swift 项目，这地方的时间损耗是很大的。</li>
+<li>硬链接你的依赖项，这里做了缓存优化。</li>
+</ul>
+<p>也许有人会困惑是不是使用了 dyld3 了，我们就不需要做 Static Link 了，其实还是需要的，感兴趣的可以看一下 Static linking vs dyld3[5] 这篇文章，里面有一个详细的数据对比。</p>
+<p>libSystem init 部分，主要是加载一些优先级比较低的系统组件，这部分时间是一个固定的成本，所以我们开发人员不需要关心。</p>
+<h4 id="Static-Runtime-Initializaiton"><a href="#Static-Runtime-Initializaiton" class="headerlink" title="Static Runtime Initializaiton"></a>Static Runtime Initializaiton</h4><p>这个阶段主要是 Objective-C 和 Swift Runtime 的初始化，会调用所有的 <code>+load</code> 方法，将类的信息注册到 runtime 中。</p>
+<p>在这个阶段，原则上不建议开发者做任何事情，所以为了避免一些启动时间的损耗，你可以做以下几个事情：</p>
+<ul>
+<li>在 framework 开发时，公开专有的初始化 API</li>
+<li>减少在 <code>+load</code> 中做的事情</li>
+<li>使用 <code>initialize</code> 进行懒加载初始化工作</li>
+</ul>
+<h4 id="UIKit-Initializaiton"><a href="#UIKit-Initializaiton" class="headerlink" title="UIKit Initializaiton"></a>UIKit Initializaiton</h4><p>这个阶段主要做了两个事情：</p>
+<ul>
+<li>实例化 UIApplication 和 UIApplicationDelegate</li>
+<li>开始事件处理和系统集成</li>
+</ul>
+<p>所以这个阶段的优化也比较简单，你需要做两个事情：</p>
+<ul>
+<li>最大限度的减少 UIApplication 子类初始化时候的工作，更甚至与不子类化 UIApplication</li>
+<li>减少 UIApplicationDelegate 的初始化工作</li>
+</ul>
+<h4 id="Application-Initializaiton"><a href="#Application-Initializaiton" class="headerlink" title="Application Initializaiton"></a>Application Initializaiton</h4><p>这个阶段主要是生命周期方法的回调，也正是开发者最熟悉的部分。</p>
+<p>调用 UIApplicationDelegate 的 App 生命周期方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">application:willFinishLaunchingWithOptions:   application:didFinishLaunchingWithOptions:</span><br></pre></td></tr></table></figure>
+<p>和 UIApplicationDelegate 的 UI 生命周期方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">applicationDidBecomeActive:</span><br></pre></td></tr></table></figure>
+<p>同时，iOS 13 针对 UISceneDelegate 增加了新的回调：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scene:willConnectToSession:options:  sceneWillEnterForeground:  sceneDidBecomeActive:</span><br></pre></td></tr></table></figure>
+<p>也会在这个阶段调用。感兴趣的可以关注一下 Getting the Most out of Multitasking 这个 Session，暂时没有视频资源，怀疑是现场演示翻车了，所以没有把视频资源放出来。</p>
+<p>在这个阶段，开发者可以做的优化：</p>
+<ul>
+<li>推迟和启动时无关的工作</li>
+<li>Senens 之间共享资源</li>
+</ul>
+<h4 id="Fisrt-Frame-Render"><a href="#Fisrt-Frame-Render" class="headerlink" title="Fisrt Frame Render"></a>Fisrt Frame Render</h4><p>这个阶段主要做了创建、布局和绘制视图的工作，并把准备好的第一帧提交给渲染层渲染。会频繁调用以下几个函数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">loadView viewDidLoad  layoutSubviews</span><br></pre></td></tr></table></figure>
+<p>在这个阶段，开发者可以做的优化：</p>
+<ul>
+<li>减少视图层级，懒加载一些不需要的视图</li>
+<li>优化布局，减少约束</li>
+</ul>
+<h4 id="Extend"><a href="#Extend" class="headerlink" title="Extend"></a>Extend</h4><p>大部分 App 都会通过异步的方式获取数据，并最终呈现给用户。我们把这一部分称为 Extend。</p>
+<p>因为这一部分每个 App 的表现都不一样，所以苹果建议开发者使用 os_signpost 进行测量然后慢慢分析慢慢优化。</p>
+<h2 id="测量-App-启动时间"><a href="#测量-App-启动时间" class="headerlink" title="测量 App 启动时间"></a>测量 App 启动时间</h2><p>要找到启动过程中的问题，就要进行多次测量并前后比较。但是如果变量没有控制好，就会导致误差。</p>
+<p>所以为了保证测量的数据能够真实的反应问题，我们要减少不稳定性因素，保证在可控的相近的环境下进行测量。最后使用一致的结果来分析。</p>
+<h3 id="条件一致性"><a href="#条件一致性" class="headerlink" title="条件一致性"></a>条件一致性</h3><p>为了保证环境一致，我们可以做下面这几个事情:</p>
+<ul>
+<li>重启手机，并等待 2-3 分钟</li>
+<li>启用飞行模式或者使用模拟网络</li>
+<li>不使用或者不变更 iCloud 的账户</li>
+<li>使用 release 模式进行 build</li>
+<li>测量热启动时间</li>
+</ul>
+<p>iColud 账户切换会影响性能，所以不要切换账号或者不开启 iCloud。</p>
+<h3 id="测量注意点"><a href="#测量注意点" class="headerlink" title="测量注意点"></a>测量注意点</h3><ul>
+<li><p>尽可能的使用具有代表性的数据进行测试</p>
+<p>如果不使用具有代表性的数据进行测试，就会出现偏差</p>
+</li>
+<li><p>使用不同的新旧设备进行测试</p>
+</li>
+<li><p>最后你还可以使用 XCTest 来测试，多运行几次，取平均结果</p>
+</li>
+</ul>
+<p>关于使用 XCTest 测试启动时间的信息，可以看一下 WWDC2019 - 417 - Improving Battery Life and Performance[7]，但是我测试了一下，目前好像还有一部分 API 还没有开放出来，暂时还不能使用。</p>
+<h2 id="使用-Instruments-分析和优化-App-启动过程"><a href="#使用-Instruments-分析和优化-App-启动过程" class="headerlink" title="使用 Instruments 分析和优化 App 启动过程"></a>使用 Instruments 分析和优化 App 启动过程</h2><h3 id="优化方式"><a href="#优化方式" class="headerlink" title="优化方式"></a>优化方式</h3><p>苹果给了我们三个优化方式的建议，整体思想和前面提到的各个阶段的优化差不多</p>
+<h4 id="Minimize-Work"><a href="#Minimize-Work" class="headerlink" title="Minimize Work"></a>Minimize Work</h4><ul>
+<li>推迟与第一帧无关的工作</li>
+<li>从主线程移开阻塞工作</li>
+<li>减少内存使用量</li>
+</ul>
+<h4 id="Prioritize-Work"><a href="#Prioritize-Work" class="headerlink" title="Prioritize Work"></a>Prioritize Work</h4><ul>
+<li>定义好任务的优先级。</li>
+<li>利用好 GCD 来优化你的启动速度。</li>
+<li>让重要的事情保持优先</li>
+</ul>
+<p>更深入的了解有关 GCD 的内容，可以看一下 WWDC2017 - 706 - Modernizing Grand Central Dispatch Usage[8]</p>
+<h4 id="Optimize-Work"><a href="#Optimize-Work" class="headerlink" title="Optimize Work"></a>Optimize Work</h4><ul>
+<li>简化现有工作，比如只请求必要的数据。</li>
+<li>优化算法和数据结构</li>
+<li>缓存资源和计算</li>
+</ul>
+<h3 id="使用-Instruments-分析-App-启动过程"><a href="#使用-Instruments-分析-App-启动过程" class="headerlink" title="使用 Instruments 分析 App 启动过程"></a>使用 Instruments 分析 App 启动过程</h3><p>当知道如何优化之后，我们需要针对我们的启动过程进行分析。Xcode 11 的 Instruments 为此新增了一个 App launch 模板，让开发者可以更好的分析自己 App 的启动速度。</p>
+<p><img src="https://i.loli.net/2021/01/23/pSZiUwWMomR2P4l.png" alt="5.46.52.png"></p>
+<p>运行后可以看到各个阶段的具体时间，根据数据进行优化，还能看到耗时的函数调用。</p>
+<p><img src="https://i.loli.net/2021/01/23/j1FSiAJROEM2INn.png" alt="2.45.32.png"></p>
+<h2 id="监控线上用户-App-的启动"><a href="#监控线上用户-App-的启动" class="headerlink" title="监控线上用户 App 的启动"></a>监控线上用户 App 的启动</h2><p>Xcode 11 在 Xcode Organizer 新增了一个监控面板，在这个面板里面可以查看多个维度的用户数据，其中还包括平均启动时间。</p>
+<p><img src="https://i.loli.net/2021/01/23/PyLlbhdJkYjN1n7.png" alt="2.45.41.png"></p>
+<p>当你通过 Instruments 分析完你的启动过程，并做了大量优化之后，你就可以通过 Xcode Organizer 来分析你这次优化效果到底怎么样。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>今年苹果提的很多优化建议其实在早几年都已经说过一遍了，属于老生常谈了。但是值得点赞的是新出的 Instruments 的 App launch 和 Xcode Organizer 的性能监控。</p>
+<p>启动优化是一个需要经常反复做的事情，越早发现问题，越容易解决问题，如果你想给你的用户一个良好的第一印象，就赶快行动起来吧。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/iOS/" rel="tag"># iOS</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/12/16/build-blog/" rel="next" title="搭建博客">
+                <i class="fa fa-chevron-left"></i> 搭建博客
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/08/04/OC接入swift/" rel="prev" title="OC接入swift">
+                OC接入swift <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">xushuanghui</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#名词解释"><span class="nav-number">1.</span> <span class="nav-text">名词解释</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Mach-O"><span class="nav-number">1.1.</span> <span class="nav-text">Mach-O</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Image"><span class="nav-number">1.2.</span> <span class="nav-text">Image</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Framework"><span class="nav-number">1.3.</span> <span class="nav-text">Framework</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#虚拟内存（Virtual-Memory）"><span class="nav-number">1.4.</span> <span class="nav-text">虚拟内存（Virtual Memory）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Page-Fault"><span class="nav-number">1.4.1.</span> <span class="nav-text">Page Fault</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Lazy-Reading"><span class="nav-number">1.4.2.</span> <span class="nav-text">Lazy Reading</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#COW（Copy-On-Write）"><span class="nav-number">1.4.3.</span> <span class="nav-text">COW（Copy-On-Write）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Dirty-Page-amp-Clean-Page"><span class="nav-number">1.4.4.</span> <span class="nav-text">Dirty Page &amp; Clean Page</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#共享内存（Share-RAM）"><span class="nav-number">1.4.5.</span> <span class="nav-text">共享内存（Share RAM）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#地址空间布局随机化（ASLR）"><span class="nav-number">1.5.</span> <span class="nav-text">地址空间布局随机化（ASLR）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码签名（Code-Sign）"><span class="nav-number">1.6.</span> <span class="nav-text">代码签名（Code Sign）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dyld（dynamic-loader）"><span class="nav-number">1.7.</span> <span class="nav-text">dyld（dynamic loader）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Load-dylibs"><span class="nav-number">1.7.1.</span> <span class="nav-text">Load dylibs</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Fix-ups"><span class="nav-number">1.7.2.</span> <span class="nav-text">Fix-ups</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#PIC（Position-Independent-Code）"><span class="nav-number">1.7.3.</span> <span class="nav-text">PIC（Position Independent Code）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Rebase"><span class="nav-number">1.7.4.</span> <span class="nav-text">Rebase</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Binding"><span class="nav-number">1.7.5.</span> <span class="nav-text">Binding</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#dyld2-amp-dyld3"><span class="nav-number">1.7.6.</span> <span class="nav-text">dyld2 &amp; dyld3</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#App-启动"><span class="nav-number">2.</span> <span class="nav-text">App 启动</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#App-启动为什么这么重要？"><span class="nav-number">2.1.</span> <span class="nav-text">App 启动为什么这么重要？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动类型"><span class="nav-number">2.2.</span> <span class="nav-text">启动类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#App-启动阶段"><span class="nav-number">2.3.</span> <span class="nav-text">App 启动阶段</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#System-Interface"><span class="nav-number">2.3.1.</span> <span class="nav-text">System Interface</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Static-Runtime-Initializaiton"><span class="nav-number">2.3.2.</span> <span class="nav-text">Static Runtime Initializaiton</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#UIKit-Initializaiton"><span class="nav-number">2.3.3.</span> <span class="nav-text">UIKit Initializaiton</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Application-Initializaiton"><span class="nav-number">2.3.4.</span> <span class="nav-text">Application Initializaiton</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Fisrt-Frame-Render"><span class="nav-number">2.3.5.</span> <span class="nav-text">Fisrt Frame Render</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Extend"><span class="nav-number">2.3.6.</span> <span class="nav-text">Extend</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测量-App-启动时间"><span class="nav-number">3.</span> <span class="nav-text">测量 App 启动时间</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#条件一致性"><span class="nav-number">3.1.</span> <span class="nav-text">条件一致性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测量注意点"><span class="nav-number">3.2.</span> <span class="nav-text">测量注意点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用-Instruments-分析和优化-App-启动过程"><span class="nav-number">4.</span> <span class="nav-text">使用 Instruments 分析和优化 App 启动过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#优化方式"><span class="nav-number">4.1.</span> <span class="nav-text">优化方式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Minimize-Work"><span class="nav-number">4.1.1.</span> <span class="nav-text">Minimize Work</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Prioritize-Work"><span class="nav-number">4.1.2.</span> <span class="nav-text">Prioritize Work</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Optimize-Work"><span class="nav-number">4.1.3.</span> <span class="nav-text">Optimize Work</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用-Instruments-分析-App-启动过程"><span class="nav-number">4.2.</span> <span class="nav-text">使用 Instruments 分析 App 启动过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#监控线上用户-App-的启动"><span class="nav-number">5.</span> <span class="nav-text">监控线上用户 App 的启动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xushuanghui</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
