@@ -229,6 +229,293 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://github.com/xushuanghui/2019/09/02/编写cocoaPods插件/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xushuanghui">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xushuanghui">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/09/02/编写cocoaPods插件/" itemprop="url">编写cocoaPods插件</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-09-02T14:57:31+08:00">
+                2019-09-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>CocoaPods Plugins 是一个Ruby gem，你需要安装Ruby和CocoaPods来为你的插件开发做准备。<br>要开始开发一个新的插件，你还需要安装cocoapods-plugins :</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gem install cocoapods-plugins</span><br></pre></td></tr></table></figure>
+<p>为了演示和调试的目的，我们要先创建一个xcode工程，并且在其根目录下执行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git init</span><br><span class="line">pod init</span><br></pre></td></tr></table></figure>
+<p>将其初始化为一个git仓库，以及添加Podfile到该工程</p>
+<h3 id="创建CocoaPods-Plugins"><a href="#创建CocoaPods-Plugins" class="headerlink" title="创建CocoaPods Plugins"></a>创建CocoaPods Plugins</h3><p>运行下面的命令就可以生成一个插件模板工程</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod plugins create githooks</span><br></pre></td></tr></table></figure>
+<p>工程目录是这样的</p>
+<p><img src="/xushuanghui/2019/09/02/编写cocoaPods插件/1.png" alt="im"></p>
+<p>.gemspec文件是插件的主要配置文件。所有的spec字段都是自描述的(你可以查看我们的<a href="https://github.com/CocoaPods/cocoapods-plugins/blob/master/cocoapods-plugins.gemspec">cocoapods-plugins</a>)，但是我想指出一件事:</p>
+<blockquote>
+<p>默认情况下，spec.files是指向git仓库并引用其中的文件。但是如果您试图在git仓库中没有文件(还未进行版本控制)时构建gem，您将得到一个空的.gem文件，同时会没有任何警告或错误。我的建议是现在就将spec.files的值设置为Dir[‘ lib/*<em>/</em> ‘]，它将引用lib目录下的所有文件。</p>
+</blockquote>
+<p>替换其中spec.files这一行为</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">spec.files = Dir[<span class="string">'lib/**/*'</span>]</span><br></pre></td></tr></table></figure>
+<p>Gemfile会包含所需的全部gem依赖。查看<a href="http://bundler.io/man/gemfile.5.html" target="_blank" rel="noopener">Bundle Doc</a> 以获得更多信息<br>Rakefile包含测试所需要的引用，spec文件夹包含测试用例。有关Rake的更多信息，请访问<a href="https://github.com/ruby/rake">官方Rake repo</a>。<br>我们现在还不需要更改Gemfile和Rakefile，所以保持其原样。<br>lib是我们要使用的主文件夹。它包含构建.gem的所有ruby文件。<br>为了确保一切设置正确，运行下面的的命令:</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">gem</span> <span class="selector-tag">build</span> <span class="selector-tag">cocoapods-githooks</span><span class="selector-class">.gemspec</span></span><br></pre></td></tr></table></figure>
+<p>你将看到’Successfully built RubyGem’的成功消息，同时Cocoapods-githooks-0.0.1.gem 也将会出现在目录之下</p>
+<h3 id="实现插件"><a href="#实现插件" class="headerlink" title="实现插件"></a>实现插件</h3><p>Cocoapods-githooks这个插件我们只需要它做一件简单的事情：将项目的.git-hooks目录中的所有文件复制到.git/hooks/目录中，并在每次运行podinstall、pod update 或 pod githooks时执行这个操作。<br>为了实现这一点，我们将创建一个执行文件操作的类，并将其链接到 pre-install和post-install这两个CocoaPods钩子以及githooks命令。<br>在/lib/cocoapods-githooks中创建githooks-sync.rb文件<br>Require’cocoapods’和“fileutils”模块，并在CocoapodsGitHooks模块中使用同步方法创建GitHooksSync类。</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">require</span> <span class="string">'cocoapods'</span></span><br><span class="line"><span class="keyword">require</span> <span class="string">'fileutils'</span></span><br><span class="line"><span class="class"><span class="keyword">module</span> <span class="title">CocoapodsGitHooks</span></span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">GitHooksSync</span></span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">sync</span></span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>在复制git-hook之前，我们需要检查一些事情:<br>确保我们在git仓库中<br>确保.git-hooks目录存在<br>确保.git-hooks目录不是空的<br>我们可以通过在sync方法的开头添加下面的条件语句来实现这一点:</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> !File.directory?(<span class="string">".git"</span>)</span><br><span class="line">    Pod::UI.puts <span class="string">"Git repository not found"</span></span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="keyword">if</span> !File.directory?(<span class="string">".git-hooks"</span>)</span><br><span class="line">    Pod::UI.puts <span class="string">".git-hooks directory not found, nothing to sync"</span></span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="keyword">if</span> Dir[<span class="string">'.git-hooks/*'</span>].empty?</span><br><span class="line">    Pod::UI.puts <span class="string">".git-hooks directory is empty, nothing to sync"</span></span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>在这之后，我们检查hooks目录是否存在于.git中，如果不存在，创建它:</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> !File.directory?(<span class="string">".git/hooks"</span>)</span><br><span class="line">    FileUtils.mkdir <span class="string">".git/hooks"</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>现在我们准备将钩子从.git-hooks复制到.git/hooks:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FileUtils.cp_r(“.git-hooks/.”, “.git/hooks/”)</span><br></pre></td></tr></table></figure>
+<p>下一步是删除shell脚本文件扩展名(如果存在)使文件可执行:</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">path = <span class="string">".git/hooks/"</span></span><br><span class="line">Dir.open(path).each <span class="keyword">do</span> <span class="params">|p|</span></span><br><span class="line">    filename = File.basename(p, File.extname(p))</span><br><span class="line">    <span class="keyword">if</span> File.extname(p) == <span class="string">".sh"</span></span><br><span class="line">        FileUtils.mv(<span class="string">"<span class="subst">#&#123;path&#125;</span>/<span class="subst">#&#123;p&#125;</span>"</span>, <span class="string">"<span class="subst">#&#123;path&#125;</span>/<span class="subst">#&#123;filename&#125;</span>"</span>)</span><br><span class="line">    <span class="keyword">end</span>      </span><br><span class="line">    FileUtils.chmod(<span class="string">"+x"</span>, <span class="string">"<span class="subst">#&#123;path&#125;</span>/<span class="subst">#&#123;filename&#125;</span>"</span>)</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+<p>我们还添加了两个UI.puts 在同步方法的开始和结束处显示具有同步状态的系统通知。如果你遵循了上面所有的步骤，您得到的githook -sync.rb文件看起来如下所示:</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">require</span> <span class="string">'cocoapods'</span></span><br><span class="line"><span class="keyword">require</span> <span class="string">'fileutils'</span></span><br><span class="line"><span class="class"><span class="keyword">module</span> <span class="title">CocoapodsGitHooks</span></span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">GitHooksSync</span></span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">sync</span></span></span><br><span class="line">            Pod::UI.puts <span class="string">"Synchronizing git hooks"</span></span><br><span class="line">            <span class="keyword">if</span> !File.directory?(<span class="string">".git"</span>)</span><br><span class="line">                Pod::UI.puts <span class="string">"Git repository not found"</span></span><br><span class="line">                <span class="keyword">return</span></span><br><span class="line">            <span class="keyword">end</span></span><br><span class="line">            <span class="keyword">if</span> !File.directory?(<span class="string">".git-hooks"</span>)</span><br><span class="line">                Pod::UI.puts <span class="string">".git-hooks folder not found, nothing to sync"</span></span><br><span class="line">                <span class="keyword">return</span></span><br><span class="line">            <span class="keyword">end</span></span><br><span class="line">            <span class="keyword">if</span> Dir[<span class="string">'.git-hooks/*'</span>].empty?</span><br><span class="line">                Pod::UI.puts <span class="string">".git-hooks folder is empty, nothing to sync"</span></span><br><span class="line">                <span class="keyword">return</span></span><br><span class="line">            <span class="keyword">end</span></span><br><span class="line">            <span class="keyword">if</span> !File.directory?(<span class="string">".git/hooks"</span>)</span><br><span class="line">                FileUtils.mkdir <span class="string">".git/hooks"</span></span><br><span class="line">            <span class="keyword">end</span></span><br><span class="line">            FileUtils.cp_r(<span class="string">".git-hooks/."</span>, <span class="string">".git/hooks/"</span>)</span><br><span class="line">            path = <span class="string">".git/hooks/"</span></span><br><span class="line">            Dir.open(path).each <span class="keyword">do</span> <span class="params">|p|</span></span><br><span class="line">                filename = File.basename(p, File.extname(p))</span><br><span class="line">                <span class="keyword">if</span> File.extname(p) == <span class="string">".sh"</span></span><br><span class="line">                    FileUtils.mv(<span class="string">"<span class="subst">#&#123;path&#125;</span>/<span class="subst">#&#123;p&#125;</span>"</span>, <span class="string">"<span class="subst">#&#123;path&#125;</span>/<span class="subst">#&#123;filename&#125;</span>"</span>)</span><br><span class="line">                <span class="keyword">end</span>      </span><br><span class="line">                FileUtils.chmod(<span class="string">"+x"</span>, <span class="string">"<span class="subst">#&#123;path&#125;</span>/<span class="subst">#&#123;filename&#125;</span>"</span>)</span><br><span class="line">            <span class="keyword">end</span></span><br><span class="line">            Pod::UI.puts <span class="string">"Git hooks synchronized"</span></span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/09/02/编写cocoaPods插件/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://github.com/xushuanghui/2019/08/30/CocoaPods忽略三方组件编译警告/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xushuanghui">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xushuanghui">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/08/30/CocoaPods忽略三方组件编译警告/" itemprop="url">cocoaPods忽略警告</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-08-30T20:23:11+08:00">
+                2019-08-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>为了减少组件化后的工程集成时间，我们一般都会将三方库放到私有 GitLab 中，这也有利于开发者根据自家业务，对三方库进行定制包装。但是如果有些三方库更新较慢，以至于让新版本的 Xcode 产生很多警告，这就比较烦了，因为大部分情况下，更改三方库并不是一个明智的选择。</p>
+<p>Podfile 提供了 <code>inhibit_all_warnings!</code> 以屏蔽所有 pod target 的警告，但其中也包括了非三方组件。同时，Podfile 提供了 <code>inhibit_warnings</code> 去针对单个 pod 的编译警告进行控制，比如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod &apos;SSZipArchive&apos;, :inhibit_warnings =&gt; true</span><br></pre></td></tr></table></figure>
+<p>以上代码只会屏蔽 SSZipArchive 组件的警告，这比较符合我们的诉求。不过 <code>inhibit_warnings</code> 只会禁止当前 pod 的警告，并不会一同处理依赖组件的警告，这就要求我们在 Podfile 中显式依赖所有三方组件，并且设置 <code>inhibit_warnings</code>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">def add_files_to_build_phases(native_target, test_native_targets)</span><br><span class="line">	...</span><br><span class="line">	flags = compiler_flags_for_consumer(consumer, arc)</span><br><span class="line">  regular_file_refs = project_file_references_array(files, &apos;source&apos;)</span><br><span class="line">  native_target.add_file_references(regular_file_refs, flags)</span><br><span class="line">	...</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">def compiler_flags_for_consumer(consumer, arc)</span><br><span class="line">  ...</span><br><span class="line">  if target.inhibit_warnings?</span><br><span class="line">    flags &lt;&lt; &apos;-w -Xanalyzer -analyzer-disable-all-checks&apos;</span><br><span class="line">  end</span><br><span class="line">  flags * &apos; &apos;</span><br><span class="line">  ...</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<p>可以看到，在添加文件至对应 target 时，<code>-w -Xanalyzer -analyzer-disable-all-checks</code> 同时被添加到了文件的 compiler flags （在Target -&gt; Build Phases -&gt; Compile Sources 中可见）。结合 Installer 的 install! 代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">def install!</span><br><span class="line">  prepare</span><br><span class="line">  resolve_dependencies</span><br><span class="line">  download_dependencies</span><br><span class="line">  validate_targets</span><br><span class="line">  generate_pods_project</span><br><span class="line">  if installation_options.integrate_targets?</span><br><span class="line">    integrate_user_project</span><br><span class="line">  else</span><br><span class="line">    UI.section &apos;Skipping User Project Integration&apos;</span><br><span class="line">  end</span><br><span class="line">  perform_post_install_actions</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">def download_dependencies</span><br><span class="line">  UI.section &apos;Downloading dependencies&apos; do</span><br><span class="line">    install_pod_sources</span><br><span class="line">    run_podfile_pre_install_hooks</span><br><span class="line">    clean_pod_sources</span><br><span class="line">  end</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<p><code>generate_pods_project</code> 方法执行了 PodTargetInstaller 的 install! 操作，将文件添加到了 pod target ，那么只能在其之前的 <code>pre_install</code> 设置相关属性了。从上面的代码还可以看出，执行 <code>pre_install</code> 前就已经 <code>resolve_dependencies</code> 了，也就是说我们可以拿到 Analyzer 分析的完整结果 AnalysisResult :</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># @return [Hash&#123;TargetDefinition =&gt; Array&lt;Specification&gt;&#125;] the</span><br><span class="line">#         specifications grouped by target.</span><br><span class="line">#</span><br><span class="line">attr_accessor :specs_by_target</span><br><span class="line"></span><br><span class="line"># @return [Array&lt;Specification&gt;] the specifications of the resolved</span><br><span class="line">#         version of Pods that should be installed.</span><br><span class="line">#</span><br><span class="line">attr_accessor :specifications</span><br><span class="line"></span><br><span class="line"># @return [Array&lt;AggregateTarget&gt;] The aggregate targets created for each</span><br><span class="line">#         &#123;TargetDefinition&#125; from the &#123;Podfile&#125;.</span><br><span class="line">#</span><br><span class="line">attr_accessor :targets</span><br></pre></td></tr></table></figure>
+<p>上面列出了此次需要涉及到的 AnalysisResult 属性。这里要注意的是 <code>targets</code> 属性是不包含 Pods Target 的，它只包含了 Podfile 里面声明的 target ，一般为组件本身，以及组件Tests。如果不确定要设置哪个 target ，可以手动设置 <code>inhibit_warnings</code> ，然后通过以下代码打印出 hash :</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">pod &apos;SSZipArchive&apos;, :inhibit_warnings =&gt; true</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">pre_install do |installer|</span><br><span class="line">	require &apos;pp&apos;</span><br><span class="line">  installer.analysis_result.specs_by_target.each_key do |target_definition|</span><br><span class="line">  	pp target_definition.to_hash</span><br><span class="line">  end</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<p>这里我们对所有涉及到的 target 都进行设置。接着看下 CocoaPods Core 代码中 Podfile 是如何设置 <code>inhibit_warnings</code> 的 :</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">def pod(name = nil, *requirements)</span><br><span class="line">  ...</span><br><span class="line">  current_target_definition.store_pod(name, *requirements)</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">def store_pod(name, *requirements)</span><br><span class="line">	...</span><br><span class="line">  parse_inhibit_warnings(name, requirements)</span><br><span class="line">  ...</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">def parse_inhibit_warnings(name, requirements)</span><br><span class="line">	...</span><br><span class="line">  set_inhibit_warnings_for_pod(pod_name, should_inhibit)</span><br><span class="line">	...</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line"># Inhibits warnings for a specific pod during compilation.</span><br><span class="line">def set_inhibit_warnings_for_pod(pod_name, should_inhibit)</span><br><span class="line">  hash_key = case should_inhibit</span><br><span class="line">             when true</span><br><span class="line">               &apos;for_pods&apos;</span><br><span class="line">             when false</span><br><span class="line">               &apos;not_for_pods&apos;</span><br><span class="line">             when nil</span><br><span class="line">               return</span><br><span class="line">             else</span><br><span class="line">               raise ArgumentError, &quot;Got `#&#123;should_inhibit.inspect&#125;`, should be a boolean&quot;</span><br><span class="line">             end</span><br><span class="line">  raw_inhibit_warnings_hash[hash_key] ||= []</span><br><span class="line">  raw_inhibit_warnings_hash[hash_key] &lt;&lt; pod_name</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<p>找到了设置 inhibit_warnings 的 public 方法 <code>set_inhibit_warnings_for_pod</code>。</p>
+<p>由于我们的三方库集中放在 cocoapods-repos 的 group 下，最终的 <code>pre_install</code> 长这样 :</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">pre_install do |installer|</span><br><span class="line">  installer.analysis_result.specs_by_target.each_key do |target_definition|</span><br><span class="line">    installer.analysis_result.specifications.each do |spec|</span><br><span class="line">      source = spec.attributes_hash[&apos;source&apos;]</span><br><span class="line">      source &amp;&amp;= source[&apos;git&apos;]</span><br><span class="line">      next unless source &amp;&amp; source.include?(&apos;cocoapods-repos&apos;)</span><br><span class="line"></span><br><span class="line">      targets = (Array(target_definition) + target_definition.children)</span><br><span class="line">      targets.each do |target|</span><br><span class="line">        target.set_inhibit_warnings_for_pod(spec.root.name, true)</span><br><span class="line">      end</span><br><span class="line">    end</span><br><span class="line">  end</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://github.com/xushuanghui/2019/08/30/量化交易/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1297,7 +1584,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-count">30</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>

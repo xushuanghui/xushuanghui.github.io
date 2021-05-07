@@ -229,7 +229,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://github.com/xushuanghui/2021/01/21/app启动时间优化/">
+    <link itemprop="mainEntityOfPage" href="https://github.com/xushuanghui/2021/03/21/app启动时间优化/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="xushuanghui">
@@ -248,7 +248,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2021/01/21/app启动时间优化/" itemprop="url">app启动时间优化</a></h1>
+                <a class="post-title-link" href="/2021/03/21/app启动时间优化/" itemprop="url">app启动时间优化</a></h1>
         
 
         <div class="post-meta">
@@ -260,8 +260,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-01-21T16:36:16+08:00">
-                2021-01-21
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-03-21T16:36:16+08:00">
+                2021-03-21
               </time>
             
 
@@ -300,22 +300,382 @@
       
         
           
-            <p><a href="https://link.zhihu.com/?target=https%3A//developer.apple.com/videos/play/wwdc2016/406/" target="_blank" rel="noopener">《Optimizing App Startup Time》议题</a>上，提到了启动分为冷启动和暖启动两种。暖启动是指内存中包含 App 的相关数据，与我们日常提到的热启动不太一样，连续杀掉 App 的启动也可能是暖启动。冷启动是指系统的内核缓存区里没有 App 相关数据。冷暖启动的启动时间会差异比较大，冷启动的数据更能反映 App 真实的启动时长。保证 App 是冷启动的方法，就是通过重启设备，清理系统内核缓存区。</p>
+            <p><a href="https://link.zhihu.com/?target=https%3A//developer.apple.com/videos/play/wwdc2016/406/" target="_blank" rel="noopener">《Optimizing App Startup Time》议题</a>上，提到了启动分为冷启动和暖启动两种。</p>
+<p>暖启动：是指内存中包含 App 的相关数据，与我们日常提到的热启动不太一样，连续杀掉 App 的启动也可能是暖启动。</p>
+<p>冷启动：是指系统的内核缓存区里没有 App 相关数据。冷暖启动的启动时间会差异比较大，冷启动的数据更能反映 App 真实的启动时长。保证 App 是冷启动的方法，就是通过重启设备，清理系统内核缓存区。</p>
 <p>常见的 iOS 启动时长测试方法，主要有以下几种</p>
 <ol>
 <li><strong>Xcode Developer Tool</strong>： 使用 Instruments 的 Time Profiler 插件，可以检测 App CPU 的使用情况。能看到 App 的启动时间和各个方法消耗的时间；</li>
-<li><strong>客户端计算统计</strong>： 通过 hook 关键函数的调用，计算获得性能数据。目前知乎 App 性能监控已有启动时长数据，类似的还有一些第三方的性能测试工具；</li>
-<li><p><strong>录屏</strong>：使用截屏、录屏、高速摄像机录像等方法，记录移动设备屏幕上的变化，分析启动的起止点，获取 app 启动的耗时。</p>
-<p>iOS App 启动项分为三种：</p>
+<li><p><strong>客户端计算统计</strong>： 通过 hook 关键函数的调用，计算获得性能数据。</p>
+<p><strong>App总启动流程 = pre-main (+load,initializer)+ main函数代理（didFinishLaunchingWithOptions）+ 首屏渲染（viewDidAppear）</strong>，后两个阶段都属于 <code>main函数</code> 执行阶段。</p>
 </li>
 </ol>
-<ul>
-<li>同步 - App 启动后在主线程立即执行</li>
-<li>异步 - App 启动后主线程队列执行完毕后，立即创建异步线程执行</li>
-<li>延迟 - App 启动后主线程队列执行完毕后，延迟一段时间在主线程执行</li>
+<p><img src="/Users/xushuanghui/Library/Application Support/typora-user-images/image-20210310151027524.png" alt="image-20210310151027524"></p>
+<h3 id="pre-main阶段"><a href="#pre-main阶段" class="headerlink" title="pre-main阶段"></a>pre-main阶段</h3><ul>
+<li>加载 dyld</li>
+<li>创建启动闭包（更新 App/重启手机需要）</li>
+<li>加载动态库</li>
+<li>Bind &amp; Rebase &amp; Runtime 初始化</li>
+<li>+load 和静态初始化</li>
 </ul>
-<p>同步启动项是决定启动时长的关键因素</p>
+<p>获得 main() 方法执行前的耗时比较简单，通过 Xcode 自带的测量方法既可以。将 Xcode 中 Product -&gt; Scheme -&gt; Edit scheme -&gt; Run -&gt; Environment Variables 将环境变量 <code>DYLD_PRINT_STATISTICS</code> 或 <code>DYLD_PRINT_STATISTICS_DETAILS</code>  设为 <code>1</code> 即可获得执行每项耗时：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Total pre-main time: 977.95 milliseconds (100.0%)</span><br><span class="line">         dylib loading time: 433.20 milliseconds (44.2%)</span><br><span class="line">        rebase/binding time:  97.24 milliseconds (9.9%)</span><br><span class="line">            ObjC setup time:  50.13 milliseconds (5.1%)</span><br><span class="line">           initializer time: 397.36 milliseconds (40.6%)</span><br><span class="line">           slowest intializers :</span><br><span class="line">             libSystem.B.dylib :  11.48 milliseconds (1.1%)</span><br><span class="line">                   AgoraRtcKit : 105.87 milliseconds (10.8%)</span><br><span class="line">                        Hestia : 415.46 milliseconds (42.4%)</span><br></pre></td></tr></table></figure>
+<h3 id="main函数代理阶段"><a href="#main函数代理阶段" class="headerlink" title="main函数代理阶段"></a>main函数代理阶段</h3><h4 id="1、手动插入代码计算耗时"><a href="#1、手动插入代码计算耗时" class="headerlink" title="1、手动插入代码计算耗时"></a>1、手动插入代码计算耗时</h4><p>  在 <code>man()</code> 函数开始执行时就开始时间：</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">CFAbsoluteTime StartTime;  //  记录全局变量</span><br><span class="line">int main(int argc, char * argv[]) &#123;</span><br><span class="line">    @autoreleasepool &#123;</span><br><span class="line">        StartTime = CFAbsoluteTimeGetCurrent();</span><br><span class="line">        return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>无侵入首屏渲染完成时间我们希望和 <code>MetricKit</code> 对齐，即获取到 <code>CA::Transaction::commit()</code>方法被调用的时间。</p>
+<p><code>CA::Transaction::commit()</code>，<code>CFRunLoopPerformBlock</code>，<code>kCFRunLoopBeforeTimers</code> 这三个时机的顺序从早到晚依次是：</p>
+<p><img src="/Users/xushuanghui/Library/Application Support/typora-user-images/image-20210311113820158.png" alt="image-20210311113820158"></p>
+<p>可以通过在 didFinishLaunch 中向 Runloop 注册 block 或者 BeforeTimer 的 Observer 来获取上图中两个时间点的回调，代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">if ([UIDevice currentDevice].systemVersion.floatValue &gt;= 13.0) &#123;</span><br><span class="line">        //注册kCFRunLoopBeforeTimers回调</span><br><span class="line">        CFRunLoopRef mainRunloop = [[NSRunLoop mainRunLoop] getCFRunLoop];</span><br><span class="line">        CFRunLoopActivity activities = kCFRunLoopAllActivities;</span><br><span class="line">        CFRunLoopObserverRef observer = CFRunLoopObserverCreateWithHandler(kCFAllocatorDefault, activities, YES, 0, ^(CFRunLoopObserverRef observer, CFRunLoopActivity activity) &#123;</span><br><span class="line">            if (activity == kCFRunLoopBeforeTimers) &#123;</span><br><span class="line">                NSTimeInterval stamp = [[NSDate date] timeIntervalSince1970];</span><br><span class="line">                NSLog(@&quot;runloop beforetimers launch end:%f&quot;,stamp);</span><br><span class="line">                CFRunLoopRemoveObserver(mainRunloop, observer, kCFRunLoopCommonModes);</span><br><span class="line">                [HSALaunchManage initLaunchService];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        CFRunLoopAddObserver(mainRunloop, observer, kCFRunLoopCommonModes);</span><br><span class="line">    &#125;</span><br><span class="line">    else &#123;</span><br><span class="line">        //    注册block</span><br><span class="line">        CFRunLoopRef mainRunloop = [[NSRunLoop mainRunLoop] getCFRunLoop];</span><br><span class="line">        CFRunLoopPerformBlock(mainRunloop,NSDefaultRunLoopMode,^()&#123;</span><br><span class="line">            NSTimeInterval stamp = [[NSDate date] timeIntervalSince1970];</span><br><span class="line">            NSLog(@&quot;runloop block launch end:%f&quot;,stamp);</span><br><span class="line">            [HSALaunchManage initLaunchService];</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>iOS13（含）以上的系统采用 <code>runloop</code> 中注册一个 <code>kCFRunLoopBeforeTimers</code> 的回调获取到的 App 首屏渲染完成的时机更准确。</li>
+<li>iOS13 以下的系统采用 <code>CFRunLoopPerformBlock</code> 方法注入 block 获取到的 App 首屏渲染完成的时机更准确。</li>
+</ol>
+<h3 id="启动时间统计"><a href="#启动时间统计" class="headerlink" title="启动时间统计:"></a>启动时间统计:</h3><h4 id="main-函数启动时间"><a href="#main-函数启动时间" class="headerlink" title="main()函数启动时间"></a>main()函数启动时间</h4><p><strong>MianStartTime:1617002963.711972</strong></p>
+<p><strong>1617002963.862700</strong></p>
+<h4 id="首屏结束时间："><a href="#首屏结束时间：" class="headerlink" title="首屏结束时间："></a>首屏结束时间：</h4><p><strong>runloop beforetimers launch end:1617002965.720096</strong></p>
+<p>Total pre-main time: 797.23 milliseconds</p>
+<p>首屏时间-Mianstart  5.72-3.7119=2.0081 秒 </p>
+<p>总时间：2.0081+0.977=2.9851 秒</p>
+<p><strong><em>对于 main() 调用之前的耗时可以优化的点有</em></strong></p>
+<ul>
+<li><p>1、减少不必要的 framework，因为动态链接比较耗时</p>
+</li>
+<li><p>2、check framework 应当设为 optional 和 required，如果该 framework 在当前 App 支持的所有 iOS 系统版本都存在，那么就设为 required，否则就设为 optional，因为 optional 会有些额外的检查</p>
+</li>
+<li><p>3、合并或者删减一些 OC 类，关于清理项目中没用到的类</p>
+</li>
+<li><p>4、删减没有被调用到或者已经废弃的方法</p>
+</li>
+<li><p>5、将不必须在 + load 方法中做的事情延迟到 + initialize 中或者放延迟到首屏渲染之后</p>
+</li>
+<li><p>6、高频次方法</p>
+<p>有些方法的单个耗时不高，但是在启动路径上会调用很多次的，这种累计起来的耗时也不低，比如读 Info.plist 里面的配置：</p>
+</li>
+</ul>
+<ul>
+<li>(NSString *)plistChannel{    <pre><code>return [[[NSBundle mainBundle] infoDictionary] objectForKey:@&quot;CHANNEL_NAME&quot;];
+</code></pre>}</li>
+</ul>
+<p>修改的方式很简单，加一层内存缓存即可，这种问题在 TimeProfiler 里时间段选长一些往往就能看出来。</p>
+<h4 id="2、APP-Launch-检测"><a href="#2、APP-Launch-检测" class="headerlink" title="2、APP Launch 检测"></a>2、APP Launch 检测</h4><p><img src="/Users/xushuanghui/Library/Application Support/typora-user-images/image-20210312173338839.png" alt="image-20210312173338839"></p>
+<p><img src="/Users/xushuanghui/Library/Application Support/typora-user-images/image-20210413111434697.png" alt="image-20210413111434697"></p>
+<h3 id="一、阿里云sdk初始化"><a href="#一、阿里云sdk初始化" class="headerlink" title="一、阿里云sdk初始化"></a>一、阿里云sdk初始化</h3><h3 id="二、flutter初始化"><a href="#二、flutter初始化" class="headerlink" title="二、flutter初始化"></a>二、flutter初始化</h3><p>[FlutterBoostPlugin.sharedInstance startFlutterWithPlatform:[RTFlutterRouter shareFlutterRouter]</p>
+<p>  onStart:^(FlutterEngine *engine) {}]; 把flutter初始化延后至首屏渲染之后</p>
+<h3 id="三、其他-load方法"><a href="#三、其他-load方法" class="headerlink" title="三、其他+load方法"></a>三、其他+load方法</h3><p>1、[self configProgressView];</p>
+<p> [[FRWLocalizableManager sharedInstance] localizabledImageNamed:imgName inBundle:bundle] 先从缓存取，缓存没有从本地取，然后把图片写入缓存，80ms，已没有用移除。</p>
+<p>2、[HVSRCLiveChatRoomUtils initializeRongCloudIM];  11ms</p>
+<p>3、[FRRWebEngine startEngine]; 59ms</p>
+<p>实现一个类，负责首屏渲染之后处理初始化</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">+(void)initLaunchService &#123;</span><br><span class="line">	//flutter</span><br><span class="line">  [FlutterBoostPlugin.sharedInstance startFlutterWithPlatform:[RTFlutterRouter shareFlutterRouter] onStart:^(FlutterEngine *engine) &#123;&#125;];</span><br><span class="line">  //融云</span><br><span class="line">  [HVSRCLiveChatRoomUtils initializeRongCloudIM];</span><br><span class="line">  //webView</span><br><span class="line">  [FRRWebEngine startEngine];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="四、移除部分无用代码和类"><a href="#四、移除部分无用代码和类" class="headerlink" title="四、移除部分无用代码和类"></a>四、移除部分无用代码和类</h3><h4 id="其他："><a href="#其他：" class="headerlink" title="其他："></a>其他：</h4><p> 之前直觉的就把第三方的初始化放到了 didFinishLaunchingWithOptions 方法里，我专门建了一个类来负责启动事件，区分开可以放在首屏显示之后再初始化的第三方库，以后再引入的时候就会判断一下。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">* 这个类负责所有原来didFinishLaunchingWithOptions和+load中 延迟事件的加载，根据需要减少 didFinishLaunchingWithOptions 里耗时的操作.</span><br><span class="line">* 第一类: 比如日志 / 统计等需要第一时间启动的, 仍然放在 didFinishLaunchingWithOptions 中.</span><br><span class="line">* 第二类: 部分第三方库的启动、数据处理等业务，不需要放在didFinishLaunchingWithOptions中，延后至首屏显示之后</span><br><span class="line">*/</span><br></pre></td></tr></table></figure>
+<p>图片<br>启动难免会用到很多图，有没有办法优化图片加载的耗时呢？<br>用 Asset 管理图片而不是直接放在 bundle 里。Asset 会在编译期做优化，让加载的时候更快，此外在 Asset 中加载图片是要比 Bundle 快的，因为 UIImage imageNamed 要遍历 Bundle 才能找到图。加载 Asset 中图的耗时主要在在第一次张图，因为要建立索引，可以通过把启动的图放到一个小的 Asset 里来减少这部分耗时。</p>
+<p>每次创建 UIImage 都需要 IO，在首帧渲染的时候会解码。所以可以通过提前子线程预加载（创建 UIImage）来优化这部分耗时。</p>
+<p>有的启动只有到了比较晚的阶段“RootWindow 创建”和“首帧渲染”才会用到图片，<strong>所以可以在启动的早期开预加载的子线程启动任务</strong>。</p>
+<h4 id="二进制重排"><a href="#二进制重排" class="headerlink" title="二进制重排"></a>二进制重排</h4><p>既然启动的路径上会触发大量的 Page In，那么有没有什么办法优化呢？</p>
+<p>启动具有局部性特征，即只有少部分函数在启动的时候用到，这些函数在中的分布是零散的，所以 Page In 读入的数据利用率并不高。如果我们可以把启动用到的函数排列到二进制的连续区间，那么就可以减少 Page In 的次数，从而优化启动时间：</p>
+<p>以下图为例，方法 1 和方法 3 是启动的时候用到的，为了执行对应的代码，就需要两次 Page In。假如我们把方法 1 和 3 排列到一起，那么只需要一次 Page In，从而提升启动速度。</p>
+<p><img src="/Users/xushuanghui/Library/Application Support/typora-user-images/image-20210506165054800.png" alt="image-20210506165054800"></p>
+<p>链接器 ld 有个参数-order_file 支持按照符号的方式排列二进制。获取启动时候用到的符号主流有两种方式：</p>
+<ul>
+<li>抖音方案：静态扫描获取 +load 和 C++静态初始化，hook objc_msgSend 获取 Objective C 符号。</li>
+<li>Facebook 方案：LLVM 函数插桩，灰度统计启动路径符号，用大多数用户的符号生成 order_file。</li>
+</ul>
+<p>Facebook 的 LLVM 函数插桩是针对 order_file 定制，并且代码也是他们自己给 LLVM 开发的，目前已经合并到 LLVM 主分支了。</p>
+<p><img src="/Users/xushuanghui/Library/Application Support/typora-user-images/image-20210506165105863.png" alt="image-20210506165105863"></p>
+<p>Facebook 的方案更精细化，生成的 order_file 是最优解，但是工程量很大。抖音的方案<strong>不需要源码编译</strong>，<strong>不需要对现有编译环境和流程改造</strong>，侵入性最小，缺点就是只能覆盖 90%左右的符号。</p>
+<p>- 灰度是任何优化都要利用好的一个阶段，因为很多新的优化方案存在不确定性，需要先在灰度上验证。</p>
+<h3 id="非常规方案"><a href="#非常规方案" class="headerlink" title="非常规方案"></a>非常规方案</h3><h4 id="动态库懒加载"><a href="#动态库懒加载" class="headerlink" title="动态库懒加载"></a>动态库懒加载</h4><p>最开始我们提到可以通过删代码的方式来减少代码量，那么有没有什么不减少代码总量，就可以减少启动时候要加载代码数量的方式呢？</p>
+<ul>
+<li>答案就是动态库懒加载。</li>
+</ul>
+<p>什么是懒加载的动态库呢？正常动态库都是会被主二进制直接或者间接链接的，那么这些动态库会在启动的时候加载。<strong>如果只打包进 App，不参与链接，那么启动的时候就不会自动加载，在运行时需要用到动态库里面的内容的时候，再手动懒加载</strong>。</p>
+<p>懒加载动态库需要在编译期和运行时都进行改造，编译期的架构：</p>
+<p><img src="https://static001.infoq.cn/resource/image/53/a2/53277be65a8882bfb437aef8fba065a2.png" alt="img"></p>
+<p>像 A.framework 等动态库是懒加载的，因为并没有参与主二进制的直接 or 间接链接。动态库之间一定会有一些共同的依赖，把这些依赖打包成 Shared.framework 解决公共依赖的问题。</p>
+<p>运行时通过<code>-[NSBundle load]</code>来加载，本质上调用的是底层的 <code>dlopen</code>。那么什么时候触发动态库手动加载呢？</p>
+<p>动态库可以分成两种：业务和功能。<strong>业务就是 UI 的入口，可以把动态库加载的逻辑收敛到路由内部，这样外部其实并不知道动态库是懒加载的，也能更好地容错</strong>。功能库（比如上图的 QR.framework）会有些不一样，因为没有 UI 等入口，需要功能库自己维护 Wrapper：</p>
+<ul>
+<li><img src="/Users/xushuanghui/Library/Application Support/typora-user-images/image-20210506165131007.png" alt="image-20210506165131007">App 对 Wrapper 直接依赖，这样外部并不知道这个动态库是懒加载的</li>
+<li>Wrapper 内部封装了动态调用逻辑，动态调用指的是通过 dlsym 等方式调用</li>
+</ul>
+<p>动态库懒加载除了启动加载的代码减少，还能长期防止业务增加代码引起启动劣化，因为业务的初始化在第一次访问的时候完成的。</p>
+<p>这个方案还有其他优点，比如动态库化后本地编译时间会大幅度降低，对其他性能指标也有好处，缺点是会牺牲一定程度的包大小，但可以用段压缩等方式优化懒加载的动态库来打平这部分损耗。</p>
+<h4 id="Background-Fetch"><a href="#Background-Fetch" class="headerlink" title="Background Fetch"></a>Background Fetch</h4><p>Background Fetch 可以隔一段时间把 App 在后台启动，对于时间敏感的 App（比如新闻）可以在后台刷新数据，这样能够提高 Feed 加载的速度，进而提升用户体验。</p>
+<p>那么，这种类似“后台保活”的机制，为什么能提高启动速度呢？我们来看一个典型的 case：</p>
+<p><img src="/Users/xushuanghui/Library/Application Support/typora-user-images/image-20210506165219913.png" alt="image-20210506165219913"></p>
+<ol>
+<li>系统在后台启动 App</li>
+<li>时间长因为内存等原因，后台的 App 被 kill 了</li>
+<li>这时候用户立刻启动 App，那么这次启动就是一次<strong>热启动</strong>，因为缓存还在</li>
+<li>又一次系统在后台启动 App</li>
+<li>这次用户在 App 在后台的时候点了 App，那么这次启动就是一次<strong>后台回前台</strong>，因为 App 仍然活着</li>
+</ol>
+<p>通过这两个典型的场景，可以看出来为什么 Background Fetch 能提高启动速度了：</p>
+<ul>
+<li><strong>提高热启动在冷启动的占比</strong></li>
+<li><strong>后台启动回前台被定义为启动，因为用户的角度来说这就是一次启动</strong></li>
+</ul>
+<p>后台启动有一些要注意的点，<strong>比如日活，广告，甚至是 AB 进组逻辑都会受影响</strong>，需要做不少适配。往往需要启动器来支撑，因为正常启动在 didFinishLaunch 执行的任务，在后台启动的时候需要延迟到第一次回前台的时候再执行。</p>
+<p>资料：</p>
+<ul>
+<li>1、去除没有用到的资源： <a href="https://github.com/tinymind/LSUnusedResources">https://github.com/tinymind/LSUnusedResources</a></li>
+<li>2、利用AppCode：<a href="https://www.jetbrains.com/objc/" target="_blank" rel="noopener">https://www.jetbrains.com/objc/</a> 检测未使用的代码：菜单栏 -&gt; Code -&gt; Inspect Code</li>
+<li>3、可借助第三方工具解析LinkMap文件： <a href="https://github.com/huanxsd/LinkMap">https://github.com/huanxsd/LinkMap</a> 生成LinkMap文件，可以查看可执行文件的具体组成</li>
+</ul>
 
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://github.com/xushuanghui/2021/03/09/日志/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xushuanghui">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xushuanghui">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/03/09/日志/" itemprop="url">Untitled</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-03-09T16:23:47+08:00">
+                2021-03-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>认清现实不要逃避，做点有意义有用的事，退出等待，不要暂用工作和学习时间，意识到自己做错了停下来就是前进，及时思考改正。享受人生，多思考，劳逸结合不要沉迷。</p>
+<p>总结：票好好筛选，去掉看不懂的，不要大于15个，越少而精准才好。可以从基金中找，多看研报。</p>
+<p>不要追涨，追涨还不如买低位的收益高，风险小。</p>
+<p>已经买了一只，不要因为今天它不涨看见别的涨就卖了它去追涨。</p>
+<p>已经买的票不涨或下跌，在5日线上可补仓继续持票，跌破5日线</p>
+<p>个股大部分会更大盘，大盘不好时，大部分股票都会跟。</p>
+<p>买、看大盘和个股趋势，上穿5日线再考虑买，一定挂单买半仓，没有成交也没损失，错过了不能追。尾盘小于-3买一半。</p>
+<p>卖、下穿5日一定卖，一定挂单卖半仓，卖飞了也要卖。</p>
+<p>不要撤销挂单。中午1-2点不要操作。</p>
+<p>不挂单不交易，只做1-2只票,找5-10年没有天花板</p>
+<p>触发以上条件才交易，否则持币等待时间比持股好。</p>
+<p>下跌趋势，空仓几个月都不多。</p>
+<p>要有风险把控，要形成交易体系遵守规则，止盈止跌的短期标准大盘和个股5日线，大趋势5周线，系统的学习，不要逆趋势做，思考目前在什么大阶段才能做，不看盘，晚上看盘是否出发可交易条件，第二天再挂单交易，找自己心里的价位挂单，不要着急时机永远都有</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://github.com/xushuanghui/2021/02/19/123/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xushuanghui">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xushuanghui">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/02/19/123/" itemprop="url">Untitled</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-02-19T15:05:07+08:00">
+                2021-02-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            
           
         
       
@@ -1332,305 +1692,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://github.com/xushuanghui/2020/09/05/iOS接入flutter/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="xushuanghui">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="xushuanghui">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/09/05/iOS接入flutter/" itemprop="url">iOS接入flutter</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-09-05T15:44:02+08:00">
-                2020-09-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h3 id="1-flutter-module-创建与配置"><a href="#1-flutter-module-创建与配置" class="headerlink" title="1. flutter module 创建与配置"></a>1. flutter module 创建与配置</h3><h4 id="1-1-下载-flutter-基础包"><a href="#1-1-下载-flutter-基础包" class="headerlink" title="1.1 下载 flutter 基础包"></a>1.1 下载 flutter 基础包</h4><p>从 github 下载代码 <code>git clone -b beta https//github.com/flutter/flutter.git</code></p>
-<p>但是 github 可能会很慢，可以从码云上下 <code>git clone https://gitee.com/mirrors/Flutter.git</code></p>
-<h4 id="1-2-配置-flutter-环境变量"><a href="#1-2-配置-flutter-环境变量" class="headerlink" title="1.2 配置 flutter 环境变量"></a>1.2 配置 flutter 环境变量</h4><p>如果使用的 bash</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">第一步：</span><br><span class="line">cd ~           // 在终端进入用户目录，一般打开终端默认就是</span><br><span class="line"></span><br><span class="line">第二步：</span><br><span class="line">open .bash_profile    // 打开 bash 配置文件</span><br><span class="line">// 另 如果 .bash_profile文件不存在需先创建再打开，具体如下：</span><br><span class="line">// touch .bash_profile</span><br><span class="line">// open .bash_profile</span><br><span class="line"></span><br><span class="line">第三步：</span><br><span class="line"># for flutter</span><br><span class="line">export PUB_HOSTED_URL=https://pub.flutter-io.cn</span><br><span class="line">export FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn</span><br><span class="line">export PATH=/Users/hubery/dev_supports/flutter/bin:$PATH</span><br><span class="line"></span><br><span class="line">第四步：</span><br><span class="line">source .bash_profile      // 执行文件 使命令生效</span><br></pre></td></tr></table></figure>
-<p>如果使用的 zsh</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">第一步：</span><br><span class="line">cd ~           // 在终端进入用户目录，一般打开终端默认就是</span><br><span class="line"></span><br><span class="line">第二步：</span><br><span class="line">open .zshrc    // 打开 zsh 配置文件</span><br><span class="line"></span><br><span class="line">第三步：</span><br><span class="line"># for flutter</span><br><span class="line">export PUB_HOSTED_URL=https://pub.flutter-io.cn</span><br><span class="line">export FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn</span><br><span class="line">export PATH=/Users/hubery/dev_supports/flutter/bin:$PATH</span><br><span class="line"></span><br><span class="line">第四步：</span><br><span class="line">source .zshrc      // 执行文件 使命令生效</span><br></pre></td></tr></table></figure>
-<blockquote>
-<p>其中 <code>/Users/hubery/dev_supports/flutter</code> 为 1.1 中下载下来的 flutter 路径</p>
-</blockquote>
-<p>然后在终端中输入 <code>flutter</code> 验证环境变量是否配置成功，出现如下类似信息时表示配置是OK的</p>
-<h4 id="1-3-flutter-module-创建"><a href="#1-3-flutter-module-创建" class="headerlink" title="1.3 flutter module 创建"></a>1.3 flutter module 创建</h4><p>可以使用 Android Studio 创建 flutter module</p>
-<p>或者在目标目录下使用命令创建 <code>flutter create -t module flutter_demo_module_ios</code></p>
-<p>创建的过程需要梯子从外网获取 flutter 相关资源。 这里推荐使用 Android Studio，操作方便，flutter 相关的插件支持的也挺好</p>
-<h4 id="1-4-Android-Studio-上-flutter-项目配置"><a href="#1-4-Android-Studio-上-flutter-项目配置" class="headerlink" title="1.4 Android Studio 上 flutter 项目配置"></a>1.4 Android Studio 上 flutter 项目配置</h4><ul>
-<li><p>使用 Android Studio 打开刚才创建的 module, 在 Project 栏可以看到项目目录结构</p>
-<p>Android Studio –&gt; Preferences –&gt; Plugins –&gt; Marketplace 搜索 <code>Dart</code> 和 <code>Flutter</code> 插件并下载</p>
-</li>
-<li><p>配置 <code>Dart SDK path</code>, 设置入口为： Android Studio –&gt; Preferences –&gt; Languages &amp; Frameworks –&gt; Dart</p>
-<p>配置完成后，Android Studio 工具栏就可以看到选择 devices 的选项啦，如果没出现可以重启 Android Studio</p>
-</li>
-</ul>
-<h4 id="1-5-检查-flutter-运行环境是否可用"><a href="#1-5-检查-flutter-运行环境是否可用" class="headerlink" title="1.5 检查 flutter 运行环境是否可用"></a>1.5 检查 flutter 运行环境是否可用</h4><p>执行命令 <code>flutter doctor</code></p>
-<h4 id="1-6-如果flutter中插件安装，可在-pubspec-yaml-文件中添加需要的插件"><a href="#1-6-如果flutter中插件安装，可在-pubspec-yaml-文件中添加需要的插件" class="headerlink" title="1.6 如果flutter中插件安装，可在 pubspec.yaml 文件中添加需要的插件"></a>1.6 如果flutter中插件安装，可在 pubspec.yaml 文件中添加需要的插件</h4><ul>
-<li>安装: <code>flutter pub get</code></li>
-<li>更新: <code>flutter pub upgrade</code></li>
-</ul>
-<h4 id="1-7-执行编译"><a href="#1-7-执行编译" class="headerlink" title="1.7 执行编译"></a>1.7 执行编译</h4><ul>
-<li>debug: <code>flutter build ios --debug --no-codesign</code></li>
-<li>release: <code>flutter build ios --release --no-codesign</code></li>
-</ul>
-<h3 id="2-iOS-引入-flutter-module"><a href="#2-iOS-引入-flutter-module" class="headerlink" title="2. iOS 引入 flutter module"></a>2. iOS 引入 flutter module</h3><h4 id="2-1-创建-iOS-项目-amp-Pod-Init"><a href="#2-1-创建-iOS-项目-amp-Pod-Init" class="headerlink" title="2.1 创建 iOS 项目 &amp; Pod Init"></a>2.1 创建 iOS 项目 &amp; Pod Init</h4><p>如何创建 iOS项目以及 CocoaPods 的使用，此处就省略不表了 。。。</p>
-<p>如需了解 CocoaPods，请戳传送门：<a href="https://www.jianshu.com/p/6d51362b7e64" target="_blank" rel="noopener">CocoaPods 攻略</a></p>
-<h4 id="2-2-使用-Cocoapods-引入-flutter-module"><a href="#2-2-使用-Cocoapods-引入-flutter-module" class="headerlink" title="2.2 使用 Cocoapods 引入 flutter module"></a>2.2 使用 Cocoapods 引入 flutter module</h4><ul>
-<li><p>先执行编译该 <code>flutter_demo_module_ios</code> 项目, 终端执行 <code>flutter build ios --debug --no-codesign</code></p>
-</li>
-<li><p>iOS 项目中 Podfile 文件中添加如下命令:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># Flutter</span><br><span class="line">flutter_application_path = &apos;../flutter_demo_module_ios/&apos;</span><br><span class="line">load File.join(flutter_application_path, &apos;.ios&apos;, &apos;Flutter&apos;, &apos;podhelper.rb&apos;)</span><br><span class="line">  	</span><br><span class="line">  	</span><br><span class="line">target &apos;FlutterDemoIOSApp&apos; do</span><br><span class="line">  # Comment the next line if you don&apos;t want to use dynamic frameworks</span><br><span class="line">  use_frameworks!</span><br><span class="line">  	</span><br><span class="line">  # Flutter</span><br><span class="line">  install_all_flutter_pods(flutter_application_path)</span><br><span class="line">  	</span><br><span class="line">  	</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
-<p>然后执行 <code>pod install</code> 即可引入，在 pod 可以看到新增3个flutter相关的 framework</p></li></ul>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2020/09/05/iOS接入flutter/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://github.com/xushuanghui/2020/08/04/OC接入swift/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="xushuanghui">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="xushuanghui">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/08/04/OC接入swift/" itemprop="url">OC接入swift</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-08-04T17:20:14+08:00">
-                2020-08-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="工程配置"><a href="#工程配置" class="headerlink" title="工程配置"></a>工程配置</h1><h2 id="桥接文件"><a href="#桥接文件" class="headerlink" title="桥接文件"></a>桥接文件</h2><p>当我们在Swift项目（OC项目）中首次添加OC文件（Swift文件）时，Xcode会自动弹出桥接文件创建的提示，</p>
-<p>这里我们可以选择Xcode自动创建或者手动创建，创建完成后系统会自动生成2个桥接文件,</p>
-<p>$(SWIFT_MODULE_NAME)-Bridging-Header.h，这个头文件直接在目录中</p>
-<p>$(SWIFT_MODULE_NAME)-Swift.h在目录中不可见.</p>
-<p>如果我们需要手动创建的也是可以的，只要保证文件名与Build Setting中path一直即可，不过推荐使用系统默认的创建.</p>
-<h2 id="头文件导入"><a href="#头文件导入" class="headerlink" title="头文件导入"></a>头文件导入</h2><p>一般混编项目中常用的头文件有-Bridging-Header.h，-Swift.h，-pch等，在OC与swift混编时，如果Swift需要引用OC的类，那么需要再-Bridging-Header.h中引入OC头文件，</p>
-<p>如果OC类需要引用Swift类时，需要在OC类中import $(SWIFT_MODULE_NAME)-Swift.h</p>
-<p>导入后OC类即可使用项目中所有继承于NSObject的Swift类，这里需要注意的时，未继承NSObject的Swift类无法被OC调用.</p>
-<p>这里点进$(SWIFT_MODULE_NAME)-Swift.h看一看，除了顶部一大堆宏定义宏方法外，Xcode还帮我们把所有继承自NSObject的Swift类编译成OC的接口，所以OC才能正常调用Swift类的属性和方法.</p>
-<h1 id="cocoaPod"><a href="#cocoaPod" class="headerlink" title="cocoaPod"></a>cocoaPod</h1><p>先说结论，现在（cocoaPod 1.5之后）集成OC和Swift库非常简单，无需考虑use_framework，static framework等等问题，仅需要把要导入的库名添加到podfile文件中即可，但是，初次导入后pod可能会遇到一些警告.</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[!] The `Project [Debug]` target overrides the `SWIFT_INCLUDE_PATHS` build setting defined in `Pods/Target Support Files/Pods-Project/Pods-Project.debug.xcconfig&apos;. This can lead to problems with the CocoaPods installation    - Use the `$(inherited)` flag, or    - Remove the build settings from the target.[!] The `Project [Release]` target overrides the `SWIFT_INCLUDE_PATHS` build setting defined in `Pods/Target Support Files/Pods-Project/Pods-Project.release.xcconfig&apos;. This can lead to problems with the CocoaPods installation    - Use the `$(inherited)` flag, or    - Remove the build settings from the target.</span><br></pre></td></tr></table></figure>
-<p>可以看到，Pods-DadaStaff.debug.xcconfig文件中的SWIFT_INCLUDE_PATHS被项目tage的buildSeetingt覆盖了，如果不解决的话，会导致Swift三方库无法正常编译成module.</p>
-<p>找到target中的Swift Complier - Search Path，在Import Paths项中添加$(inherited)</p>
-<p>重新pod，消除警告后，即可使用Swift三方库.</p>
-<p>在cocoaPod更新到1.5之前，OC与Swift混编比较头疼的一个问题就是pod库的集成，历史原因这里就不赘述了语法混编</p>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2020/08/04/OC接入swift/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1681,7 +1742,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-count">30</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>

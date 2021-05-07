@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="《Optimizing App Startup Time》议题上，提到了启动分为冷启动和暖启动两种。 暖启动：是指内存中包含 App 的相关数据，与我们日常提到的热启动不太一样，连续杀掉 App 的启动也可能是暖启动。 冷启动：是指系统的内核缓存区里没有 App 相关数据。冷暖启动的启动时间会差异比较大，冷启动的数据更能反映 App 真实的启动时长。保证 App 是冷启动的方法，就是通过重启设备，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="app启动时间优化">
+<meta property="og:url" content="https://github.com/xushuanghui/2021/03/21/app启动时间优化/index.html">
+<meta property="og:site_name" content="xushuanghui">
+<meta property="og:description" content="《Optimizing App Startup Time》议题上，提到了启动分为冷启动和暖启动两种。 暖启动：是指内存中包含 App 的相关数据，与我们日常提到的热启动不太一样，连续杀掉 App 的启动也可能是暖启动。 冷启动：是指系统的内核缓存区里没有 App 相关数据。冷暖启动的启动时间会差异比较大，冷启动的数据更能反映 App 真实的启动时长。保证 App 是冷启动的方法，就是通过重启设备，">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://github.com/Users/xushuanghui/Library/Application%20Support/typora-user-images/image-20210310151027524.png">
+<meta property="og:image" content="https://github.com/Users/xushuanghui/Library/Application%20Support/typora-user-images/image-20210311113820158.png">
+<meta property="og:image" content="https://github.com/Users/xushuanghui/Library/Application%20Support/typora-user-images/image-20210312173338839.png">
+<meta property="og:image" content="https://github.com/Users/xushuanghui/Library/Application%20Support/typora-user-images/image-20210413111434697.png">
+<meta property="og:image" content="https://github.com/Users/xushuanghui/Library/Application%20Support/typora-user-images/image-20210506165054800.png">
+<meta property="og:image" content="https://github.com/Users/xushuanghui/Library/Application%20Support/typora-user-images/image-20210506165105863.png">
+<meta property="og:image" content="https://static001.infoq.cn/resource/image/53/a2/53277be65a8882bfb437aef8fba065a2.png">
+<meta property="og:image" content="https://github.com/Users/xushuanghui/Library/Application%20Support/typora-user-images/image-20210506165131007.png">
+<meta property="og:image" content="https://github.com/Users/xushuanghui/Library/Application%20Support/typora-user-images/image-20210506165219913.png">
+<meta property="og:updated_time" content="2021-05-07T07:18:12.767Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="app启动时间优化">
+<meta name="twitter:description" content="《Optimizing App Startup Time》议题上，提到了启动分为冷启动和暖启动两种。 暖启动：是指内存中包含 App 的相关数据，与我们日常提到的热启动不太一样，连续杀掉 App 的启动也可能是暖启动。 冷启动：是指系统的内核缓存区里没有 App 相关数据。冷暖启动的启动时间会差异比较大，冷启动的数据更能反映 App 真实的启动时长。保证 App 是冷启动的方法，就是通过重启设备，">
+<meta name="twitter:image" content="https://github.com/Users/xushuanghui/Library/Application%20Support/typora-user-images/image-20210310151027524.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://github.com/xushuanghui/2021/03/21/app启动时间优化/">
+
+
+
+
+
+  <title>app启动时间优化 | xushuanghui</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">xushuanghui</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://github.com/xushuanghui/2021/03/21/app启动时间优化/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xushuanghui">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xushuanghui">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">app启动时间优化</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-03-21T16:36:16+08:00">
+                2021-03-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><a href="https://link.zhihu.com/?target=https%3A//developer.apple.com/videos/play/wwdc2016/406/" target="_blank" rel="noopener">《Optimizing App Startup Time》议题</a>上，提到了启动分为冷启动和暖启动两种。</p>
+<p>暖启动：是指内存中包含 App 的相关数据，与我们日常提到的热启动不太一样，连续杀掉 App 的启动也可能是暖启动。</p>
+<p>冷启动：是指系统的内核缓存区里没有 App 相关数据。冷暖启动的启动时间会差异比较大，冷启动的数据更能反映 App 真实的启动时长。保证 App 是冷启动的方法，就是通过重启设备，清理系统内核缓存区。</p>
+<p>常见的 iOS 启动时长测试方法，主要有以下几种</p>
+<ol>
+<li><strong>Xcode Developer Tool</strong>： 使用 Instruments 的 Time Profiler 插件，可以检测 App CPU 的使用情况。能看到 App 的启动时间和各个方法消耗的时间；</li>
+<li><p><strong>客户端计算统计</strong>： 通过 hook 关键函数的调用，计算获得性能数据。</p>
+<p><strong>App总启动流程 = pre-main (+load,initializer)+ main函数代理（didFinishLaunchingWithOptions）+ 首屏渲染（viewDidAppear）</strong>，后两个阶段都属于 <code>main函数</code> 执行阶段。</p>
+</li>
+</ol>
+<p><img src="/Users/xushuanghui/Library/Application Support/typora-user-images/image-20210310151027524.png" alt="image-20210310151027524"></p>
+<h3 id="pre-main阶段"><a href="#pre-main阶段" class="headerlink" title="pre-main阶段"></a>pre-main阶段</h3><ul>
+<li>加载 dyld</li>
+<li>创建启动闭包（更新 App/重启手机需要）</li>
+<li>加载动态库</li>
+<li>Bind &amp; Rebase &amp; Runtime 初始化</li>
+<li>+load 和静态初始化</li>
+</ul>
+<p>获得 main() 方法执行前的耗时比较简单，通过 Xcode 自带的测量方法既可以。将 Xcode 中 Product -&gt; Scheme -&gt; Edit scheme -&gt; Run -&gt; Environment Variables 将环境变量 <code>DYLD_PRINT_STATISTICS</code> 或 <code>DYLD_PRINT_STATISTICS_DETAILS</code>  设为 <code>1</code> 即可获得执行每项耗时：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Total pre-main time: 977.95 milliseconds (100.0%)</span><br><span class="line">         dylib loading time: 433.20 milliseconds (44.2%)</span><br><span class="line">        rebase/binding time:  97.24 milliseconds (9.9%)</span><br><span class="line">            ObjC setup time:  50.13 milliseconds (5.1%)</span><br><span class="line">           initializer time: 397.36 milliseconds (40.6%)</span><br><span class="line">           slowest intializers :</span><br><span class="line">             libSystem.B.dylib :  11.48 milliseconds (1.1%)</span><br><span class="line">                   AgoraRtcKit : 105.87 milliseconds (10.8%)</span><br><span class="line">                        Hestia : 415.46 milliseconds (42.4%)</span><br></pre></td></tr></table></figure>
+<h3 id="main函数代理阶段"><a href="#main函数代理阶段" class="headerlink" title="main函数代理阶段"></a>main函数代理阶段</h3><h4 id="1、手动插入代码计算耗时"><a href="#1、手动插入代码计算耗时" class="headerlink" title="1、手动插入代码计算耗时"></a>1、手动插入代码计算耗时</h4><p>  在 <code>man()</code> 函数开始执行时就开始时间：</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">CFAbsoluteTime StartTime;  //  记录全局变量</span><br><span class="line">int main(int argc, char * argv[]) &#123;</span><br><span class="line">    @autoreleasepool &#123;</span><br><span class="line">        StartTime = CFAbsoluteTimeGetCurrent();</span><br><span class="line">        return UIApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>无侵入首屏渲染完成时间我们希望和 <code>MetricKit</code> 对齐，即获取到 <code>CA::Transaction::commit()</code>方法被调用的时间。</p>
+<p><code>CA::Transaction::commit()</code>，<code>CFRunLoopPerformBlock</code>，<code>kCFRunLoopBeforeTimers</code> 这三个时机的顺序从早到晚依次是：</p>
+<p><img src="/Users/xushuanghui/Library/Application Support/typora-user-images/image-20210311113820158.png" alt="image-20210311113820158"></p>
+<p>可以通过在 didFinishLaunch 中向 Runloop 注册 block 或者 BeforeTimer 的 Observer 来获取上图中两个时间点的回调，代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">if ([UIDevice currentDevice].systemVersion.floatValue &gt;= 13.0) &#123;</span><br><span class="line">        //注册kCFRunLoopBeforeTimers回调</span><br><span class="line">        CFRunLoopRef mainRunloop = [[NSRunLoop mainRunLoop] getCFRunLoop];</span><br><span class="line">        CFRunLoopActivity activities = kCFRunLoopAllActivities;</span><br><span class="line">        CFRunLoopObserverRef observer = CFRunLoopObserverCreateWithHandler(kCFAllocatorDefault, activities, YES, 0, ^(CFRunLoopObserverRef observer, CFRunLoopActivity activity) &#123;</span><br><span class="line">            if (activity == kCFRunLoopBeforeTimers) &#123;</span><br><span class="line">                NSTimeInterval stamp = [[NSDate date] timeIntervalSince1970];</span><br><span class="line">                NSLog(@&quot;runloop beforetimers launch end:%f&quot;,stamp);</span><br><span class="line">                CFRunLoopRemoveObserver(mainRunloop, observer, kCFRunLoopCommonModes);</span><br><span class="line">                [HSALaunchManage initLaunchService];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        CFRunLoopAddObserver(mainRunloop, observer, kCFRunLoopCommonModes);</span><br><span class="line">    &#125;</span><br><span class="line">    else &#123;</span><br><span class="line">        //    注册block</span><br><span class="line">        CFRunLoopRef mainRunloop = [[NSRunLoop mainRunLoop] getCFRunLoop];</span><br><span class="line">        CFRunLoopPerformBlock(mainRunloop,NSDefaultRunLoopMode,^()&#123;</span><br><span class="line">            NSTimeInterval stamp = [[NSDate date] timeIntervalSince1970];</span><br><span class="line">            NSLog(@&quot;runloop block launch end:%f&quot;,stamp);</span><br><span class="line">            [HSALaunchManage initLaunchService];</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<ol>
+<li>iOS13（含）以上的系统采用 <code>runloop</code> 中注册一个 <code>kCFRunLoopBeforeTimers</code> 的回调获取到的 App 首屏渲染完成的时机更准确。</li>
+<li>iOS13 以下的系统采用 <code>CFRunLoopPerformBlock</code> 方法注入 block 获取到的 App 首屏渲染完成的时机更准确。</li>
+</ol>
+<h3 id="启动时间统计"><a href="#启动时间统计" class="headerlink" title="启动时间统计:"></a>启动时间统计:</h3><h4 id="main-函数启动时间"><a href="#main-函数启动时间" class="headerlink" title="main()函数启动时间"></a>main()函数启动时间</h4><p><strong>MianStartTime:1617002963.711972</strong></p>
+<p><strong>1617002963.862700</strong></p>
+<h4 id="首屏结束时间："><a href="#首屏结束时间：" class="headerlink" title="首屏结束时间："></a>首屏结束时间：</h4><p><strong>runloop beforetimers launch end:1617002965.720096</strong></p>
+<p>Total pre-main time: 797.23 milliseconds</p>
+<p>首屏时间-Mianstart  5.72-3.7119=2.0081 秒 </p>
+<p>总时间：2.0081+0.977=2.9851 秒</p>
+<p><strong><em>对于 main() 调用之前的耗时可以优化的点有</em></strong></p>
+<ul>
+<li><p>1、减少不必要的 framework，因为动态链接比较耗时</p>
+</li>
+<li><p>2、check framework 应当设为 optional 和 required，如果该 framework 在当前 App 支持的所有 iOS 系统版本都存在，那么就设为 required，否则就设为 optional，因为 optional 会有些额外的检查</p>
+</li>
+<li><p>3、合并或者删减一些 OC 类，关于清理项目中没用到的类</p>
+</li>
+<li><p>4、删减没有被调用到或者已经废弃的方法</p>
+</li>
+<li><p>5、将不必须在 + load 方法中做的事情延迟到 + initialize 中或者放延迟到首屏渲染之后</p>
+</li>
+<li><p>6、高频次方法</p>
+<p>有些方法的单个耗时不高，但是在启动路径上会调用很多次的，这种累计起来的耗时也不低，比如读 Info.plist 里面的配置：</p>
+</li>
+</ul>
+<ul>
+<li>(NSString *)plistChannel{    <pre><code>return [[[NSBundle mainBundle] infoDictionary] objectForKey:@&quot;CHANNEL_NAME&quot;];
+</code></pre>}</li>
+</ul>
+<p>修改的方式很简单，加一层内存缓存即可，这种问题在 TimeProfiler 里时间段选长一些往往就能看出来。</p>
+<h4 id="2、APP-Launch-检测"><a href="#2、APP-Launch-检测" class="headerlink" title="2、APP Launch 检测"></a>2、APP Launch 检测</h4><p><img src="/Users/xushuanghui/Library/Application Support/typora-user-images/image-20210312173338839.png" alt="image-20210312173338839"></p>
+<p><img src="/Users/xushuanghui/Library/Application Support/typora-user-images/image-20210413111434697.png" alt="image-20210413111434697"></p>
+<h3 id="一、阿里云sdk初始化"><a href="#一、阿里云sdk初始化" class="headerlink" title="一、阿里云sdk初始化"></a>一、阿里云sdk初始化</h3><h3 id="二、flutter初始化"><a href="#二、flutter初始化" class="headerlink" title="二、flutter初始化"></a>二、flutter初始化</h3><p>[FlutterBoostPlugin.sharedInstance startFlutterWithPlatform:[RTFlutterRouter shareFlutterRouter]</p>
+<p>  onStart:^(FlutterEngine *engine) {}]; 把flutter初始化延后至首屏渲染之后</p>
+<h3 id="三、其他-load方法"><a href="#三、其他-load方法" class="headerlink" title="三、其他+load方法"></a>三、其他+load方法</h3><p>1、[self configProgressView];</p>
+<p> [[FRWLocalizableManager sharedInstance] localizabledImageNamed:imgName inBundle:bundle] 先从缓存取，缓存没有从本地取，然后把图片写入缓存，80ms，已没有用移除。</p>
+<p>2、[HVSRCLiveChatRoomUtils initializeRongCloudIM];  11ms</p>
+<p>3、[FRRWebEngine startEngine]; 59ms</p>
+<p>实现一个类，负责首屏渲染之后处理初始化</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">+(void)initLaunchService &#123;</span><br><span class="line">	//flutter</span><br><span class="line">  [FlutterBoostPlugin.sharedInstance startFlutterWithPlatform:[RTFlutterRouter shareFlutterRouter] onStart:^(FlutterEngine *engine) &#123;&#125;];</span><br><span class="line">  //融云</span><br><span class="line">  [HVSRCLiveChatRoomUtils initializeRongCloudIM];</span><br><span class="line">  //webView</span><br><span class="line">  [FRRWebEngine startEngine];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="四、移除部分无用代码和类"><a href="#四、移除部分无用代码和类" class="headerlink" title="四、移除部分无用代码和类"></a>四、移除部分无用代码和类</h3><h4 id="其他："><a href="#其他：" class="headerlink" title="其他："></a>其他：</h4><p> 之前直觉的就把第三方的初始化放到了 didFinishLaunchingWithOptions 方法里，我专门建了一个类来负责启动事件，区分开可以放在首屏显示之后再初始化的第三方库，以后再引入的时候就会判断一下。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">* 这个类负责所有原来didFinishLaunchingWithOptions和+load中 延迟事件的加载，根据需要减少 didFinishLaunchingWithOptions 里耗时的操作.</span><br><span class="line">* 第一类: 比如日志 / 统计等需要第一时间启动的, 仍然放在 didFinishLaunchingWithOptions 中.</span><br><span class="line">* 第二类: 部分第三方库的启动、数据处理等业务，不需要放在didFinishLaunchingWithOptions中，延后至首屏显示之后</span><br><span class="line">*/</span><br></pre></td></tr></table></figure>
+<p>图片<br>启动难免会用到很多图，有没有办法优化图片加载的耗时呢？<br>用 Asset 管理图片而不是直接放在 bundle 里。Asset 会在编译期做优化，让加载的时候更快，此外在 Asset 中加载图片是要比 Bundle 快的，因为 UIImage imageNamed 要遍历 Bundle 才能找到图。加载 Asset 中图的耗时主要在在第一次张图，因为要建立索引，可以通过把启动的图放到一个小的 Asset 里来减少这部分耗时。</p>
+<p>每次创建 UIImage 都需要 IO，在首帧渲染的时候会解码。所以可以通过提前子线程预加载（创建 UIImage）来优化这部分耗时。</p>
+<p>有的启动只有到了比较晚的阶段“RootWindow 创建”和“首帧渲染”才会用到图片，<strong>所以可以在启动的早期开预加载的子线程启动任务</strong>。</p>
+<h4 id="二进制重排"><a href="#二进制重排" class="headerlink" title="二进制重排"></a>二进制重排</h4><p>既然启动的路径上会触发大量的 Page In，那么有没有什么办法优化呢？</p>
+<p>启动具有局部性特征，即只有少部分函数在启动的时候用到，这些函数在中的分布是零散的，所以 Page In 读入的数据利用率并不高。如果我们可以把启动用到的函数排列到二进制的连续区间，那么就可以减少 Page In 的次数，从而优化启动时间：</p>
+<p>以下图为例，方法 1 和方法 3 是启动的时候用到的，为了执行对应的代码，就需要两次 Page In。假如我们把方法 1 和 3 排列到一起，那么只需要一次 Page In，从而提升启动速度。</p>
+<p><img src="/Users/xushuanghui/Library/Application Support/typora-user-images/image-20210506165054800.png" alt="image-20210506165054800"></p>
+<p>链接器 ld 有个参数-order_file 支持按照符号的方式排列二进制。获取启动时候用到的符号主流有两种方式：</p>
+<ul>
+<li>抖音方案：静态扫描获取 +load 和 C++静态初始化，hook objc_msgSend 获取 Objective C 符号。</li>
+<li>Facebook 方案：LLVM 函数插桩，灰度统计启动路径符号，用大多数用户的符号生成 order_file。</li>
+</ul>
+<p>Facebook 的 LLVM 函数插桩是针对 order_file 定制，并且代码也是他们自己给 LLVM 开发的，目前已经合并到 LLVM 主分支了。</p>
+<p><img src="/Users/xushuanghui/Library/Application Support/typora-user-images/image-20210506165105863.png" alt="image-20210506165105863"></p>
+<p>Facebook 的方案更精细化，生成的 order_file 是最优解，但是工程量很大。抖音的方案<strong>不需要源码编译</strong>，<strong>不需要对现有编译环境和流程改造</strong>，侵入性最小，缺点就是只能覆盖 90%左右的符号。</p>
+<p>- 灰度是任何优化都要利用好的一个阶段，因为很多新的优化方案存在不确定性，需要先在灰度上验证。</p>
+<h3 id="非常规方案"><a href="#非常规方案" class="headerlink" title="非常规方案"></a>非常规方案</h3><h4 id="动态库懒加载"><a href="#动态库懒加载" class="headerlink" title="动态库懒加载"></a>动态库懒加载</h4><p>最开始我们提到可以通过删代码的方式来减少代码量，那么有没有什么不减少代码总量，就可以减少启动时候要加载代码数量的方式呢？</p>
+<ul>
+<li>答案就是动态库懒加载。</li>
+</ul>
+<p>什么是懒加载的动态库呢？正常动态库都是会被主二进制直接或者间接链接的，那么这些动态库会在启动的时候加载。<strong>如果只打包进 App，不参与链接，那么启动的时候就不会自动加载，在运行时需要用到动态库里面的内容的时候，再手动懒加载</strong>。</p>
+<p>懒加载动态库需要在编译期和运行时都进行改造，编译期的架构：</p>
+<p><img src="https://static001.infoq.cn/resource/image/53/a2/53277be65a8882bfb437aef8fba065a2.png" alt="img"></p>
+<p>像 A.framework 等动态库是懒加载的，因为并没有参与主二进制的直接 or 间接链接。动态库之间一定会有一些共同的依赖，把这些依赖打包成 Shared.framework 解决公共依赖的问题。</p>
+<p>运行时通过<code>-[NSBundle load]</code>来加载，本质上调用的是底层的 <code>dlopen</code>。那么什么时候触发动态库手动加载呢？</p>
+<p>动态库可以分成两种：业务和功能。<strong>业务就是 UI 的入口，可以把动态库加载的逻辑收敛到路由内部，这样外部其实并不知道动态库是懒加载的，也能更好地容错</strong>。功能库（比如上图的 QR.framework）会有些不一样，因为没有 UI 等入口，需要功能库自己维护 Wrapper：</p>
+<ul>
+<li><img src="/Users/xushuanghui/Library/Application Support/typora-user-images/image-20210506165131007.png" alt="image-20210506165131007">App 对 Wrapper 直接依赖，这样外部并不知道这个动态库是懒加载的</li>
+<li>Wrapper 内部封装了动态调用逻辑，动态调用指的是通过 dlsym 等方式调用</li>
+</ul>
+<p>动态库懒加载除了启动加载的代码减少，还能长期防止业务增加代码引起启动劣化，因为业务的初始化在第一次访问的时候完成的。</p>
+<p>这个方案还有其他优点，比如动态库化后本地编译时间会大幅度降低，对其他性能指标也有好处，缺点是会牺牲一定程度的包大小，但可以用段压缩等方式优化懒加载的动态库来打平这部分损耗。</p>
+<h4 id="Background-Fetch"><a href="#Background-Fetch" class="headerlink" title="Background Fetch"></a>Background Fetch</h4><p>Background Fetch 可以隔一段时间把 App 在后台启动，对于时间敏感的 App（比如新闻）可以在后台刷新数据，这样能够提高 Feed 加载的速度，进而提升用户体验。</p>
+<p>那么，这种类似“后台保活”的机制，为什么能提高启动速度呢？我们来看一个典型的 case：</p>
+<p><img src="/Users/xushuanghui/Library/Application Support/typora-user-images/image-20210506165219913.png" alt="image-20210506165219913"></p>
+<ol>
+<li>系统在后台启动 App</li>
+<li>时间长因为内存等原因，后台的 App 被 kill 了</li>
+<li>这时候用户立刻启动 App，那么这次启动就是一次<strong>热启动</strong>，因为缓存还在</li>
+<li>又一次系统在后台启动 App</li>
+<li>这次用户在 App 在后台的时候点了 App，那么这次启动就是一次<strong>后台回前台</strong>，因为 App 仍然活着</li>
+</ol>
+<p>通过这两个典型的场景，可以看出来为什么 Background Fetch 能提高启动速度了：</p>
+<ul>
+<li><strong>提高热启动在冷启动的占比</strong></li>
+<li><strong>后台启动回前台被定义为启动，因为用户的角度来说这就是一次启动</strong></li>
+</ul>
+<p>后台启动有一些要注意的点，<strong>比如日活，广告，甚至是 AB 进组逻辑都会受影响</strong>，需要做不少适配。往往需要启动器来支撑，因为正常启动在 didFinishLaunch 执行的任务，在后台启动的时候需要延迟到第一次回前台的时候再执行。</p>
+<p>资料：</p>
+<ul>
+<li>1、去除没有用到的资源： <a href="https://github.com/tinymind/LSUnusedResources">https://github.com/tinymind/LSUnusedResources</a></li>
+<li>2、利用AppCode：<a href="https://www.jetbrains.com/objc/" target="_blank" rel="noopener">https://www.jetbrains.com/objc/</a> 检测未使用的代码：菜单栏 -&gt; Code -&gt; Inspect Code</li>
+<li>3、可借助第三方工具解析LinkMap文件： <a href="https://github.com/huanxsd/LinkMap">https://github.com/huanxsd/LinkMap</a> 生成LinkMap文件，可以查看可执行文件的具体组成</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/03/09/日志/" rel="next" title="">
+                <i class="fa fa-chevron-left"></i> 
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">xushuanghui</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">30</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#pre-main阶段"><span class="nav-number">1.</span> <span class="nav-text">pre-main阶段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#main函数代理阶段"><span class="nav-number">2.</span> <span class="nav-text">main函数代理阶段</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、手动插入代码计算耗时"><span class="nav-number">2.1.</span> <span class="nav-text">1、手动插入代码计算耗时</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动时间统计"><span class="nav-number">3.</span> <span class="nav-text">启动时间统计:</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#main-函数启动时间"><span class="nav-number">3.1.</span> <span class="nav-text">main()函数启动时间</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#首屏结束时间："><span class="nav-number">3.2.</span> <span class="nav-text">首屏结束时间：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、APP-Launch-检测"><span class="nav-number">3.3.</span> <span class="nav-text">2、APP Launch 检测</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一、阿里云sdk初始化"><span class="nav-number">4.</span> <span class="nav-text">一、阿里云sdk初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、flutter初始化"><span class="nav-number">5.</span> <span class="nav-text">二、flutter初始化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、其他-load方法"><span class="nav-number">6.</span> <span class="nav-text">三、其他+load方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四、移除部分无用代码和类"><span class="nav-number">7.</span> <span class="nav-text">四、移除部分无用代码和类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#其他："><span class="nav-number">7.1.</span> <span class="nav-text">其他：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二进制重排"><span class="nav-number">7.2.</span> <span class="nav-text">二进制重排</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#非常规方案"><span class="nav-number">8.</span> <span class="nav-text">非常规方案</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#动态库懒加载"><span class="nav-number">8.1.</span> <span class="nav-text">动态库懒加载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Background-Fetch"><span class="nav-number">8.2.</span> <span class="nav-text">Background Fetch</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">xushuanghui</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

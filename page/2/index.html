@@ -229,7 +229,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://github.com/xushuanghui/2020/03/22/优化app启动速度/">
+    <link itemprop="mainEntityOfPage" href="https://github.com/xushuanghui/2020/09/05/iOS接入flutter/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="xushuanghui">
@@ -248,7 +248,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2020/03/22/优化app启动速度/" itemprop="url">优化app启动速度</a></h1>
+                <a class="post-title-link" href="/2020/09/05/iOS接入flutter/" itemprop="url">iOS接入flutter</a></h1>
         
 
         <div class="post-meta">
@@ -260,8 +260,169 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-03-22T17:37:24+08:00">
-                2020-03-22
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-09-05T15:44:02+08:00">
+                2020-09-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="1-flutter-module-创建与配置"><a href="#1-flutter-module-创建与配置" class="headerlink" title="1. flutter module 创建与配置"></a>1. flutter module 创建与配置</h3><h4 id="1-1-下载-flutter-基础包"><a href="#1-1-下载-flutter-基础包" class="headerlink" title="1.1 下载 flutter 基础包"></a>1.1 下载 flutter 基础包</h4><p>从 github 下载代码 <code>git clone -b beta https//github.com/flutter/flutter.git</code></p>
+<p>但是 github 可能会很慢，可以从码云上下 <code>git clone https://gitee.com/mirrors/Flutter.git</code></p>
+<h4 id="1-2-配置-flutter-环境变量"><a href="#1-2-配置-flutter-环境变量" class="headerlink" title="1.2 配置 flutter 环境变量"></a>1.2 配置 flutter 环境变量</h4><p>如果使用的 bash</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">第一步：</span><br><span class="line">cd ~           // 在终端进入用户目录，一般打开终端默认就是</span><br><span class="line"></span><br><span class="line">第二步：</span><br><span class="line">open .bash_profile    // 打开 bash 配置文件</span><br><span class="line">// 另 如果 .bash_profile文件不存在需先创建再打开，具体如下：</span><br><span class="line">// touch .bash_profile</span><br><span class="line">// open .bash_profile</span><br><span class="line"></span><br><span class="line">第三步：</span><br><span class="line"># for flutter</span><br><span class="line">export PUB_HOSTED_URL=https://pub.flutter-io.cn</span><br><span class="line">export FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn</span><br><span class="line">export PATH=/Users/hubery/dev_supports/flutter/bin:$PATH</span><br><span class="line"></span><br><span class="line">第四步：</span><br><span class="line">source .bash_profile      // 执行文件 使命令生效</span><br></pre></td></tr></table></figure>
+<p>如果使用的 zsh</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">第一步：</span><br><span class="line">cd ~           // 在终端进入用户目录，一般打开终端默认就是</span><br><span class="line"></span><br><span class="line">第二步：</span><br><span class="line">open .zshrc    // 打开 zsh 配置文件</span><br><span class="line"></span><br><span class="line">第三步：</span><br><span class="line"># for flutter</span><br><span class="line">export PUB_HOSTED_URL=https://pub.flutter-io.cn</span><br><span class="line">export FLUTTER_STORAGE_BASE_URL=https://storage.flutter-io.cn</span><br><span class="line">export PATH=/Users/hubery/dev_supports/flutter/bin:$PATH</span><br><span class="line"></span><br><span class="line">第四步：</span><br><span class="line">source .zshrc      // 执行文件 使命令生效</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>其中 <code>/Users/hubery/dev_supports/flutter</code> 为 1.1 中下载下来的 flutter 路径</p>
+</blockquote>
+<p>然后在终端中输入 <code>flutter</code> 验证环境变量是否配置成功，出现如下类似信息时表示配置是OK的</p>
+<h4 id="1-3-flutter-module-创建"><a href="#1-3-flutter-module-创建" class="headerlink" title="1.3 flutter module 创建"></a>1.3 flutter module 创建</h4><p>可以使用 Android Studio 创建 flutter module</p>
+<p>或者在目标目录下使用命令创建 <code>flutter create -t module flutter_demo_module_ios</code></p>
+<p>创建的过程需要梯子从外网获取 flutter 相关资源。 这里推荐使用 Android Studio，操作方便，flutter 相关的插件支持的也挺好</p>
+<h4 id="1-4-Android-Studio-上-flutter-项目配置"><a href="#1-4-Android-Studio-上-flutter-项目配置" class="headerlink" title="1.4 Android Studio 上 flutter 项目配置"></a>1.4 Android Studio 上 flutter 项目配置</h4><ul>
+<li><p>使用 Android Studio 打开刚才创建的 module, 在 Project 栏可以看到项目目录结构</p>
+<p>Android Studio –&gt; Preferences –&gt; Plugins –&gt; Marketplace 搜索 <code>Dart</code> 和 <code>Flutter</code> 插件并下载</p>
+</li>
+<li><p>配置 <code>Dart SDK path</code>, 设置入口为： Android Studio –&gt; Preferences –&gt; Languages &amp; Frameworks –&gt; Dart</p>
+<p>配置完成后，Android Studio 工具栏就可以看到选择 devices 的选项啦，如果没出现可以重启 Android Studio</p>
+</li>
+</ul>
+<h4 id="1-5-检查-flutter-运行环境是否可用"><a href="#1-5-检查-flutter-运行环境是否可用" class="headerlink" title="1.5 检查 flutter 运行环境是否可用"></a>1.5 检查 flutter 运行环境是否可用</h4><p>执行命令 <code>flutter doctor</code></p>
+<h4 id="1-6-如果flutter中插件安装，可在-pubspec-yaml-文件中添加需要的插件"><a href="#1-6-如果flutter中插件安装，可在-pubspec-yaml-文件中添加需要的插件" class="headerlink" title="1.6 如果flutter中插件安装，可在 pubspec.yaml 文件中添加需要的插件"></a>1.6 如果flutter中插件安装，可在 pubspec.yaml 文件中添加需要的插件</h4><ul>
+<li>安装: <code>flutter pub get</code></li>
+<li>更新: <code>flutter pub upgrade</code></li>
+</ul>
+<h4 id="1-7-执行编译"><a href="#1-7-执行编译" class="headerlink" title="1.7 执行编译"></a>1.7 执行编译</h4><ul>
+<li>debug: <code>flutter build ios --debug --no-codesign</code></li>
+<li>release: <code>flutter build ios --release --no-codesign</code></li>
+</ul>
+<h3 id="2-iOS-引入-flutter-module"><a href="#2-iOS-引入-flutter-module" class="headerlink" title="2. iOS 引入 flutter module"></a>2. iOS 引入 flutter module</h3><h4 id="2-1-创建-iOS-项目-amp-Pod-Init"><a href="#2-1-创建-iOS-项目-amp-Pod-Init" class="headerlink" title="2.1 创建 iOS 项目 &amp; Pod Init"></a>2.1 创建 iOS 项目 &amp; Pod Init</h4><p>如何创建 iOS项目以及 CocoaPods 的使用，此处就省略不表了 。。。</p>
+<p>如需了解 CocoaPods，请戳传送门：<a href="https://www.jianshu.com/p/6d51362b7e64" target="_blank" rel="noopener">CocoaPods 攻略</a></p>
+<h4 id="2-2-使用-Cocoapods-引入-flutter-module"><a href="#2-2-使用-Cocoapods-引入-flutter-module" class="headerlink" title="2.2 使用 Cocoapods 引入 flutter module"></a>2.2 使用 Cocoapods 引入 flutter module</h4><ul>
+<li><p>先执行编译该 <code>flutter_demo_module_ios</code> 项目, 终端执行 <code>flutter build ios --debug --no-codesign</code></p>
+</li>
+<li><p>iOS 项目中 Podfile 文件中添加如下命令:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># Flutter</span><br><span class="line">flutter_application_path = &apos;../flutter_demo_module_ios/&apos;</span><br><span class="line">load File.join(flutter_application_path, &apos;.ios&apos;, &apos;Flutter&apos;, &apos;podhelper.rb&apos;)</span><br><span class="line">  	</span><br><span class="line">  	</span><br><span class="line">target &apos;FlutterDemoIOSApp&apos; do</span><br><span class="line">  # Comment the next line if you don&apos;t want to use dynamic frameworks</span><br><span class="line">  use_frameworks!</span><br><span class="line">  	</span><br><span class="line">  # Flutter</span><br><span class="line">  install_all_flutter_pods(flutter_application_path)</span><br><span class="line">  	</span><br><span class="line">  	</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<p>然后执行 <code>pod install</code> 即可引入，在 pod 可以看到新增3个flutter相关的 framework</p></li></ul>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/09/05/iOS接入flutter/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://github.com/xushuanghui/2020/04/19/swift小总结/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xushuanghui">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xushuanghui">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/04/19/swift小总结/" itemprop="url">swift小总结</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-04-19T14:24:40+08:00">
+                2020-04-19
               </time>
             
 
@@ -300,229 +461,269 @@
       
         
           
-            <h2 id="名词解释"><a href="#名词解释" class="headerlink" title="名词解释"></a>名词解释</h2><p>先介绍一些和启动相关的名词。</p>
-<h3 id="Mach-O"><a href="#Mach-O" class="headerlink" title="Mach-O"></a>Mach-O</h3><p>Mach-O 是 iOS 系统不同运行时期可执行的文件的文件类型统称。主要分以下三类:</p>
+            <h3 id="1、混编方式"><a href="#1、混编方式" class="headerlink" title="1、混编方式"></a>1、<a href="https://developer.apple.com/documentation/swift/imported_c_and_objective-c_apis/importing_swift_into_objective-c" target="_blank" rel="noopener">混编方式</a></h3><p>1、SWIFT_OBJC_BRIDGING_HEADER方式适用简单项目</p>
 <ul>
-<li><strong>Executable</strong> - 可执行文件，是 App 中的主要二进制文件</li>
-<li><strong>Dylib</strong> - 动态库，在其他平台也叫 DSO 或者 DLL</li>
-<li><strong>Bundle</strong> - 苹果平台特有的类型，是无法被连接的 Dylib。只能在运行时通过 dlopen() 加载</li>
-</ul>
-<p>Mach-O 的基本结构如下图所示，分为三个部分：</p>
-<p><img src="https://i.loli.net/2021/01/23/UdWFSXmfPsquVt7.png" alt="5.43.13.png"></p>
-<ul>
-<li><strong>Header</strong> 包含了 Mach-O 文件的基本信息，如 CPU 架构，文件类型，加载指令数量等</li>
-<li><strong>Load Commands</strong> 是跟在 Header 后面的加载命令区，包含文件的组织架构和在虚拟内存中的布局方式，在调用的时候知道如何设置和加载二进制数据</li>
-<li><strong>Data</strong> 包含 Load Commands 中需要的各个 Segment 的数据。</li>
-</ul>
-<p>绝大多数 Mach-O 文件包括以下三种 <strong>Segment</strong>：</p>
-<ul>
-<li><strong>__TEXT</strong> - 代码段，包括头文件、代码和常量。只读不可修改。</li>
-<li><strong>__DATA</strong> - 数据段，包括全局变量, 静态变量等。可读可写。</li>
-<li><strong>__LINKEDIT</strong> - 如何加载程序, 包含了方法和变量的元数据（位置，偏移量），以及代码签名等信息。只读不可修改。</li>
-</ul>
-<h3 id="Image"><a href="#Image" class="headerlink" title="Image"></a>Image</h3><p>指的是 Executable，Dylib 或者 Bundle 的一种。</p>
-<h3 id="Framework"><a href="#Framework" class="headerlink" title="Framework"></a>Framework</h3><p>有很多东西都叫做 Framework，但在本文中，Framework 指的是一个 dylib，它周围有一个特殊的目录结构来保存该 dylib 所需的文件。</p>
-<h3 id="虚拟内存（Virtual-Memory）"><a href="#虚拟内存（Virtual-Memory）" class="headerlink" title="虚拟内存（Virtual Memory）"></a>虚拟内存（Virtual Memory）</h3><p>虚拟内存是建立在物理内存和进程之间的中间层。是一个连续的逻辑地址空间，而且逻辑地址可以没有对应的实际物理内存地址，也可以让多个逻辑地址对应到一个物理内存地址上。</p>
-<h4 id="Page-Fault"><a href="#Page-Fault" class="headerlink" title="Page Fault"></a>Page Fault</h4><p>当进程访问一个没有对应物理地址的逻辑地址时，会发生 Page Fault</p>
-<h4 id="Lazy-Reading"><a href="#Lazy-Reading" class="headerlink" title="Lazy Reading"></a>Lazy Reading</h4><p>某个想要读取的页没有在内存中就会触发 Page Fault，系统通过调用 mmap() 函数读取指定页，这个过程叫做 Lazy Reading</p>
-<h4 id="COW（Copy-On-Write）"><a href="#COW（Copy-On-Write）" class="headerlink" title="COW（Copy-On-Write）"></a>COW（Copy-On-Write）</h4><p>当进程需要对某一页内容进行修改时，内核会把需要修改的部分先复制一份，然后再修改，并把逻辑地址重新映射到新的物理内存去。这个过程叫做 Copy-On-Write</p>
-<h4 id="Dirty-Page-amp-Clean-Page"><a href="#Dirty-Page-amp-Clean-Page" class="headerlink" title="Dirty Page &amp; Clean Page"></a>Dirty Page &amp; Clean Page</h4><p>Image 加载后，被修改过内容的 Page 叫做 Dirty Page，会包含着进程特定的信息。与之相对的叫 Clean Page，可以从磁盘重新生成。</p>
-<h4 id="共享内存（Share-RAM）"><a href="#共享内存（Share-RAM）" class="headerlink" title="共享内存（Share RAM）"></a>共享内存（Share RAM）</h4><p>当多个 Mach-O 都依赖同一个 Dylib（eg. UIKit）时，系统会让这几个 Mach-O 的调用 Dylib 的逻辑地址都指向同一块物理内存区域，从而实现内存共享。Dirty Page 为进程独有，不能被共享。</p>
-<h3 id="地址空间布局随机化（ASLR）"><a href="#地址空间布局随机化（ASLR）" class="headerlink" title="地址空间布局随机化（ASLR）"></a>地址空间布局随机化（ASLR）</h3><p>当 Image 加载到逻辑地址空间的时候，系统会利用 ASLR 技术，使得 Image 的起始地址总是随机的，以避免黑客通过起始地址 + 偏移量找到函数的地址</p>
-<p>当系统利用 ASLR 分配了随机地址后，从 0 到该地址的整个区间会被标记为不可访问，意味着不可读，不可写，不可被执行。这个区域就是 <code>__PAGEZERO</code> 段，它的大小在 32 位系统是 4KB+，而在 64 位系统是 4GB+</p>
-<h3 id="代码签名（Code-Sign）"><a href="#代码签名（Code-Sign）" class="headerlink" title="代码签名（Code Sign）"></a>代码签名（Code Sign）</h3><p>代码签名可以让 iOS 系统确保要被加载的 Image 的安全性，用 Code Sign 设置签名时，每页内容都会生成一个单独的加密散列值，并存储到 <code>__LINKEDIT</code> 中去，系统在加载时会校验每页内容确保没有被篡改。</p>
-<h3 id="dyld（dynamic-loader）"><a href="#dyld（dynamic-loader）" class="headerlink" title="dyld（dynamic loader）"></a>dyld（dynamic loader）</h3><p>dyld 是 iOS 上的二进制加载器，用于加载 Image。有不少人认为 dyld 只负责加载应用依赖的所有动态链接库，这个理解是错误的。dyld 工作的具体流程如下：</p>
-<p><img src="https://i.loli.net/2021/01/23/Ot2WamfiK7jHcwS.png" alt="5.46.09.png"></p>
-<p>参考：dyld 启动流程 [3]</p>
-<h4 id="Load-dylibs"><a href="#Load-dylibs" class="headerlink" title="Load dylibs"></a>Load dylibs</h4><p>dyld 在加载 Mach-O 之前会先解析 Header 和 Load Commands, 然后就知道了这个 Mach-O 所依赖的 dylibs，以此类推，通过递归的方式把全部需要的 dylib 都加载进来。</p>
-<p>一般来说，一个 App 所依赖的 dylib 在 100 - 400 左右，其中大多数都是系统的 dylib，因为有缓存和共享的缘故，读取速度比较高。</p>
-<h4 id="Fix-ups"><a href="#Fix-ups" class="headerlink" title="Fix-ups"></a>Fix-ups</h4><p>因为 ASLR 和 Code Sign 的原因，刚被加载进来的 dylib 都处于相对独立的状态，为了把它们绑定起来，需要经过一个 Fix-ups 过程。Fix-ups 主要有两种类型：Rebase 和 Bind。</p>
-<h4 id="PIC（Position-Independent-Code）"><a href="#PIC（Position-Independent-Code）" class="headerlink" title="PIC（Position Independent Code）"></a>PIC（Position Independent Code）</h4><p>因为代码签名的原因，dyld 无法直接修改指令，但是为了实现在运行时可以 Fix-ups，在 code gen 时，通过动态 PIC（Position Independent Code）技术，使本来因为代码签名限制不能再修改的代码，可以被加载到间接地址上。当要调用一个方法时，会先在 <code>__DATA</code> 段中建立一个指针指向这个方法，再通过这个指针实现间接调用。</p>
-<h4 id="Rebase"><a href="#Rebase" class="headerlink" title="Rebase"></a>Rebase</h4><p>Rebase 就是针对 “因为 ASLR 导致 Mach-O 在加载到内存中是一个随机的首地址” 这一个问题做一个数据修正的过程。会将内部指针地址都加上一个偏移量，偏移量的计算方法如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Slide = actual_address - preferred_address</span><br></pre></td></tr></table></figure>
-<p>所有需要 Rebase 的指针信息已经被编码到 <code>__LINKEDIT</code> 里。然后就是不断重复地对 <code>__DATA</code> 中需要 Rebase 的指针加上这个偏移量。这个过程中可能会不断发生 Page Fault 和 COW，从而导致 I/0 的性能损耗问题，不过因为 Rebase 处理的是连续地址，所以内核会预先读取数据，减少 I/O 的消耗。</p>
-<h4 id="Binding"><a href="#Binding" class="headerlink" title="Binding"></a>Binding</h4><p>Binding 就是对调用的外部符号进行绑定的过程。比如我们要使用到 <code>UITableView</code>，即符号 <code>_OBJC_CLASS_$_UITableView</code>, 但这个符号又不在 Mach-O 中，需要从 UIKit.framework 中获取，因此需要通过 Binding 把这个对应关系绑定到一起。</p>
-<p>在运行时，dyld 需要找到符号名对应的实现。而这需要很多计算，包括去符号表里找。找到后就会将对应的值记录到 <code>__DATA</code> 的那个指针里。Binding 的计算量虽然比 Rebasing 更多，但实际需要的 I/O 操作很少，因为之前 Rebasing 已经做过了。</p>
-<h4 id="dyld2-amp-dyld3"><a href="#dyld2-amp-dyld3" class="headerlink" title="dyld2 &amp; dyld3"></a>dyld2 &amp; dyld3</h4><p><img src="https://i.loli.net/2021/01/23/qPM7wQ2J3DWfhyL.png" alt="5.46.27.png"></p>
-<p>在 iOS 13 之前，所有的第三方 App 都是通过 dyld 2 来启动 App 的，主要过程如下：</p>
-<ul>
-<li>解析 Mach-O 的 Header 和 Load Commands，找到其依赖的库，并递归找到所有依赖的库</li>
-<li>加载 Mach-O 文件</li>
-<li>进行符号查找</li>
-<li>绑定和变基</li>
-<li>运行初始化程序</li>
-</ul>
-<p>上面的所有过程都发生在 App 启动时，包含了大量的计算和 I/O，所以苹果开发团队为了加快启动速度，在 WWDC2017 - 413 - App Startup Time: Past, Present, and Future[4] 上正式提出了 dyld3。</p>
-<p>dyld3 被分为了三个组件：</p>
-<p>一个进程外的 MachO 解析器</p>
-<ul>
-<li><ul>
-<li>预先处理了所有可能影响启动速度的 search path、@rpaths 和环境变量</li>
-<li>然后分析 Mach-O 的 Header 和依赖，并完成了所有符号查找的工作</li>
-<li>最后将这些结果创建成了一个启动闭包</li>
-<li>这是一个普通的 daemon 进程，可以使用通常的测试架构</li>
-</ul>
+<li><p>简单的项目可以直接使用<code>projectName--Bridging-Header.h</code>文件的方式，将需要暴露给swift的oc类包含进去。</p>
 </li>
-<li><p>一个进程内的引擎，用来运行启动闭包</p>
+<li><p>Swift 访问 Objective-C</p>
+<p>只需要在桥接文件中（Bridging-Header.h）中导入需要暴露给 Swift 模块的 Objective-C 类，即可在 Swift 中访问相应 Objective-C 的类和方法</p>
 </li>
-<li><ul>
-<li>这部分在进程中处理</li>
-<li>验证启动闭包的安全性，然后映射到 dylib 之中，再跳转到 main 函数</li>
-<li>不需要解析 Mach-O 的 Header 和依赖，也不需要符号查找。</li>
+<li><p>Objective-C 访问 Swift</p>
+<p>在 Objective-C 类中导入 <code>ProductName-Swift.h</code>，即可访问 Swift 中暴露给 Objective-C 的类和方法</p>
+</li>
 </ul>
+<p>2、含三方库，业务分库的较复杂的项目</p>
+<ul>
+<li><p>纯swift构成的pod，使用时直接<code>@import module</code>就行</p>
 </li>
-<li><p>一个启动闭包缓存服务</p>
+<li><p>oc和swift混合构成的pod</p>
+<ul>
+<li><p>pod中oc类中使用swift类，需要通过<code>SWIFT_OBJC_INTERFACE_HEADER_NAME</code>头文件中先导入需要暴露(<em><code>public</code></em>)给oc使用的swift类, 然后oc中引用<code>#import &quot;YourPodModule-Swift.h&quot;</code>, <code>#import &quot;YourPodModule-Swift.h&quot;</code>无法直接在主工程引入</p>
 </li>
-<li><ul>
-<li>系统 App 的启动闭包被构建在一个 Shared Cache 中， 我们甚至不需要打开一个单独的文件</li>
-<li>对于第三方的 App，我们会在 App 安装或者升级的时候构建这个启动闭包。</li>
-<li>在 iOS、tvOS、watchOS 中，这这一切都是 App 启动之前完成的。在 macOS 上，由于有 Side Load App，进程内引擎会在首次启动的时候启动一个 daemon 进程，之后就可以使用启动闭包启动了。</li>
+<li><p><em><code>podfile</code>\</em>中配置*<code>use_modular_headers!</code>*, 主工程通过<code>@import module</code>导入含swift的pod即可访问暴露给外部的swift类。iOS头文件引入变迁<code>#include-&gt;#import-&gt;pch-&gt;@import</code>, <code>@import</code>接解决了编译时间和引用泛滥的问题，建议项目中大量使用。</p>
+</li>
+<li><p>Swift 访问 Objective-C</p>
+<p>用 Swift Module 系统，需要用到的 Objective-C 类用 import xxx 进行引用，即可在 Swift 中访问相应的 Objective-C 的类和方法</p>
+</li>
+<li><p>Objective-C 访问 Swift</p>
+<p>在 Objective-C 类中导入 <code>ProductName-Swift.h</code>，即可访问 Swift 中暴露给 Objective-C 的类和方法</p>
+</li>
 </ul>
 </li>
 </ul>
-<p>dyld 3 把很多耗时的查找、计算和 I/O 的事前都预先处理好了，这使得启动速度有了很大的提升。</p>
-<h2 id="App-启动"><a href="#App-启动" class="headerlink" title="App 启动"></a>App 启动</h2><p>介绍完上面这一大堆名词之后，我们正式进入主题。</p>
-<h3 id="App-启动为什么这么重要？"><a href="#App-启动为什么这么重要？" class="headerlink" title="App 启动为什么这么重要？"></a>App 启动为什么这么重要？</h3><ul>
-<li>App 启动是和用户的第一个交互过程，所以要尽量缩短这个过程的时间，给用户一个良好的第一印象</li>
-<li>启动代表了你的代码的整体性能，如果启动的性能不好，其他部分的性能可能也不会太好</li>
-<li>启动会占用 CPU 和内存，从而影响系统性能和电池</li>
-</ul>
-<p>所以我们要好好优化启动时间。</p>
-<h3 id="启动类型"><a href="#启动类型" class="headerlink" title="启动类型"></a>启动类型</h3><p>App 的启动类型分为三类</p>
+<p>3、继承</p>
 <ul>
-<li><p><strong>Cold Launch</strong> 也就是冷启动，冷启动需要满足以下几个条件：</p>
-</li>
-<li><ul>
-<li>重启之后</li>
-<li>App 不在内存中</li>
-<li>没有相关的进程存在</li>
-</ul>
-</li>
-<li><p><strong>Warm Launch</strong> 也就是热启动，热启动需要满足以下几个条件：</p>
-</li>
-<li><ul>
-<li>App 刚被终止</li>
-<li>App 还没完全从内存中移除</li>
-<li>没有相关的进程存在</li>
-</ul>
-</li>
-<li><p><strong>Resume Launch</strong> 指的是被挂起的 App 继续的过程，需要满足以下几个条件：</p>
-</li>
-<li><ul>
-<li>App 被挂起</li>
-<li>App 还全部都在内存中X</li>
-<li>还存在相关的进程</li>
-</ul>
+<li><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1、使是继承自NSObject的类，也需要显式添加@objc才能访问。在此之前是默认添加的。</span><br><span class="line"></span><br><span class="line">2、swift的类如果想通过动态性动态生成，比如`Class cls = NSClassFromString(clsName);`</span><br><span class="line">@objc(HSAShortVideoDetailViewController)</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<h3 id="App-启动阶段"><a href="#App-启动阶段" class="headerlink" title="App 启动阶段"></a>App 启动阶段</h3><p>App 启动分为三个阶段</p>
-<p>初始化 App 的准备工作</p>
+<p>4、<a href="https://github.com/apple/swift-evolution/blob/master/proposals/0160-objc-inference.md">@objc的一些规则</a></p>
 <ul>
-<li>绘制第一帧 App 的准备工作及绘制（这里的第一帧并不是获取到数据之后的第一帧，可以是一张占位视图），这时候用户与 App 已经可以交互了，比如 tabbar 切换</li>
-<li>获取到页面的所有数据之后的完整的绘制第一帧页面</li>
-</ul>
-<p>在这个地方，苹果再次强调了一下，<strong>建议「用户从点击 App 图标到可以再次交互，也就是第二阶段结束」的时间最好在 400ms 以内</strong>。目前来看，大部分 App 都没有达到这个目标。</p>
-<p>下面，我们把上面三个阶段分成下面这 6 个部分，讲一下这几个阶段做了什么以及有什么可以优化的地方。</p>
-<p><img src="https://i.loli.net/2021/01/23/auR342AWPdGgoCQ.png" alt="5.46.38.png"></p>
-<h4 id="System-Interface"><a href="#System-Interface" class="headerlink" title="System Interface"></a>System Interface</h4><p>初始化 App 的准备工作，系统主要做了两个事情：Load dylibs 和 libSystem init</p>
-<p>在 2017 年苹果介绍过 dyld3 给系统 App 带来了多少优化，今年 dyld3 正式开发给开发者使用，这意味着 iOS 系统会将你热启动的运行时依赖给缓存起来。以达到减少启动时间的目的。这也就是提升 200% 的原因之一。</p>
-<p>视频中只说优化了热启动时间，理论上对于 iOS 系统来说 dyld3 应该还可以优化冷启动时间，所以不知道是因为给 iPad 增加了多任务功能的原因，还是没有把所有功能开放的原因，作者只提了热启动这个原因暂时还不太清楚。</p>
-<p>除此之外，在 Load dylibs 阶段，开发者还可以做以下优化：</p>
-<ul>
-<li>避免链接无用的 frameworks，在 Xcode 中检查一下项目中的「Linked Frameworks and Librares」部分是否有无用的链接。</li>
-<li>避免在启动时加载动态库，将项目的 Pods 以静态编译的方式打包，尤其是 Swift 项目，这地方的时间损耗是很大的。</li>
-<li>硬链接你的依赖项，这里做了缓存优化。</li>
-</ul>
-<p>也许有人会困惑是不是使用了 dyld3 了，我们就不需要做 Static Link 了，其实还是需要的，感兴趣的可以看一下 Static linking vs dyld3[5] 这篇文章，里面有一个详细的数据对比。</p>
-<p>libSystem init 部分，主要是加载一些优先级比较低的系统组件，这部分时间是一个固定的成本，所以我们开发人员不需要关心。</p>
-<h4 id="Static-Runtime-Initializaiton"><a href="#Static-Runtime-Initializaiton" class="headerlink" title="Static Runtime Initializaiton"></a>Static Runtime Initializaiton</h4><p>这个阶段主要是 Objective-C 和 Swift Runtime 的初始化，会调用所有的 <code>+load</code> 方法，将类的信息注册到 runtime 中。</p>
-<p>在这个阶段，原则上不建议开发者做任何事情，所以为了避免一些启动时间的损耗，你可以做以下几个事情：</p>
-<ul>
-<li>在 framework 开发时，公开专有的初始化 API</li>
-<li>减少在 <code>+load</code> 中做的事情</li>
-<li>使用 <code>initialize</code> 进行懒加载初始化工作</li>
-</ul>
-<h4 id="UIKit-Initializaiton"><a href="#UIKit-Initializaiton" class="headerlink" title="UIKit Initializaiton"></a>UIKit Initializaiton</h4><p>这个阶段主要做了两个事情：</p>
-<ul>
-<li>实例化 UIApplication 和 UIApplicationDelegate</li>
-<li>开始事件处理和系统集成</li>
-</ul>
-<p>所以这个阶段的优化也比较简单，你需要做两个事情：</p>
-<ul>
-<li>最大限度的减少 UIApplication 子类初始化时候的工作，更甚至与不子类化 UIApplication</li>
-<li>减少 UIApplicationDelegate 的初始化工作</li>
-</ul>
-<h4 id="Application-Initializaiton"><a href="#Application-Initializaiton" class="headerlink" title="Application Initializaiton"></a>Application Initializaiton</h4><p>这个阶段主要是生命周期方法的回调，也正是开发者最熟悉的部分。</p>
-<p>调用 UIApplicationDelegate 的 App 生命周期方法：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">application:willFinishLaunchingWithOptions:   application:didFinishLaunchingWithOptions:</span><br></pre></td></tr></table></figure>
-<p>和 UIApplicationDelegate 的 UI 生命周期方法：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">applicationDidBecomeActive:</span><br></pre></td></tr></table></figure>
-<p>同时，iOS 13 针对 UISceneDelegate 增加了新的回调：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scene:willConnectToSession:options:  sceneWillEnterForeground:  sceneDidBecomeActive:</span><br></pre></td></tr></table></figure>
-<p>也会在这个阶段调用。感兴趣的可以关注一下 Getting the Most out of Multitasking 这个 Session，暂时没有视频资源，怀疑是现场演示翻车了，所以没有把视频资源放出来。</p>
-<p>在这个阶段，开发者可以做的优化：</p>
-<ul>
-<li>推迟和启动时无关的工作</li>
-<li>Senens 之间共享资源</li>
-</ul>
-<h4 id="Fisrt-Frame-Render"><a href="#Fisrt-Frame-Render" class="headerlink" title="Fisrt Frame Render"></a>Fisrt Frame Render</h4><p>这个阶段主要做了创建、布局和绘制视图的工作，并把准备好的第一帧提交给渲染层渲染。会频繁调用以下几个函数：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">loadView viewDidLoad  layoutSubviews</span><br></pre></td></tr></table></figure>
-<p>在这个阶段，开发者可以做的优化：</p>
-<ul>
-<li>减少视图层级，懒加载一些不需要的视图</li>
-<li>优化布局，减少约束</li>
-</ul>
-<h4 id="Extend"><a href="#Extend" class="headerlink" title="Extend"></a>Extend</h4><p>大部分 App 都会通过异步的方式获取数据，并最终呈现给用户。我们把这一部分称为 Extend。</p>
-<p>因为这一部分每个 App 的表现都不一样，所以苹果建议开发者使用 os_signpost 进行测量然后慢慢分析慢慢优化。</p>
-<h2 id="测量-App-启动时间"><a href="#测量-App-启动时间" class="headerlink" title="测量 App 启动时间"></a>测量 App 启动时间</h2><p>要找到启动过程中的问题，就要进行多次测量并前后比较。但是如果变量没有控制好，就会导致误差。</p>
-<p>所以为了保证测量的数据能够真实的反应问题，我们要减少不稳定性因素，保证在可控的相近的环境下进行测量。最后使用一致的结果来分析。</p>
-<h3 id="条件一致性"><a href="#条件一致性" class="headerlink" title="条件一致性"></a>条件一致性</h3><p>为了保证环境一致，我们可以做下面这几个事情:</p>
-<ul>
-<li>重启手机，并等待 2-3 分钟</li>
-<li>启用飞行模式或者使用模拟网络</li>
-<li>不使用或者不变更 iCloud 的账户</li>
-<li>使用 release 模式进行 build</li>
-<li>测量热启动时间</li>
-</ul>
-<p>iColud 账户切换会影响性能，所以不要切换账号或者不开启 iCloud。</p>
-<h3 id="测量注意点"><a href="#测量注意点" class="headerlink" title="测量注意点"></a>测量注意点</h3><ul>
-<li><p>尽可能的使用具有代表性的数据进行测试</p>
-<p>如果不使用具有代表性的数据进行测试，就会出现偏差</p>
-</li>
-<li><p>使用不同的新旧设备进行测试</p>
-</li>
-<li><p>最后你还可以使用 XCTest 来测试，多运行几次，取平均结果</p>
+<li><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">@objc protocol p &#123;</span><br><span class="line">    func name()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">extension p &#123;</span><br><span class="line">    func bar() &#123;</span><br><span class="line">      print(&quot;bar&quot;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class C: NSObject, p &#123;</span><br><span class="line">    </span><br><span class="line">   func name() &#123;</span><br><span class="line">       print(&quot;name\n&quot;)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">   @objc func aaa() &#123;</span><br><span class="line">        print(&quot;aaa&quot;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">let c = C()</span><br><span class="line"></span><br><span class="line">print(c.responds(to: Selector(&quot;name&quot;)))  // true</span><br><span class="line">print(c.responds(to: Selector(&quot;bar&quot;)))   // false</span><br><span class="line">print(c.responds(to: Selector(&quot;aaa&quot;)))   // true</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">## @objc 并不改变访问级别，默认是Internal; 下面的例子中编译时不允许访问，运行时可访问</span><br><span class="line"># pod中定义的swift class</span><br><span class="line">class HSACleanScreenView: UIView &#123;</span><br><span class="line">    @objc func queryBlessInfo() &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># 主工程</span><br><span class="line">if ([_cleanSreenView respondsToSelector:@selector(queryBlessInfo)]) &#123;</span><br><span class="line">    [_cleanSreenView performSelector:@selector(queryBlessInfo)];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 </li>
 </ul>
-<p>关于使用 XCTest 测试启动时间的信息，可以看一下 WWDC2019 - 417 - Improving Battery Life and Performance[7]，但是我测试了一下，目前好像还有一部分 API 还没有开放出来，暂时还不能使用。</p>
-<h2 id="使用-Instruments-分析和优化-App-启动过程"><a href="#使用-Instruments-分析和优化-App-启动过程" class="headerlink" title="使用 Instruments 分析和优化 App 启动过程"></a>使用 Instruments 分析和优化 App 启动过程</h2><h3 id="优化方式"><a href="#优化方式" class="headerlink" title="优化方式"></a>优化方式</h3><p>苹果给了我们三个优化方式的建议，整体思想和前面提到的各个阶段的优化差不多</p>
-<h4 id="Minimize-Work"><a href="#Minimize-Work" class="headerlink" title="Minimize Work"></a>Minimize Work</h4><ul>
-<li>推迟与第一帧无关的工作</li>
-<li>从主线程移开阻塞工作</li>
-<li>减少内存使用量</li>
+<p>5、<a href="https://www.jessesquires.com/blog/2016/06/04/avoiding-objc-in-swift/" target="_blank" rel="noopener">避免@objc的滥用</a></p>
+<ul>
+<li><p>swift中调用oc，c类型的函数需要传递block作为参数时。 作为参数时，的修饰生命周期： <code>@escaping &amp; @nonescaping</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">// HVSLiveCleanScreenView</span><br><span class="line">let block: @convention(block) ()-&gt;() = &#123;</span><br><span class="line">         self.toSendWishMainPageAction(sender: sender)</span><br><span class="line">     &#125;</span><br><span class="line"> NotificationCenter.default.post(name: NSNotification.Name(rawValue: &quot;HSACallLoginNotification&quot;), object: [&quot;callback&quot; : block])</span><br><span class="line"> </span><br><span class="line"> // 类型转换</span><br><span class="line"> private func getAuthorizationData() -&gt; [String: Any] &#123;</span><br><span class="line">     var data: [String: AnyObject] = [String: AnyObject]()</span><br><span class="line">     data[&quot;callback&quot;] = &#123;</span><br><span class="line">         print(&quot;Its NOT crashing&quot;)</span><br><span class="line">     &#125; as (@convention(block) ()-&gt;Void) as AnyObject</span><br><span class="line">     return data</span><br><span class="line"> &#125;</span><br><span class="line"> </span><br><span class="line"> // swift调用带c函数作为参数的</span><br><span class="line"> CGFloat myCFunction(CGFloat (callback)(CGFloat x, CGFloat y)) &#123;</span><br><span class="line">     return callback(1.1, 2.2);</span><br><span class="line"> &#125;</span><br><span class="line"> let swiftCallback : @convention(c) (CGFloat, CGFloat) -&gt; CGFloat = &#123; (x, y) -&gt; CGFloat in</span><br><span class="line">     return x + y</span><br><span class="line"> &#125; </span><br><span class="line"> myCFunction( swiftCallback )</span><br></pre></td></tr></table></figure>
+</li>
 </ul>
-<h4 id="Prioritize-Work"><a href="#Prioritize-Work" class="headerlink" title="Prioritize Work"></a>Prioritize Work</h4><ul>
-<li>定义好任务的优先级。</li>
-<li>利用好 GCD 来优化你的启动速度。</li>
-<li>让重要的事情保持优先</li>
+<p>6、oc头文件中包含swift类时使用前行声明</p>
+<ul>
+<li><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// MyObjcClass.h</span><br><span class="line"> @class MySwiftClass;</span><br><span class="line"> @protocol MySwiftProtocol;</span><br><span class="line"></span><br><span class="line"> @interface MyObjcClass : NSObject</span><br><span class="line"> - (MySwiftClass *)returnSwiftClassInstance;</span><br><span class="line"> - (id &lt;MySwiftProtocol&gt;)returnInstanceAdoptingSwiftProtocol;</span><br><span class="line"> // ...</span><br><span class="line"> @end</span><br></pre></td></tr></table></figure>
+</li>
 </ul>
-<p>更深入的了解有关 GCD 的内容，可以看一下 WWDC2017 - 706 - Modernizing Grand Central Dispatch Usage[8]</p>
-<h4 id="Optimize-Work"><a href="#Optimize-Work" class="headerlink" title="Optimize Work"></a>Optimize Work</h4><ul>
-<li>简化现有工作，比如只请求必要的数据。</li>
-<li>优化算法和数据结构</li>
-<li>缓存资源和计算</li>
+<p>7、 oc调用swift闭包</p>
+<ul>
+<li><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@objc public var tapBlock: (() -&gt; ())?</span><br><span class="line"></span><br><span class="line">typealias BlockType = (String, String) -&gt; ()</span><br><span class="line">@objc public var tapBlock: BlockType?</span><br></pre></td></tr></table></figure>
+</li>
 </ul>
-<h3 id="使用-Instruments-分析-App-启动过程"><a href="#使用-Instruments-分析-App-启动过程" class="headerlink" title="使用 Instruments 分析 App 启动过程"></a>使用 Instruments 分析 App 启动过程</h3><p>当知道如何优化之后，我们需要针对我们的启动过程进行分析。Xcode 11 的 Instruments 为此新增了一个 App launch 模板，让开发者可以更好的分析自己 App 的启动速度。</p>
-<p><img src="https://i.loli.net/2021/01/23/pSZiUwWMomR2P4l.png" alt="5.46.52.png"></p>
-<p>运行后可以看到各个阶段的具体时间，根据数据进行优化，还能看到耗时的函数调用。</p>
-<p><img src="https://i.loli.net/2021/01/23/j1FSiAJROEM2INn.png" alt="2.45.32.png"></p>
-<h2 id="监控线上用户-App-的启动"><a href="#监控线上用户-App-的启动" class="headerlink" title="监控线上用户 App 的启动"></a>监控线上用户 App 的启动</h2><p>Xcode 11 在 Xcode Organizer 新增了一个监控面板，在这个面板里面可以查看多个维度的用户数据，其中还包括平均启动时间。</p>
-<p><img src="https://i.loli.net/2021/01/23/PyLlbhdJkYjN1n7.png" alt="2.45.41.png"></p>
-<p>当你通过 Instruments 分析完你的启动过程，并做了大量优化之后，你就可以通过 Xcode Organizer 来分析你这次优化效果到底怎么样。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>今年苹果提的很多优化建议其实在早几年都已经说过一遍了，属于老生常谈了。但是值得点赞的是新出的 Instruments 的 App launch 和 Xcode Organizer 的性能监控。</p>
-<p>启动优化是一个需要经常反复做的事情，越早发现问题，越容易解决问题，如果你想给你的用户一个良好的第一印象，就赶快行动起来吧。</p>
+<p>8、NS_STRING_ENUM</p>
+<p>尽量利用swift的优秀特性，比如一些有意义的key，直接用string，容易出错还无法进行类型检查</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">#objectiv-c</span><br><span class="line"></span><br><span class="line">## .h文件</span><br><span class="line">typedef NSString * THJStringDicKey NS_STRING_ENUM;</span><br><span class="line">FOUNDATION_EXTERN THJStringDicKey const THJStringDicKeyTitle;</span><br><span class="line">FOUNDATION_EXTERN THJStringDicKey const THJStringDicKeyBody;</span><br><span class="line">FOUNDATION_EXTERN THJStringDicKey const THJStringDicKeyHeader;</span><br><span class="line">## .m文件</span><br><span class="line">THJStringDicKey const THJStringDicKeyTitle  = @&quot;title&quot;;</span><br><span class="line">THJStringDicKey const THJStringDicKeyBody   = @&quot;body&quot;;</span><br><span class="line">THJStringDicKey const THJStringDicKeyHeader = @&quot;header&quot;;</span><br><span class="line"></span><br><span class="line">#swift</span><br><span class="line">let dic:  [THJStringDicKey:String] = [.title:&quot;title&quot;]</span><br></pre></td></tr></table></figure>
+<ul>
+<li><a href="https://www.codenong.com/jsa3e58ba1e6e8/" target="_blank" rel="noopener">关于<code>@convention</code> swiftGG</a></li>
+</ul>
+<h3 id="枚举"><a href="#枚举" class="headerlink" title="枚举"></a>枚举</h3><ul>
+<li><p>oc中使用swift枚举</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">@objc public enum WishShareType: Int &#123;</span><br><span class="line">    case video</span><br><span class="line">    case live</span><br><span class="line">    </span><br><span class="line">    func name() -&gt; String &#123;</span><br><span class="line">        switch self &#123;</span><br><span class="line">        case .video:</span><br><span class="line">            return &quot;video&quot;</span><br><span class="line">        case .live:</span><br><span class="line">            return &quot;live&quot;</span><br><span class="line">        default:</span><br><span class="line">            return &quot;video&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// swift中WishShareTypeLive这样来使用</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>swift中使用oc枚举</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">typedef NS_ENUM(NSInteger, HSAShortVideoLeftMenuTapActionType) &#123;</span><br><span class="line">    HSAShortVideoLeftMenuActionHotMenu,   // 热门菜品</span><br><span class="line">    HSAShortVideoLeftMenuActionCoupon,    // 优惠券</span><br><span class="line">&#125;;</span><br><span class="line">  </span><br><span class="line">let type: HSAShortVideoLeftMenuTapActionType = .actionCoupon</span><br><span class="line">let type = HSAShortVideoLeftMenuTapActionType.actionCoupon</span><br></pre></td></tr></table></figure>
+<p>注意：swfit使用<code>Enum.init(rawValue:)</code>生成oc类型的枚举，如果传入的值不在定义范围不会返回悔nil，执行时可能会出现无法预测的异常</p>
+</li>
+</ul>
+<h3 id="协议"><a href="#协议" class="headerlink" title="协议"></a><a href="https://www.jessesquires.com/blog/2017/06/05/protocol-composition-in-swift-and-objc/" target="_blank" rel="noopener">协议</a></h3><ul>
+<li><p>oc使用swift协议</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@objc protocol AlertViewProtocol &#123;</span><br><span class="line">  func submit(_ row: Int) //必须实现的协议</span><br><span class="line">  @objc optional func cancel() //不必实现的协议</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>swift使用oc的协议</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@objc public var delegate: HVSLiveChatRoomViewDelegate?</span><br><span class="line">if delegate?.responds(to: #selector(HVSLiveChatRoomViewDelegate.showWishMainPage(_:))) ?? false &#123;</span><br><span class="line">          delegate!.showWishMainPage!(sendWishVc)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="target-action"><a href="#target-action" class="headerlink" title="target-action"></a>target-action</h3><ul>
+<li><p>swift2.2版本之前可以通过<code>Selector(&quot;functionToExecute:&quot;)</code>的方式来生成，但该方式无法在编译器发现方法是否被实现，会导致<a href="https://learnappmaking.com/unrecognized-selector-sent-to-instance-swift-development/" target="_blank" rel="noopener">unrecognized selector sent to instance </a>错误。swift2.2后使用<code>#selector(functionToExecute(_:))</code>或<code>Selector(Target.functionToExecute)</code>, 之前的<code>Selector(&quot;&quot;)</code>方式被废弃</p>
+</li>
+<li><p><code>__FUNCTION__</code> =&gt;<code>#function</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print(&quot;%@&quot;, #function) // swift2.2之后替换为`#function`</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="关于responds"><a href="#关于responds" class="headerlink" title="关于responds"></a>关于<code>responds</code></h3><ul>
+<li><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">## oc中使用</span><br><span class="line"></span><br><span class="line">## swift中判断</span><br><span class="line">func responds(to aSelector: Selector!) -&gt; Bool</span><br><span class="line"></span><br><span class="line">## 动态判断，不确定类型的前提下，如遵循协议的swift对象是否实现了协议内的方法</span><br><span class="line">if delegate?.responds(to: #selector(HVSLiveChatRoomViewDelegate.showWishMainPage(_:))) ?? false &#123;</span><br><span class="line">     delegate!.showWishMainPage!(sendWishVc)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="循环引用"><a href="#循环引用" class="headerlink" title="循环引用"></a>循环引用</h3><ul>
+<li><p>block循环引用处理</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">wishVc.animationBlock = &#123; [weak self], [weak obj] animView in</span><br><span class="line">     animView.show(superView: self!, belowView: self!.wishButton, replace: self?.runingWishAimationView)</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>weakproxy</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">// NSTimer 还可以通过weakProxy来解循环引用</span><br><span class="line">timer = Timer.init(timeInterval: 1.0, target: FRWWeakProxy.init(target: self), selector: #selector(downTime), userInfo: nil, repeats: true)</span><br><span class="line">     RunLoop.main.add(timer, forMode: .common)</span><br><span class="line">     </span><br><span class="line">// wkWebView引起的循环引用因为协议的原因无法通过weakProxy来作转换</span><br><span class="line"> open func add(_ scriptMessageHandler: WKScriptMessageHandler, name: String)</span><br><span class="line"> </span><br><span class="line"> let userContentController = WKUserContentController.init()</span><br><span class="line"> userContentController.addUserScript(userScript)</span><br><span class="line"> userContentController.add(self, name: _CardAppNative)</span><br><span class="line"> </span><br><span class="line"> // 解决办法</span><br><span class="line"> 1、 目前通过主动调用clean来主动解开循环</span><br><span class="line"> func clean() &#123;</span><br><span class="line">     webView.configuration.userContentController.removeScriptMessageHandler(forName: _CardAppNative)</span><br><span class="line"> &#125;</span><br><span class="line"> </span><br><span class="line"> 2、 如果是控制器可以通过*`viewWillDisappear:`*来控制解开循环的时机，或则通过自定义`WKScriptMessageHandler`来解决</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="第三方库"><a href="#第三方库" class="headerlink" title="第三方库"></a>第三方库</h3><ul>
+<li><p>masonry</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">giftContentView.mas_makeConstraints &#123; (make) in</span><br><span class="line">    //  Fatal error: Unexpectedly found nil while implicitly unwrapping an Optional value</span><br><span class="line">    //  make?.left.mas_offset()(contentBeginX)</span><br><span class="line">    make?.left.offset()(contentBeginX)</span><br><span class="line">    make?.right.equalTo()(self.contentView)?.offset()(-contentEndX)</span><br><span class="line">    make?.top.mas_equalTo()(12)</span><br><span class="line">    make?.height.mas_equalTo()(contentHeight)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">oc中可以直接使用`mas_offset()`方式设置，但是swift中这里会导致crash，主要原因是因为swift不支持宏</span><br><span class="line">导致`#define mas_offset(...)          valueOffset(MASBoxValue((__VA_ARGS__)))`失效，实际返回nil;</span><br><span class="line">使用时尽量不适用带`mas_`的方法进行设置</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Reactive-C</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">// 同样因为宏在swfit中无法使用，`RAC(TARGET, ...)`等宏无法使用，需要直接调用对应代码</span><br><span class="line">model.rac_values(forKeyPath: &quot;buttonStatus&quot;, observer: self).take(untilReplacement: self.rac_signal(for: #selector(self.prepareForReuse))).subscribeNext &#123; [weak self] (obj) in</span><br><span class="line">    self?.changeActionButtonStyle()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="通知"><a href="#通知" class="headerlink" title="通知"></a>通知</h3><ul>
+<li><p>对于oc中通知的key的使用：宏定义和全部变量定义</p>
+</li>
+<li><p>通知使用oc中早先定义的key时<code></code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">## 宏定义</span><br><span class="line">#define kHSANotificateToPlayInlineWishAnimationKey @&quot;notificateToPlayInlineWishAnimation&quot;</span><br><span class="line">NSNotification.Name(rawValue: kHSANotificateToPlayInlineWishAnimationKey)</span><br><span class="line"></span><br><span class="line">## 全局变量</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="2、其他问题"><a href="#2、其他问题" class="headerlink" title="2、其他问题"></a>2、其他问题</h2><h3 id="2-1-Framework-targets-不支持-Bridging-Header"><a href="#2-1-Framework-targets-不支持-Bridging-Header" class="headerlink" title="2.1 Framework targets 不支持 Bridging-Header"></a>2.1 Framework targets 不支持 Bridging-Header</h3><p>  通常来讲混编的时候需要在工程中创建 Swift 文件时候，Xcode 会问询是否创建 Bridging-Header 文件，点击是，系统会帮你创建一个 Bridging-Header，你可以将需要引用的 Objective-C 模块的头文件放在里面，然后你可以在 Swift 模块用 Objective-C 的类。但是编译器是不允许在 Framework 中创建 Bridging-header，因此在二/三方库中，我们不能使用桥接文件的方式进行混编 Objective-C 代码的引用，需要用 Swift Module 进行模块间的引用。</p>
+<h3 id="2-2-模块引用"><a href="#2-2-模块引用" class="headerlink" title="2.2 模块引用"></a>2.2 模块引用</h3><p>  引用其他 Objective-C 二方库需要增加命名空间（Namespace），否则会报错找不到文件 Swift 的命名空间是以模块划分的，一个模块表示一个命名空间。开发时，默认添加到主 target 的内容是同处于同一个命名空间的；如果用 Cocoapods 导入的第三方库，是以一个单独的 target 存在，不会存在命名冲突。但如果以源码的方式导入工程，很可能发生命名冲突，所以为了安全起见，第三方库都会使用命名空间这种方式来防止冲突。</p>
+<h3 id="2-3-C-混编"><a href="#2-3-C-混编" class="headerlink" title="2.3 C++ 混编"></a>2.3 C++ 混编</h3><p>  Objective-C 是 C++ 的超集，就如同 Objective-C 是 C 的超集，在OS X 上同时被 GCC 和 Clang 支持编译，.mm 是 Objective-C++ 的默认后缀名，Xcode 的编译器可以识别。在.mm 文件中，Objective-C 代码和 C++ 代码都可以正常编译运行。在消息业务模块中中引用了 WCDB 这个 Objective-C++ 的库，因此在引用的时候要将引用到的 WCDB.h 头文件中的类文件的 .h 改成 .mm。</p>
+<h3 id="2-4-链接错误"><a href="#2-4-链接错误" class="headerlink" title="2.4 链接错误"></a>2.4 链接错误</h3><p>  我们将上述工作做完后引入到宿主工程中，进行编译的时候会出现链接错误，不要担心，那是因为宿主工程中缺少 Swift 的某些系统库，在宿主工程中建立一个 Swift 文件方可解决。</p>
+<h3 id="2-5-Swift-调用-Objective-C"><a href="#2-5-Swift-调用-Objective-C" class="headerlink" title="2.5 Swift 调用 Objective-C"></a>2.5 Swift 调用 Objective-C</h3><p>  将 Swift 模块文件中，用import xxx 的形式进行模块的引用，包括 Objective-C 的二/三方库</p>
+<h3 id="2-6-Objective-C-调用-Swift"><a href="#2-6-Objective-C-调用-Swift" class="headerlink" title="2.6 Objective-C 调用 Swift"></a>2.6 Objective-C 调用 Swift</h3><ul>
+<li>Swift 类中将需要暴露给 Objective-C 模块引用的类，用 public 申明</li>
+<li>Swift 类中需要暴露给 Objective-C 的方法要用关键字 @objc</li>
+<li>在 Objective-C 类中引用 ProductName-Swift.h 头文件即可引用暴露给 Objective-C 的 Swift 的类和方法</li>
+</ul>
 
           
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://github.com/xushuanghui/2020/03/04/OC接入swift/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="xushuanghui">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="xushuanghui">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/03/04/OC接入swift/" itemprop="url">OC接入swift</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-03-04T17:20:14+08:00">
+                2020-03-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="工程配置"><a href="#工程配置" class="headerlink" title="工程配置"></a>工程配置</h1><h2 id="桥接文件"><a href="#桥接文件" class="headerlink" title="桥接文件"></a>桥接文件</h2><p>当我们在Swift项目（OC项目）中首次添加OC文件（Swift文件）时，Xcode会自动弹出桥接文件创建的提示，</p>
+<p>这里我们可以选择Xcode自动创建或者手动创建，创建完成后系统会自动生成2个桥接文件,</p>
+<p>$(SWIFT_MODULE_NAME)-Bridging-Header.h，这个头文件直接在目录中</p>
+<p>$(SWIFT_MODULE_NAME)-Swift.h在目录中不可见.</p>
+<p>如果我们需要手动创建的也是可以的，只要保证文件名与Build Setting中path一直即可，不过推荐使用系统默认的创建.</p>
+<h2 id="头文件导入"><a href="#头文件导入" class="headerlink" title="头文件导入"></a>头文件导入</h2><p>一般混编项目中常用的头文件有-Bridging-Header.h，-Swift.h，-pch等，在OC与swift混编时，如果Swift需要引用OC的类，那么需要再-Bridging-Header.h中引入OC头文件，</p>
+<p>如果OC类需要引用Swift类时，需要在OC类中import $(SWIFT_MODULE_NAME)-Swift.h</p>
+<p>导入后OC类即可使用项目中所有继承于NSObject的Swift类，这里需要注意的时，未继承NSObject的Swift类无法被OC调用.</p>
+<p>这里点进$(SWIFT_MODULE_NAME)-Swift.h看一看，除了顶部一大堆宏定义宏方法外，Xcode还帮我们把所有继承自NSObject的Swift类编译成OC的接口，所以OC才能正常调用Swift类的属性和方法.</p>
+<h1 id="cocoaPod"><a href="#cocoaPod" class="headerlink" title="cocoaPod"></a>cocoaPod</h1><p>先说结论，现在（cocoaPod 1.5之后）集成OC和Swift库非常简单，无需考虑use_framework，static framework等等问题，仅需要把要导入的库名添加到podfile文件中即可，但是，初次导入后pod可能会遇到一些警告.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[!] The `Project [Debug]` target overrides the `SWIFT_INCLUDE_PATHS` build setting defined in `Pods/Target Support Files/Pods-Project/Pods-Project.debug.xcconfig&apos;. This can lead to problems with the CocoaPods installation    - Use the `$(inherited)` flag, or    - Remove the build settings from the target.[!] The `Project [Release]` target overrides the `SWIFT_INCLUDE_PATHS` build setting defined in `Pods/Target Support Files/Pods-Project/Pods-Project.release.xcconfig&apos;. This can lead to problems with the CocoaPods installation    - Use the `$(inherited)` flag, or    - Remove the build settings from the target.</span><br></pre></td></tr></table></figure>
+<p>可以看到，Pods-DadaStaff.debug.xcconfig文件中的SWIFT_INCLUDE_PATHS被项目tage的buildSeetingt覆盖了，如果不解决的话，会导致Swift三方库无法正常编译成module.</p>
+<p>找到target中的Swift Complier - Search Path，在Import Paths项中添加$(inherited)</p>
+<p>重新pod，消除警告后，即可使用Swift三方库.</p>
+<p>在cocoaPod更新到1.5之前，OC与Swift混编比较头疼的一个问题就是pod库的集成，历史原因这里就不赘述了语法混编</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2020/03/04/OC接入swift/#more" rel="contents">
+              Read more &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1592,293 +1793,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://github.com/xushuanghui/2019/09/02/编写cocoaPods插件/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="xushuanghui">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="xushuanghui">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/09/02/编写cocoaPods插件/" itemprop="url">编写cocoaPods插件</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-09-02T14:57:31+08:00">
-                2019-09-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>CocoaPods Plugins 是一个Ruby gem，你需要安装Ruby和CocoaPods来为你的插件开发做准备。<br>要开始开发一个新的插件，你还需要安装cocoapods-plugins :</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gem install cocoapods-plugins</span><br></pre></td></tr></table></figure>
-<p>为了演示和调试的目的，我们要先创建一个xcode工程，并且在其根目录下执行</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git init</span><br><span class="line">pod init</span><br></pre></td></tr></table></figure>
-<p>将其初始化为一个git仓库，以及添加Podfile到该工程</p>
-<h3 id="创建CocoaPods-Plugins"><a href="#创建CocoaPods-Plugins" class="headerlink" title="创建CocoaPods Plugins"></a>创建CocoaPods Plugins</h3><p>运行下面的命令就可以生成一个插件模板工程</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod plugins create githooks</span><br></pre></td></tr></table></figure>
-<p>工程目录是这样的</p>
-<p><img src="/xushuanghui/2019/09/02/编写cocoaPods插件/1.png" alt="im"></p>
-<p>.gemspec文件是插件的主要配置文件。所有的spec字段都是自描述的(你可以查看我们的<a href="https://github.com/CocoaPods/cocoapods-plugins/blob/master/cocoapods-plugins.gemspec">cocoapods-plugins</a>)，但是我想指出一件事:</p>
-<blockquote>
-<p>默认情况下，spec.files是指向git仓库并引用其中的文件。但是如果您试图在git仓库中没有文件(还未进行版本控制)时构建gem，您将得到一个空的.gem文件，同时会没有任何警告或错误。我的建议是现在就将spec.files的值设置为Dir[‘ lib/*<em>/</em> ‘]，它将引用lib目录下的所有文件。</p>
-</blockquote>
-<p>替换其中spec.files这一行为</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">spec.files = Dir[<span class="string">'lib/**/*'</span>]</span><br></pre></td></tr></table></figure>
-<p>Gemfile会包含所需的全部gem依赖。查看<a href="http://bundler.io/man/gemfile.5.html" target="_blank" rel="noopener">Bundle Doc</a> 以获得更多信息<br>Rakefile包含测试所需要的引用，spec文件夹包含测试用例。有关Rake的更多信息，请访问<a href="https://github.com/ruby/rake">官方Rake repo</a>。<br>我们现在还不需要更改Gemfile和Rakefile，所以保持其原样。<br>lib是我们要使用的主文件夹。它包含构建.gem的所有ruby文件。<br>为了确保一切设置正确，运行下面的的命令:</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">gem</span> <span class="selector-tag">build</span> <span class="selector-tag">cocoapods-githooks</span><span class="selector-class">.gemspec</span></span><br></pre></td></tr></table></figure>
-<p>你将看到’Successfully built RubyGem’的成功消息，同时Cocoapods-githooks-0.0.1.gem 也将会出现在目录之下</p>
-<h3 id="实现插件"><a href="#实现插件" class="headerlink" title="实现插件"></a>实现插件</h3><p>Cocoapods-githooks这个插件我们只需要它做一件简单的事情：将项目的.git-hooks目录中的所有文件复制到.git/hooks/目录中，并在每次运行podinstall、pod update 或 pod githooks时执行这个操作。<br>为了实现这一点，我们将创建一个执行文件操作的类，并将其链接到 pre-install和post-install这两个CocoaPods钩子以及githooks命令。<br>在/lib/cocoapods-githooks中创建githooks-sync.rb文件<br>Require’cocoapods’和“fileutils”模块，并在CocoapodsGitHooks模块中使用同步方法创建GitHooksSync类。</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">require</span> <span class="string">'cocoapods'</span></span><br><span class="line"><span class="keyword">require</span> <span class="string">'fileutils'</span></span><br><span class="line"><span class="class"><span class="keyword">module</span> <span class="title">CocoapodsGitHooks</span></span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">GitHooksSync</span></span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">sync</span></span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-<p>在复制git-hook之前，我们需要检查一些事情:<br>确保我们在git仓库中<br>确保.git-hooks目录存在<br>确保.git-hooks目录不是空的<br>我们可以通过在sync方法的开头添加下面的条件语句来实现这一点:</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> !File.directory?(<span class="string">".git"</span>)</span><br><span class="line">    Pod::UI.puts <span class="string">"Git repository not found"</span></span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="keyword">if</span> !File.directory?(<span class="string">".git-hooks"</span>)</span><br><span class="line">    Pod::UI.puts <span class="string">".git-hooks directory not found, nothing to sync"</span></span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"><span class="keyword">if</span> Dir[<span class="string">'.git-hooks/*'</span>].empty?</span><br><span class="line">    Pod::UI.puts <span class="string">".git-hooks directory is empty, nothing to sync"</span></span><br><span class="line">    <span class="keyword">return</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-<p>在这之后，我们检查hooks目录是否存在于.git中，如果不存在，创建它:</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> !File.directory?(<span class="string">".git/hooks"</span>)</span><br><span class="line">    FileUtils.mkdir <span class="string">".git/hooks"</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-<p>现在我们准备将钩子从.git-hooks复制到.git/hooks:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FileUtils.cp_r(“.git-hooks/.”, “.git/hooks/”)</span><br></pre></td></tr></table></figure>
-<p>下一步是删除shell脚本文件扩展名(如果存在)使文件可执行:</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">path = <span class="string">".git/hooks/"</span></span><br><span class="line">Dir.open(path).each <span class="keyword">do</span> <span class="params">|p|</span></span><br><span class="line">    filename = File.basename(p, File.extname(p))</span><br><span class="line">    <span class="keyword">if</span> File.extname(p) == <span class="string">".sh"</span></span><br><span class="line">        FileUtils.mv(<span class="string">"<span class="subst">#&#123;path&#125;</span>/<span class="subst">#&#123;p&#125;</span>"</span>, <span class="string">"<span class="subst">#&#123;path&#125;</span>/<span class="subst">#&#123;filename&#125;</span>"</span>)</span><br><span class="line">    <span class="keyword">end</span>      </span><br><span class="line">    FileUtils.chmod(<span class="string">"+x"</span>, <span class="string">"<span class="subst">#&#123;path&#125;</span>/<span class="subst">#&#123;filename&#125;</span>"</span>)</span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-<p>我们还添加了两个UI.puts 在同步方法的开始和结束处显示具有同步状态的系统通知。如果你遵循了上面所有的步骤，您得到的githook -sync.rb文件看起来如下所示:</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">require</span> <span class="string">'cocoapods'</span></span><br><span class="line"><span class="keyword">require</span> <span class="string">'fileutils'</span></span><br><span class="line"><span class="class"><span class="keyword">module</span> <span class="title">CocoapodsGitHooks</span></span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">GitHooksSync</span></span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">sync</span></span></span><br><span class="line">            Pod::UI.puts <span class="string">"Synchronizing git hooks"</span></span><br><span class="line">            <span class="keyword">if</span> !File.directory?(<span class="string">".git"</span>)</span><br><span class="line">                Pod::UI.puts <span class="string">"Git repository not found"</span></span><br><span class="line">                <span class="keyword">return</span></span><br><span class="line">            <span class="keyword">end</span></span><br><span class="line">            <span class="keyword">if</span> !File.directory?(<span class="string">".git-hooks"</span>)</span><br><span class="line">                Pod::UI.puts <span class="string">".git-hooks folder not found, nothing to sync"</span></span><br><span class="line">                <span class="keyword">return</span></span><br><span class="line">            <span class="keyword">end</span></span><br><span class="line">            <span class="keyword">if</span> Dir[<span class="string">'.git-hooks/*'</span>].empty?</span><br><span class="line">                Pod::UI.puts <span class="string">".git-hooks folder is empty, nothing to sync"</span></span><br><span class="line">                <span class="keyword">return</span></span><br><span class="line">            <span class="keyword">end</span></span><br><span class="line">            <span class="keyword">if</span> !File.directory?(<span class="string">".git/hooks"</span>)</span><br><span class="line">                FileUtils.mkdir <span class="string">".git/hooks"</span></span><br><span class="line">            <span class="keyword">end</span></span><br><span class="line">            FileUtils.cp_r(<span class="string">".git-hooks/."</span>, <span class="string">".git/hooks/"</span>)</span><br><span class="line">            path = <span class="string">".git/hooks/"</span></span><br><span class="line">            Dir.open(path).each <span class="keyword">do</span> <span class="params">|p|</span></span><br><span class="line">                filename = File.basename(p, File.extname(p))</span><br><span class="line">                <span class="keyword">if</span> File.extname(p) == <span class="string">".sh"</span></span><br><span class="line">                    FileUtils.mv(<span class="string">"<span class="subst">#&#123;path&#125;</span>/<span class="subst">#&#123;p&#125;</span>"</span>, <span class="string">"<span class="subst">#&#123;path&#125;</span>/<span class="subst">#&#123;filename&#125;</span>"</span>)</span><br><span class="line">                <span class="keyword">end</span>      </span><br><span class="line">                FileUtils.chmod(<span class="string">"+x"</span>, <span class="string">"<span class="subst">#&#123;path&#125;</span>/<span class="subst">#&#123;filename&#125;</span>"</span>)</span><br><span class="line">            <span class="keyword">end</span></span><br><span class="line">            Pod::UI.puts <span class="string">"Git hooks synchronized"</span></span><br><span class="line">        <span class="keyword">end</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/09/02/编写cocoaPods插件/#more" rel="contents">
-              Read more &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://github.com/xushuanghui/2019/08/30/CocoaPods忽略三方组件编译警告/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="xushuanghui">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="xushuanghui">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/08/30/CocoaPods忽略三方组件编译警告/" itemprop="url">cocoaPods忽略警告</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-08-30T20:23:11+08:00">
-                2019-08-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>为了减少组件化后的工程集成时间，我们一般都会将三方库放到私有 GitLab 中，这也有利于开发者根据自家业务，对三方库进行定制包装。但是如果有些三方库更新较慢，以至于让新版本的 Xcode 产生很多警告，这就比较烦了，因为大部分情况下，更改三方库并不是一个明智的选择。</p>
-<p>Podfile 提供了 <code>inhibit_all_warnings!</code> 以屏蔽所有 pod target 的警告，但其中也包括了非三方组件。同时，Podfile 提供了 <code>inhibit_warnings</code> 去针对单个 pod 的编译警告进行控制，比如：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod &apos;SSZipArchive&apos;, :inhibit_warnings =&gt; true</span><br></pre></td></tr></table></figure>
-<p>以上代码只会屏蔽 SSZipArchive 组件的警告，这比较符合我们的诉求。不过 <code>inhibit_warnings</code> 只会禁止当前 pod 的警告，并不会一同处理依赖组件的警告，这就要求我们在 Podfile 中显式依赖所有三方组件，并且设置 <code>inhibit_warnings</code>。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">def add_files_to_build_phases(native_target, test_native_targets)</span><br><span class="line">	...</span><br><span class="line">	flags = compiler_flags_for_consumer(consumer, arc)</span><br><span class="line">  regular_file_refs = project_file_references_array(files, &apos;source&apos;)</span><br><span class="line">  native_target.add_file_references(regular_file_refs, flags)</span><br><span class="line">	...</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">def compiler_flags_for_consumer(consumer, arc)</span><br><span class="line">  ...</span><br><span class="line">  if target.inhibit_warnings?</span><br><span class="line">    flags &lt;&lt; &apos;-w -Xanalyzer -analyzer-disable-all-checks&apos;</span><br><span class="line">  end</span><br><span class="line">  flags * &apos; &apos;</span><br><span class="line">  ...</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
-<p>可以看到，在添加文件至对应 target 时，<code>-w -Xanalyzer -analyzer-disable-all-checks</code> 同时被添加到了文件的 compiler flags （在Target -&gt; Build Phases -&gt; Compile Sources 中可见）。结合 Installer 的 install! 代码：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">def install!</span><br><span class="line">  prepare</span><br><span class="line">  resolve_dependencies</span><br><span class="line">  download_dependencies</span><br><span class="line">  validate_targets</span><br><span class="line">  generate_pods_project</span><br><span class="line">  if installation_options.integrate_targets?</span><br><span class="line">    integrate_user_project</span><br><span class="line">  else</span><br><span class="line">    UI.section &apos;Skipping User Project Integration&apos;</span><br><span class="line">  end</span><br><span class="line">  perform_post_install_actions</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">def download_dependencies</span><br><span class="line">  UI.section &apos;Downloading dependencies&apos; do</span><br><span class="line">    install_pod_sources</span><br><span class="line">    run_podfile_pre_install_hooks</span><br><span class="line">    clean_pod_sources</span><br><span class="line">  end</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
-<p><code>generate_pods_project</code> 方法执行了 PodTargetInstaller 的 install! 操作，将文件添加到了 pod target ，那么只能在其之前的 <code>pre_install</code> 设置相关属性了。从上面的代码还可以看出，执行 <code>pre_install</code> 前就已经 <code>resolve_dependencies</code> 了，也就是说我们可以拿到 Analyzer 分析的完整结果 AnalysisResult :</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># @return [Hash&#123;TargetDefinition =&gt; Array&lt;Specification&gt;&#125;] the</span><br><span class="line">#         specifications grouped by target.</span><br><span class="line">#</span><br><span class="line">attr_accessor :specs_by_target</span><br><span class="line"></span><br><span class="line"># @return [Array&lt;Specification&gt;] the specifications of the resolved</span><br><span class="line">#         version of Pods that should be installed.</span><br><span class="line">#</span><br><span class="line">attr_accessor :specifications</span><br><span class="line"></span><br><span class="line"># @return [Array&lt;AggregateTarget&gt;] The aggregate targets created for each</span><br><span class="line">#         &#123;TargetDefinition&#125; from the &#123;Podfile&#125;.</span><br><span class="line">#</span><br><span class="line">attr_accessor :targets</span><br></pre></td></tr></table></figure>
-<p>上面列出了此次需要涉及到的 AnalysisResult 属性。这里要注意的是 <code>targets</code> 属性是不包含 Pods Target 的，它只包含了 Podfile 里面声明的 target ，一般为组件本身，以及组件Tests。如果不确定要设置哪个 target ，可以手动设置 <code>inhibit_warnings</code> ，然后通过以下代码打印出 hash :</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">pod &apos;SSZipArchive&apos;, :inhibit_warnings =&gt; true</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">pre_install do |installer|</span><br><span class="line">	require &apos;pp&apos;</span><br><span class="line">  installer.analysis_result.specs_by_target.each_key do |target_definition|</span><br><span class="line">  	pp target_definition.to_hash</span><br><span class="line">  end</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
-<p>这里我们对所有涉及到的 target 都进行设置。接着看下 CocoaPods Core 代码中 Podfile 是如何设置 <code>inhibit_warnings</code> 的 :</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">def pod(name = nil, *requirements)</span><br><span class="line">  ...</span><br><span class="line">  current_target_definition.store_pod(name, *requirements)</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">def store_pod(name, *requirements)</span><br><span class="line">	...</span><br><span class="line">  parse_inhibit_warnings(name, requirements)</span><br><span class="line">  ...</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">def parse_inhibit_warnings(name, requirements)</span><br><span class="line">	...</span><br><span class="line">  set_inhibit_warnings_for_pod(pod_name, should_inhibit)</span><br><span class="line">	...</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line"># Inhibits warnings for a specific pod during compilation.</span><br><span class="line">def set_inhibit_warnings_for_pod(pod_name, should_inhibit)</span><br><span class="line">  hash_key = case should_inhibit</span><br><span class="line">             when true</span><br><span class="line">               &apos;for_pods&apos;</span><br><span class="line">             when false</span><br><span class="line">               &apos;not_for_pods&apos;</span><br><span class="line">             when nil</span><br><span class="line">               return</span><br><span class="line">             else</span><br><span class="line">               raise ArgumentError, &quot;Got `#&#123;should_inhibit.inspect&#125;`, should be a boolean&quot;</span><br><span class="line">             end</span><br><span class="line">  raw_inhibit_warnings_hash[hash_key] ||= []</span><br><span class="line">  raw_inhibit_warnings_hash[hash_key] &lt;&lt; pod_name</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
-<p>找到了设置 inhibit_warnings 的 public 方法 <code>set_inhibit_warnings_for_pod</code>。</p>
-<p>由于我们的三方库集中放在 cocoapods-repos 的 group 下，最终的 <code>pre_install</code> 长这样 :</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">pre_install do |installer|</span><br><span class="line">  installer.analysis_result.specs_by_target.each_key do |target_definition|</span><br><span class="line">    installer.analysis_result.specifications.each do |spec|</span><br><span class="line">      source = spec.attributes_hash[&apos;source&apos;]</span><br><span class="line">      source &amp;&amp;= source[&apos;git&apos;]</span><br><span class="line">      next unless source &amp;&amp; source.include?(&apos;cocoapods-repos&apos;)</span><br><span class="line"></span><br><span class="line">      targets = (Array(target_definition) + target_definition.children)</span><br><span class="line">      targets.each do |target|</span><br><span class="line">        target.set_inhibit_warnings_for_pod(spec.root.name, true)</span><br><span class="line">      end</span><br><span class="line">    end</span><br><span class="line">  end</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1929,7 +1843,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">28</span>
+                  <span class="site-state-item-count">30</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
