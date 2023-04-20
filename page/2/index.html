@@ -71,118 +71,6 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-打包问题记录" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2021/03/07/%E6%89%93%E5%8C%85%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" class="article-date">
-  <time class="dt-published" datetime="2021-03-07T03:23:06.000Z" itemprop="datePublished">2021-03-07</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2021/03/07/%E6%89%93%E5%8C%85%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/">打包问题记录</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h1 id="通过jenkins打包ipa包报错：Command-CodeSign-failed-with-a-nonzero-exit-code（errSecInternalComponent）"><a href="#通过jenkins打包ipa包报错：Command-CodeSign-failed-with-a-nonzero-exit-code（errSecInternalComponent）" class="headerlink" title="通过jenkins打包ipa包报错：Command CodeSign failed with a nonzero exit code（errSecInternalComponent）"></a>通过jenkins打包ipa包报错：Command CodeSign failed with a nonzero exit code（errSecInternalComponent）</h1><p><strong>描述 ：</strong></p>
-<p>在打包机通过 xcode打包不报错</p>
-<p>在打包机直接运行打包shell不报错</p>
-<p>但是通过jenkin打包就会出现下面的错误 ：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">KitExtension.appex</span><br><span class="line">/Users/5i5j/Library/Developer/Xcode/DerivedData/cbs_new5iwork-ebjitbdetyopmbadzpizhbztfpyw/Build/Intermediates.noindex/ArchiveIntermediates/cbs_new5iwork/IntermediateBuildFilesPath/UninstalledProducts/iphoneos/CallKitExtension.appex: errSecInternalComponent</span><br><span class="line">Command CodeSign failed with a nonzero exit code</span><br></pre></td></tr></table></figure>
-
-<p>出现这个问题的主要原因是是Jenkins，以ssh方式到slave机上，默认是没有账户的，但是访问钥匙串要求必须有用户身份</p>
-<p>（回忆了一下自己通过Xcode打包的过程中，的确是要求输入过登录密码，之后才打包成功的。没想到通过xcode打包成功之后，再使用shell脚本直接打包，也还需要输入登录密码才能打包成功）</p>
-<p><strong>解决办法</strong></p>
-<p>添加一步输入密码解锁钥匙串，可以给Jenkins一个用户身份。 build步骤前添加一步解锁钥匙串。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">security unlock-keychain -p &quot;login pwd&quot; ~/Library/Keychains/login.keychain</span><br></pre></td></tr></table></figure>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2021/03/07/%E6%89%93%E5%8C%85%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" data-id="clgovw0nr001nk9d3d00o1hi5" data-title="打包问题记录" class="article-share-link">Share</a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-弱网优化" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/12/28/%E5%BC%B1%E7%BD%91%E4%BC%98%E5%8C%96/" class="article-date">
-  <time class="dt-published" datetime="2020-12-28T09:53:02.000Z" itemprop="datePublished">2020-12-28</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2020/12/28/%E5%BC%B1%E7%BD%91%E4%BC%98%E5%8C%96/">弱网优化</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>1、DNS优化 【核心解决安全问题】</p>
-<p>DNS（Domain Name System），它的作用是根据域名查出IP地址</p>
-<p><strong>核心问题</strong></p>
-<ul>
-<li><p>1）由于DNS劫持或故障造成的服务不可用</p>
-</li>
-<li><p>2）由于DNS调度不准确导致的性能退化</p>
-</li>
-<li><p>防止DNS的劫持，Eg：OS劫持率由0.12%降低到0.0002%，Android劫持率由0.25%降低到0.05%</p>
-</li>
-<li><p>降低网络时延，在调度不准确的情况下，会增大网络的时延，降低用户的体验</p>
-</li>
-</ul>
-<p>2、<strong>连接优化</strong></p>
-<ul>
-<li>降低延迟</li>
-<li>提升成功率</li>
-</ul>
-<p>3、<strong>弱网优化</strong> </p>
-<ul>
-<li><p>问题点1：移动网络环境如此复杂，我们如何确定当下就是弱网环境</p>
-<p>问题点2: 确定为弱网环境下，我们如何提升弱网下的成功率，降低弱网下的时延，进而提升用户的网络体验</p>
-        
-          <p class="article-more-link">
-            <a href="/2020/12/28/%E5%BC%B1%E7%BD%91%E4%BC%98%E5%8C%96/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2020/12/28/%E5%BC%B1%E7%BD%91%E4%BC%98%E5%8C%96/" data-id="clgovw0nr001mk9d3hvxhgxdp" data-title="弱网优化" class="article-share-link">Share</a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
     <article id="post-检测私有API" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2020/10/21/%E6%A3%80%E6%B5%8B%E7%A7%81%E6%9C%89API/" class="article-date">
@@ -247,7 +135,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/10/21/%E6%A3%80%E6%B5%8B%E7%A7%81%E6%9C%89API/" data-id="clgovw0ns001pk9d38mdz7cfo" data-title="检测私有API" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/10/21/%E6%A3%80%E6%B5%8B%E7%A7%81%E6%9C%89API/" data-id="clgowampu0022tjd33tfe7nap" data-title="检测私有API" class="article-share-link">Share</a>
       
       
       
@@ -331,7 +219,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/10/05/iOS%E6%8E%A5%E5%85%A5flutter/" data-id="clgovw0nm0017k9d33mic2fs6" data-title="oc接入flutter" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/10/05/iOS%E6%8E%A5%E5%85%A5flutter/" data-id="clgowampn001htjd3esl499pq" data-title="oc接入flutter" class="article-share-link">Share</a>
       
       
       
@@ -375,7 +263,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/08/24/swift-protocol%E5%8D%8F%E8%AE%AE/" data-id="clgovw0nl0015k9d3cboydev4" data-title="swift protocol小结" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/08/24/swift-protocol%E5%8D%8F%E8%AE%AE/" data-id="clgowampo001ktjd31wyt3mzu" data-title="swift protocol小结" class="article-share-link">Share</a>
       
       
       
@@ -458,7 +346,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/06/15/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/" data-id="clgovw0no001dk9d3d44ucm5j" data-title="内存泄漏" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/06/15/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/" data-id="clgowampq001stjd32zpy50t6" data-title="内存泄漏" class="article-share-link">Share</a>
       
       
       
@@ -499,7 +387,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/05/23/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/" data-id="clgovw0nu001wk9d3fetth51a" data-title="网络优化" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/05/23/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/" data-id="clgowampw0027tjd37ur7fj4y" data-title="网络优化" class="article-share-link">Share</a>
       
       
       
@@ -549,7 +437,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/04/20/swif%E4%B8%8Eoc%E5%8C%BA%E5%88%AB%E6%80%BB%E7%BB%93/" data-id="clgovw0nn001ak9d34rjrbi77" data-title="swif与oc区别总结" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/04/20/swif%E4%B8%8Eoc%E5%8C%BA%E5%88%AB%E6%80%BB%E7%BB%93/" data-id="clgowampp001ntjd3gdct6pdd" data-title="swif与oc区别总结" class="article-share-link">Share</a>
       
       
       
@@ -601,7 +489,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/04/13/data%E6%AE%B5%E6%B3%A8%E5%86%8C/" data-id="clgovw0nj000zk9d3cgo47fy1" data-title="data段注册" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/04/13/data%E6%AE%B5%E6%B3%A8%E5%86%8C/" data-id="clgowampm001dtjd3h4oi32hs" data-title="data段注册" class="article-share-link">Share</a>
       
       
       
@@ -672,10 +560,127 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2020/03/21/app%E5%90%AF%E5%8A%A8%E6%97%B6%E9%97%B4%E4%BC%98%E5%8C%96/" data-id="clgovw0nd000kk9d3hw172adk" data-title="app启动时间优化" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2020/03/21/app%E5%90%AF%E5%8A%A8%E6%97%B6%E9%97%B4%E4%BC%98%E5%8C%96/" data-id="clgowamph000xtjd32cjl0rq9" data-title="app启动时间优化" class="article-share-link">Share</a>
       
       
       
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-OC接入swift" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/03/04/OC%E6%8E%A5%E5%85%A5swift/" class="article-date">
+  <time class="dt-published" datetime="2020-03-04T09:20:14.000Z" itemprop="datePublished">2020-03-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/03/04/OC%E6%8E%A5%E5%85%A5swift/">OC接入swift</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="工程配置"><a href="#工程配置" class="headerlink" title="工程配置"></a>工程配置</h1><h2 id="桥接文件"><a href="#桥接文件" class="headerlink" title="桥接文件"></a>桥接文件</h2><p>当我们在Swift项目（OC项目）中首次添加OC文件（Swift文件）时，Xcode会自动弹出桥接文件创建的提示，</p>
+<p>这里我们可以选择Xcode自动创建或者手动创建，创建完成后系统会自动生成2个桥接文件,</p>
+<p>$(SWIFT_MODULE_NAME)-Bridging-Header.h，这个头文件直接在目录中</p>
+<p>$(SWIFT_MODULE_NAME)-Swift.h在目录中不可见.</p>
+<p>如果我们需要手动创建的也是可以的，只要保证文件名与Build Setting中path一直即可，不过推荐使用系统默认的创建.</p>
+<h2 id="头文件导入"><a href="#头文件导入" class="headerlink" title="头文件导入"></a>头文件导入</h2><p>一般混编项目中常用的头文件有-Bridging-Header.h，-Swift.h，-pch等，在OC与swift混编时，如果Swift需要引用OC的类，那么需要再-Bridging-Header.h中引入OC头文件，</p>
+<p>如果OC类需要引用Swift类时，需要在OC类中import $(SWIFT_MODULE_NAME)-Swift.h</p>
+<p>导入后OC类即可使用项目中所有继承于NSObject的Swift类，这里需要注意的时，未继承NSObject的Swift类无法被OC调用.</p>
+<p>这里点进$(SWIFT_MODULE_NAME)-Swift.h看一看，除了顶部一大堆宏定义宏方法外，Xcode还帮我们把所有继承自NSObject的Swift类编译成OC的接口，所以OC才能正常调用Swift类的属性和方法.</p>
+<p>cocoaPod</p>
+<p>先说结论，现在（cocoaPod 1.5之后）集成OC和Swift库非常简单，无需考虑use_framework，static framework等等问题，仅需要把要导入的库名添加到podfile文件中即可，但是，初次导入后pod可能会遇到一些警告.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[!] The `Project [Debug]` target overrides the `SWIFT_INCLUDE_PATHS` build setting defined in `Pods/Target Support Files/Pods-Project/Pods-Project.debug.xcconfig&#x27;. This can lead to problems with the CocoaPods installation    - Use the `$(inherited)` flag, or    - Remove the build settings from the target.[!] The `Project [Release]` target overrides the `SWIFT_INCLUDE_PATHS` build setting defined in `Pods/Target Support Files/Pods-Project/Pods-Project.release.xcconfig&#x27;. This can lead to problems with the CocoaPods installation    - Use the `$(inherited)` flag, or    - Remove the build settings from the target.</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，Pods-DadaStaff.debug.xcconfig文件中的SWIFT_INCLUDE_PATHS被项目tage的buildSeetingt覆盖了，如果不解决的话，会导致Swift三方库无法正常编译成module.</p>
+<p>找到target中的Swift Complier - Search Path，在Import Paths项中添加$(inherited)</p>
+<p>重新pod，消除警告后，即可使用Swift三方库.</p>
+        
+          <p class="article-more-link">
+            <a href="/2020/03/04/OC%E6%8E%A5%E5%85%A5swift/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/03/04/OC%E6%8E%A5%E5%85%A5swift/" data-id="clgowampd000mtjd3ej7kh1l2" data-title="OC接入swift" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-遇见多线程问题记录" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/02/21/%E9%81%87%E8%A7%81%E5%A4%9A%E7%BA%BF%E7%A8%8B%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" class="article-date">
+  <time class="dt-published" datetime="2020-02-21T06:31:42.000Z" itemprop="datePublished">2020-02-21</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/02/21/%E9%81%87%E8%A7%81%E5%A4%9A%E7%BA%BF%E7%A8%8B%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/">遇见多线程问题记录</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="1-NSNotification"><a href="#1-NSNotification" class="headerlink" title="1. NSNotification"></a>1. NSNotification</h2><p>我们都知道，NSNotification 在哪个线程 post，最终就会在哪个线程执行。如果我们不是在主线程 post 的，但是却在主线程接收的，而且我们期望 selector 在主线程执行。这时候我们需要注意下，在 selector 需要 dispatch 到主线程才可以。当然你也可以使用 addObserverForName:object:queue:usingBlock: 来指定执行 block 的 queue。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">@implementation BLPostNotification</span><br><span class="line"></span><br><span class="line">- (void)postNotification &#123;</span><br><span class="line">    dispatch_queue_t queue = dispatch_queue_create(&quot;com.bool.post.notification&quot;, DISPATCH_QUEUE_SERIAL);</span><br><span class="line">    dispatch_async(queue, ^&#123;</span><br><span class="line">        // 从非主线程发送通知 （通知名字最好定义成一个常量）</span><br><span class="line">        [[NSNotificationCenter defaultCenter] postNotificationName:@&quot;downloadImage&quot; object:nil];</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation ImageViewController</span><br><span class="line"></span><br><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(show) name:@&quot;downloadImage&quot; object:nil];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)showImage &#123;</span><br><span class="line">    // 需要 dispatch 到主线程更新 UI</span><br><span class="line">    dispatch_async(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">        // update UI</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-NSTimer"><a href="#2-NSTimer" class="headerlink" title="2. NSTimer"></a>2. NSTimer</h2><p>使用 NSTimer 时，在哪个线程生成的 timer，就在哪个线程销毁，否则会有意想不到的结果。官方这样描述的：</p>
+<blockquote>
+<p>However, for a repeating timer, you must invalidate the timer object yourself by calling its invalidate method. Calling this method requests the removal of the timer from the current run loop; as a result, you should always call the invalidate method from the same thread on which the timer was installed.</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">@interface BLTimerTest ()</span><br><span class="line">@property (nonatomic, strong) dispatch_queue_t queue;</span><br><span class="line">@property (nonatomic, strong) NSTimer *timer;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation BLTimerTest</span><br><span class="line">- (instancetype)init &#123;</span><br><span class="line">    self = [super init];</span><br><span class="line">    if (self) &#123;</span><br><span class="line">        _queue = dispatch_queue_create(&quot;com.bool.timer.test&quot;, DISPATCH_QUEUE_SERIAL);</span><br><span class="line">    &#125;</span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)installTimer &#123;</span><br><span class="line">    dispatch_async(self.queue, ^&#123;</span><br><span class="line">        self.timer = [NSTimer scheduledTimerWithTimeInterval:3.0f repeats:YES block:^(NSTimer * _Nonnull timer) &#123;</span><br><span class="line">            NSLog(@&quot;test timer&quot;);</span><br><span class="line">        &#125;];</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)clearTimer &#123;</span><br><span class="line">    dispatch_async(self.queue, ^&#123;</span><br><span class="line">        if ([self.timer isValid]) &#123;</span><br><span class="line">            [self.timer invalidate];</span><br><span class="line">            self.timer = nil;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-Dispatch-Once-死锁"><a href="#3-Dispatch-Once-死锁" class="headerlink" title="3. Dispatch Once 死锁"></a>3. Dispatch Once 死锁</h2><p>在开发中，我们经常使用 dispatch_once，但是递归调用会造成死锁。例如下面这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">- (void)dispatchOnceTest &#123;</span><br><span class="line">    static dispatch_once_t onceToken;</span><br><span class="line">    dispatch_once(&amp;onceToken, ^&#123;</span><br><span class="line">        [self dispatchOnceTest];</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>至于为什么会死锁，上文介绍 Dispatch Once 的时候已经说明了，这里就不多做介绍了。提醒一下使用的时候要注意，不要造成递归调用。</p>
+<h2 id="4-Dispatch-Group"><a href="#4-Dispatch-Group" class="headerlink" title="4. Dispatch Group"></a>4. Dispatch Group</h2><p>在使用 dispatch_group 的时候，dispatch_group_enter(taskGroup) 和 dispatch_group_leave(taskGroup) 一定要成对，否则也会出现崩溃。大多数情况下我们都会注意，但是有时候可能会疏忽。例如多层 for loop 时 ：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">- (void)testDispatchGroup &#123;</span><br><span class="line">    NSString *path = @&quot;&quot;;</span><br><span class="line">    NSFileManager *fileManager = [NSFileManager defaultManager];</span><br><span class="line">    NSArray *folderList = [fileManager contentsOfDirectoryAtPath:path error:nil];</span><br><span class="line">    dispatch_group_t taskGroup = dispatch_group_create();</span><br><span class="line">    </span><br><span class="line">    for (NSString *folderName in folderList) &#123;</span><br><span class="line">        dispatch_group_enter(taskGroup);</span><br><span class="line">        NSString *folderPath = [@&quot;path&quot; stringByAppendingPathComponent:folderName];</span><br><span class="line">        NSArray *fileList = [fileManager contentsOfDirectoryAtPath:folderPath error:nil];</span><br><span class="line">        for (NSString *fileName in fileList) &#123;</span><br><span class="line">            dispatch_async(_queue, ^&#123;</span><br><span class="line">                // 异步任务</span><br><span class="line">                dispatch_group_leave(taskGroup);</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面的 dispatch_group_enter(taskGroup) 在第一层 for loop 中，而 dispatch_group_leave(taskGroup) 在第二层 for loop 中，两者的关系是一对多，很容造成崩溃。有时候嵌套层级太多，很容易忽略这个问题。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/02/21/%E9%81%87%E8%A7%81%E5%A4%9A%E7%BA%BF%E7%A8%8B%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" data-id="clgowampw0029tjd38wpkh8b8" data-title="遇见多线程问题记录" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li></ul>
+
     </footer>
   </div>
   
@@ -688,7 +693,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
   </nav>
 
 </section>
@@ -721,7 +726,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/04/">April 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li></ul>
     </div>
   </div>
 
@@ -732,10 +737,6 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
-        
-          <li>
-            <a href="/2023/04/20/init/">init</a>
-          </li>
         
           <li>
             <a href="/2023/01/11/%E5%AE%B9%E5%99%A8%E5%8C%96/">首页容器化</a>
@@ -751,6 +752,10 @@
         
           <li>
             <a href="/2021/07/20/%E7%9B%B4%E6%92%AD%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7%E6%96%B9%E6%A1%88/">直播性能指标监控方案</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/14/%E8%A7%86%E9%A2%91%E7%9B%B8%E5%85%B3%E4%BC%98%E5%8C%96/">视频相关优化</a>
           </li>
         
       </ul>

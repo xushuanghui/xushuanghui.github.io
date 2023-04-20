@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>xushuanghui</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="面试复盘   杭州嗨宝贝有限公司  一面电话面  自我介绍问了项目(着重介绍了json+js+原生的动态化方案)，针对首页是如何架构的 项目中做过哪些优化 iOS 点击事件如何传递与响应的    二面  介绍下你觉得最有成就的项目  动态化UI，目前的json+js方案：组件间耦合问题如何解决，有没有优化方案；如果不用js如何设计组件间通讯  项目上线后做了哪些监控，如何做的  如何做监控">
+<meta property="og:type" content="website">
+<meta property="og:title" content="xushuanghui">
+<meta property="og:url" content="http://example.com/%E5%A4%8D%E7%9B%98.html">
+<meta property="og:site_name" content="xushuanghui">
+<meta property="og:description" content="面试复盘   杭州嗨宝贝有限公司  一面电话面  自我介绍问了项目(着重介绍了json+js+原生的动态化方案)，针对首页是如何架构的 项目中做过哪些优化 iOS 点击事件如何传递与响应的    二面  介绍下你觉得最有成就的项目  动态化UI，目前的json+js方案：组件间耦合问题如何解决，有没有优化方案；如果不用js如何设计组件间通讯  项目上线后做了哪些监控，如何做的  如何做监控">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-04-20T09:00:09.418Z">
+<meta property="article:modified_time" content="2023-04-13T10:34:27.674Z">
+<meta property="article:author" content="xushuanghui">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="xushuanghui" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">xushuanghui</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="page-" class="h-entry article article-type-page" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/%E5%A4%8D%E7%9B%98.html" class="article-date">
+  <time class="dt-published" datetime="2023-04-20T09:00:09.418Z" itemprop="datePublished">2023-04-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <!doctype html>
+<html>
+<head>
+<meta charset='UTF-8'><meta name='viewport' content='width=device-width initial-scale=1'>
+<title>面试复盘</title>
+</head>
+<body><ul>
+<li><p>杭州嗨宝贝有限公司</p>
+<ul>
+<li><p>一面电话面</p>
+<ul>
+<li>自我介绍问了项目(着重介绍了json+js+原生的动态化方案)，针对首页是如何架构的</li>
+<li>项目中做过哪些优化</li>
+<li>iOS 点击事件如何传递与响应的</li>
+
+</ul>
+</li>
+<li><p>二面</p>
+<ul>
+<li><p>介绍下你觉得最有成就的项目</p>
+</li>
+<li><p>动态化UI，目前的json+js方案：组件间耦合问题如何解决，有没有优化方案；如果不用js如何设计组件间通讯</p>
+</li>
+<li><p>项目上线后做了哪些监控，如何做的</p>
+</li>
+<li><p>如何做监控接口的响应时长；如何进一步获取接口请求各阶段耗时？</p>
+<pre><code class='language-objective-c' lang='objective-c'>// 获取请求各阶段时长
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didFinishCollectingMetrics:(NSURLSessionTaskMetrics *)metrics
+</code></pre>
+</li>
+<li><p>对今后的规划，然后根据你的回答追问针对此规划做了什么？</p>
+</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+
+</ul>
+<ul>
+<li><p>杭州炎魂网络(游戏公司)</p>
+<ul>
+<li><p>一面</p>
+<ul>
+<li>自我介绍</li>
+<li>合并2个单链表表示的数(链表存储数是head是高位)，用新的链表表示</li>
+<li>如何进行分支管理的，问了下分支拉取和合并都是开发自己来做的吗(这个地方有点奇怪，不知道为何如此问？)</li>
+<li>有没有遇到深浅拷贝的问题(自己比较注意，没遇到啥问题)</li>
+<li>你写的代码有没有出现过线上问题，讲一下。（调了一个逻辑出错的问题讲了下）</li>
+<li>有什么想问我的：(表示了自己没接触过游戏，想了解岗位的工作职责，目前的团队情况等)</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+
+</ul>
+<ul>
+<li><p>杭州雅乐集团</p>
+<ul>
+<li><p>一面</p>
+<ul>
+<li>介绍</li>
+<li>谈一下项目中的问题，讲一下视频列表的优化</li>
+<li>swift 逃逸和非逃逸闭包，逃逸闭包会进行值捕获吗</li>
+<li>sqlite left join 和 right join的区别</li>
+<li>谈谈为什么要在项目中使用swift</li>
+<li>项目中使用了flutter，谈谈flutter的优势</li>
+<li>面试官：有什么想问我的</li>
+
+</ul>
+</li>
+<li><p>二面</p>
+<ul>
+<li><p>介绍下你觉得成就感最高的一个项目</p>
+</li>
+<li><p>问了url-scheme和target-action路由的问题，如何和h5交互；universal-link了解吗，有何作用；一个universal-link请求过来了如何进行处理</p>
+</li>
+<li><p>针对项目问了一些问题，rac原理，冷热信号(这里我说反了，冷热搞错了)</p>
+</li>
+<li><p>swift混编如何做到oc和swift相互调用的；为甚pod中swift调用oc不需要bridge文件？</p>
+<p>分主工程和pod，主工程可通过bridge文件让swift调用oc方法，pod不用；pod中有xcode生成pod名+swift.h文件包含暴露给oc的接口</p>
+</li>
+<li><p>多线程问题，属性中 atomic 能保证线程安全吗，atomic是互斥锁还是自旋锁(回答互斥，不能保证安全)；追问要如何做(通过NSLock对临界区代码加锁)，追问能对该方法进行递归调用吗(不能)</p>
+</li>
+<li><p>设计一个多线程方案讲一个变量准确累加到2000(通过信号量，gcd栅栏+异步添加累加任务到并行队列无法保证准确累加)；举一个你之前的多线程使用的例子</p>
+</li>
+<li><p>谈谈iOS的内存管理，进而引导到NSString和NSNumber 的问题(为何lldb输出的有时候是值，有时候是地址)</p>
+</li>
+<li><p>swift混编遇到哪些问题; swift的方法调用方式</p>
+</li>
+<li><p>说说你用过的设计模式；适配器和桥接模式区别；设计模式主要思想，是为了解决什么问题</p>
+</li>
+<li><p>安全问题：你们的接口如何设计加密的；敏感信息如何存储；非对称和对称加密有何区别，谈谈应用场景</p>
+</li>
+<li><p>平时看wwdc吗(回答不喜欢看视频，但是会看文档)，追问你最近看了什么东西，谈一谈(说了苹果改进storeKit的介绍)；接着聊了苹果iap内购丢单串单的问题，如何应对这些问题</p>
+</li>
+
+</ul>
+</li>
+
+</ul>
+<ul>
+<li><p>三面(leader面)</p>
+<ul>
+<li>简单介绍下自己</li>
+<li>一个项目来了，你是如何参与到当中，起了什么作用</li>
+<li>问了一些原公司项目迭代的问题(说了2周一个版本，中间可能还有日常)；追问，迭代如此快，如何保证项目质量，中间做了哪些工作</li>
+<li>谈一谈swift中的协议</li>
+<li>了解了之前项目iOS端和安卓端的日活，crash率(我说0.5%左右)；面试官说很高，如果让利设计一个线上监控，你会如何考虑</li>
+<li>如何设计一个应用分享组件(分享到微信，QQ这种)</li>
+<li>有什么想了解的：问了一些组织结构，项目进度方面的问题</li>
+
+</ul>
+</li>
+
+</ul>
+</li>
+
+</ul>
+</body>
+</html>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/%E5%A4%8D%E7%9B%98.html" data-id="clgowampc000itjd3gq975rjp" data-title="" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xcode/" rel="tag">Xcode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cocoaPods/" rel="tag">cocoaPods</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flutter/" rel="tag">flutter</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS-AppDelegate/" rel="tag">iOS AppDelegate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" rel="tag">强化学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" rel="tag">量化交易</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a> <a href="/tags/cocoaPods/" style="font-size: 10px;">cocoaPods</a> <a href="/tags/flutter/" style="font-size: 10px;">flutter</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOS-AppDelegate/" style="font-size: 10px;">iOS AppDelegate</a> <a href="/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" style="font-size: 15px;">强化学习</a> <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">机器学习</a> <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" style="font-size: 10px;">量化交易</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/01/11/%E5%AE%B9%E5%99%A8%E5%8C%96/">首页容器化</a>
+          </li>
+        
+          <li>
+            <a href="/2022/08/14/%E5%8A%A8%E6%80%81%E5%BA%93%E6%87%92%E5%8A%A0%E8%BD%BD/">动态库懒加载</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/17/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E9%97%AE%E9%A2%98%E4%B8%8E%E6%B2%BB%E7%90%86/">多线程问题专项治理</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/20/%E7%9B%B4%E6%92%AD%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7%E6%96%B9%E6%A1%88/">直播性能指标监控方案</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/14/%E8%A7%86%E9%A2%91%E7%9B%B8%E5%85%B3%E4%BC%98%E5%8C%96/">视频相关优化</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 xushuanghui<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

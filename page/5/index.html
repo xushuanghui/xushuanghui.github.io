@@ -71,105 +71,6 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-Q-Learning" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2019/03/29/Q-Learning/" class="article-date">
-  <time class="dt-published" datetime="2019-03-29T12:06:02.000Z" itemprop="datePublished">2019-03-29</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2019/03/29/Q-Learning/">Q-Learning-1</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>###Q-Learning 整体算法</p>
-<p><a target="_blank" rel="noopener" href="https://morvanzhou.github.io/static/results/ML-intro/q4.png"><img src="https://morvanzhou.github.io/static/results/ML-intro/q4.png" alt="Q Leaning"></a></p>
-<p> Q learning 的算法, 每次更新我们都用到了 Q 现实和 Q 估计, 而且 Q learning 的迷人之处就是 在 Q(s1, a2) 现实 中, 也包含了一个 Q(s2) 的最大估计值, 将对下一步的衰减的最大估计和当前所得到的奖励当成这一步的现实, 很奇妙吧. 最后我们来说说这套算法中一些参数的意义. Epsilon greedy 是用在决策上的一种策略, 比如 epsilon &#x3D; 0.9 时, 就说明有90% 的情况我会按照 Q 表的最优值选择行为, 10% 的时间使用随机选行为. alpha是学习率, 来决定这次的误差有多少是要被学习的, alpha是一个小于1 的数. gamma 是对未来 reward 的衰减值. 我们可以这样想象.</p>
-        
-          <p class="article-more-link">
-            <a href="/2019/03/29/Q-Learning/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2019/03/29/Q-Learning/" data-id="clgovw0nb000gk9d3d6vi45em" data-title="Q-Learning-1" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" rel="tag">强化学习</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-GitLab-CI" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2019/03/26/GitLab-CI/" class="article-date">
-  <time class="dt-published" datetime="2019-03-26T07:59:06.000Z" itemprop="datePublished">2019-03-26</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2019/03/26/GitLab-CI/">GitLab CI</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>目前团队内部缺少组件发布平台，每次 App 发版都需要组件负责人去发布自己名下涉及的组件。这中间存在组件间依赖以及发布时间差问题，上层组件需要依赖下层组件的发布，负责人之间沟通起来极为耗时。所以团队暂时没有限制私有源仓库的推送权限，当发布时间比较紧时，方便负责人绕过 lint， 直接推送 podspec 到私有源仓库。</p>
-<p>虽然这种发布方式能节省一部分时间，但是容易出现下层组件 lint 失败向上层传递的情况。久而久之，lint 不通过的组件将会越来越多。为了尽量避免这种情况的发生，引入 CI 对组件进行 lint 监测是个不错的选择。</p>
-<p>以上就是团队当初引入 CI 的初衷。不过 CI 能带来的便利远不止如此，当然，这都是后话了。</p>
-<h2 id="GitLab-CI"><a href="#GitLab-CI" class="headerlink" title="GitLab CI"></a>GitLab CI</h2><blockquote>
-<p>本文使用 GitLab Community Edition 10.4.0 版本</p>
-</blockquote>
-<p><a target="_blank" rel="noopener" href="https://dmanager.github.io/images/cicd_pipeline_infograph.png"><img src="https://dmanager.github.io/images/cicd_pipeline_infograph.png" alt="cicd_pipeline_infograph"></a></p>
-<p>GitLab 在 8.0 版本之后，就集成了 GitLab CI ，随着版本的迭代，其功能越来越强大。使用者只需要在仓库根目录下 （可以通过仓库的 Setting -&gt; CI&#x2F;CD -&gt; General pipelines settings -&gt; Custom CI config path 设置加载路径，默认根目录）添加 <code>.gitlab-ci.yml</code> 配置文件，并且存在可用的 GitLab Runner ，就可以实现持续集成。</p>
-<p>如果在仓库中没有发现 CI&#x2F;CD 设置项，则需要到 Setting -&gt; CI&#x2F;CD -&gt; Permissions -&gt; Pipeline 打开设置。</p>
-<p>首先需要明确的是和 GitLab CI 任务相关的几个概念： pipeline、stage、job。</p>
-        
-          <p class="article-more-link">
-            <a href="/2019/03/26/GitLab-CI/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2019/03/26/GitLab-CI/" data-id="clgovw0n80009k9d325b5ao9y" data-title="GitLab CI" class="article-share-link">Share</a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
     <article id="post-Runloop" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2019/03/16/Runloop/" class="article-date">
@@ -220,7 +121,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2019/03/16/Runloop/" data-id="clgovw0nd000lk9d3c3pn17x4" data-title="Runloop" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2019/03/16/Runloop/" data-id="clgowamph000ztjd31sbmgr0v" data-title="Runloop" class="article-share-link">Share</a>
       
       
       
@@ -284,7 +185,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2019/01/30/%E4%BA%8B%E4%BB%B6%E4%BC%A0%E9%80%92%E4%B8%8E%E5%93%8D%E5%BA%94%E8%80%85%E9%93%BE/" data-id="clgovw0nn001ck9d3czw9cwgt" data-title="事件传递与响应者链" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2019/01/30/%E4%BA%8B%E4%BB%B6%E4%BC%A0%E9%80%92%E4%B8%8E%E5%93%8D%E5%BA%94%E8%80%85%E9%93%BE/" data-id="clgowampq001ptjd34voie4nx" data-title="事件传递与响应者链" class="article-share-link">Share</a>
       
       
       
@@ -343,7 +244,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2019/01/22/runtime-1/" data-id="clgovw0nl0014k9d36eh0cw58" data-title="runtime小结" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2019/01/22/runtime-1/" data-id="clgowampo001itjd3hd4fdjtg" data-title="runtime小结" class="article-share-link">Share</a>
       
       
       
@@ -434,7 +335,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2018/08/05/%E5%8A%A8%E6%80%81%E5%BA%93%E4%B8%8E%E9%9D%99%E6%80%81%E5%BA%93/" data-id="clgovw0np001gk9d33v7zckie" data-title="动态库与静态库" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2018/08/05/%E5%8A%A8%E6%80%81%E5%BA%93%E4%B8%8E%E9%9D%99%E6%80%81%E5%BA%93/" data-id="clgowampr001utjd354et9sig" data-title="动态库与静态库" class="article-share-link">Share</a>
       
       
       
@@ -480,7 +381,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2018/04/01/buildProcess/" data-id="clgovw0ng000sk9d36mm4ercg" data-title="buildProcess" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2018/04/01/buildProcess/" data-id="clgowampk0016tjd33re7gwt3" data-title="buildProcess" class="article-share-link">Share</a>
       
       
       
@@ -530,7 +431,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2017/09/23/hello-world/" data-id="clgovw0nj0010k9d3bpv72vd2" data-title="Hello Worlds" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2017/09/23/hello-world/" data-id="clgowampn001gtjd3c4za9ls9" data-title="Hello Worlds" class="article-share-link">Share</a>
       
       
       
@@ -575,7 +476,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2017/04/23/clang/" data-id="clgovw0nh000vk9d3d2r37yv0" data-title="编译器做些什么？" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2017/04/23/clang/" data-id="clgowampk0017tjd3djggdo96" data-title="编译器做些什么？" class="article-share-link">Share</a>
       
       
       
@@ -623,7 +524,52 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2017/02/23/cocoaPods/" data-id="clgovw0ni000wk9d37p4zevqs" data-title="cocoaPods" class="article-share-link">Share</a>
+      <a data-url="http://example.com/2017/02/23/cocoaPods/" data-id="clgowampm001btjd3h1heb3b7" data-title="cocoaPods" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-build-blog" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2016/12/16/build-blog/" class="article-date">
+  <time class="dt-published" datetime="2016-12-16T07:04:33.000Z" itemprop="datePublished">2016-12-16</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2016/12/16/build-blog/">搭建博客</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h2><p><a target="_blank" rel="noopener" href="https://hexo.io/docs/">Hexo官网</a>上本就有对Hexo安装及使用的详细介绍，墙裂推荐。这里来讲述自己安装的亲身步骤，或有区别。</p>
+<h3 id="1-Node-js"><a href="#1-Node-js" class="headerlink" title="1.Node.js"></a>1.Node.js</h3><p>用来生成静态页面。移步<a target="_blank" rel="noopener" href="https://nodejs.org/en/">Node.js官网</a>，下载v5.5.0 Stable 一路安装即可。</p>
+<h3 id="2-Git"><a href="#2-Git" class="headerlink" title="2.Git"></a>2.Git</h3><p>用来将本地Hexo内容提交到Github上。Xcode自带Git，这里不再赘述。如果没有Xcode可以参考Hexo官网上的安装方法。</p>
+        
+          <p class="article-more-link">
+            <a href="/2016/12/16/build-blog/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2016/12/16/build-blog/" data-id="clgowampj0013tjd315owgks9" data-title="搭建博客" class="article-share-link">Share</a>
       
       
       
@@ -639,7 +585,7 @@
 
   <nav id="page-nav">
     
-    <a class="extend prev" rel="prev" href="/page/4/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/6/">Next &raquo;</a>
+    <a class="extend prev" rel="prev" href="/page/4/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span>
   </nav>
 
 </section>
@@ -672,7 +618,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/04/">April 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li></ul>
     </div>
   </div>
 
@@ -683,10 +629,6 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
-        
-          <li>
-            <a href="/2023/04/20/init/">init</a>
-          </li>
         
           <li>
             <a href="/2023/01/11/%E5%AE%B9%E5%99%A8%E5%8C%96/">首页容器化</a>
@@ -702,6 +644,10 @@
         
           <li>
             <a href="/2021/07/20/%E7%9B%B4%E6%92%AD%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7%E6%96%B9%E6%A1%88/">直播性能指标监控方案</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/14/%E8%A7%86%E9%A2%91%E7%9B%B8%E5%85%B3%E4%BC%98%E5%8C%96/">视频相关优化</a>
           </li>
         
       </ul>

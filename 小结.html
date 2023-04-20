@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>xushuanghui</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="app性能优化1.提高启动速度2.内存泄漏检测(MLeaksFinder)3.卡顿检测4.网络优化5.缩小包体积6.Bugly crash 排查分析7、组件化 8、首页容器化 9、多线程专项优化，10离线化处理 11、启动任务分发，data段注册 TableView优化1.动态的高度，缓存高度2.异步渲染 ：开一个子线程通过CGBitmapContextCreateImage()绘制内容，绘制完成">
+<meta property="og:type" content="website">
+<meta property="og:title" content="xushuanghui">
+<meta property="og:url" content="http://example.com/%E5%B0%8F%E7%BB%93.html">
+<meta property="og:site_name" content="xushuanghui">
+<meta property="og:description" content="app性能优化1.提高启动速度2.内存泄漏检测(MLeaksFinder)3.卡顿检测4.网络优化5.缩小包体积6.Bugly crash 排查分析7、组件化 8、首页容器化 9、多线程专项优化，10离线化处理 11、启动任务分发，data段注册 TableView优化1.动态的高度，缓存高度2.异步渲染 ：开一个子线程通过CGBitmapContextCreateImage()绘制内容，绘制完成">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/Users/xushuanghui/Library/Application%20Support/typora-user-images/image-20211123121958366.png">
+<meta property="og:image" content="http://example.com/Users/xushuanghui/Library/Application%20Support/typora-user-images/image-20211122163848053.png">
+<meta property="og:image" content="http://example.com/Users/xushuanghui/Library/Application%20Support/typora-user-images/image-20211214224452664.png">
+<meta property="og:image" content="http://example.com/Users/xushuanghui/Library/Application%20Support/typora-user-images/image-20211214224432422.png">
+<meta property="og:image" content="http://example.com/Users/xushuanghui/Library/Application%20Support/typora-user-images/image-20211214224358994.png">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3279997-a6dd1e0ca591dd88.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1200/format/webp">
+<meta property="article:published_time" content="2023-04-20T09:02:01.664Z">
+<meta property="article:modified_time" content="2023-04-19T08:28:26.357Z">
+<meta property="article:author" content="xushuanghui">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/Users/xushuanghui/Library/Application%20Support/typora-user-images/image-20211123121958366.png">
+  
+    <link rel="alternate" href="/atom.xml" title="xushuanghui" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">xushuanghui</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="page-" class="h-entry article article-type-page" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/%E5%B0%8F%E7%BB%93.html" class="article-date">
+  <time class="dt-published" datetime="2023-04-20T09:02:01.664Z" itemprop="datePublished">2023-04-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="app性能优化"><a href="#app性能优化" class="headerlink" title="app性能优化"></a><strong>app性能优化</strong></h2><p><strong>1.提高启动速度<br>2.内存泄漏检测(MLeaksFinder)<br>3.卡顿检测<br>4.网络优化<br>5.缩小包体积<br>6.Bugly crash 排查分析7、组件化 8、首页容器化 9、多线程专项优化，10离线化处理 11、启动任务分发，data段注册</strong></p>
+<p><strong>TableView优化</strong><br>1.动态的高度，缓存高度<br>2.异步渲染 ：开一个子线程通过CGBitmapContextCreateImage()绘制内容，绘制完成之后切回主线程，将内容赋值layer的contents，例如YYText中的YYTextAsyncLayer.m</p>
+<p>3.离屏渲染，使用 Core Graphics,贝塞尔曲线 为 UIView 加圆角。避免使用 CALayer 的 Border、corner、shadow、mask 等技术，这些都会触发离屏渲染，少用ClearColor<br>layer的阴影、蒙版、模糊、光栅化、圆角等操作，因为这些操作会进行多个渲染结果的合并，需要一个额外的渲染区来暂存渲染结果<br>单图层的时候并不会触发离屏渲染，只有处理多图层时并且这时候masksToBunds设置为YES才会触发、</p>
+<p>圆角的处理：Core GraPhics框架处理或者配合贝塞尔曲线设置</p>
+<p>layer层的蒙版使用layer.mask：添加自定义view来达到我们做到的效果</p>
+<p>模糊效果：CoreImage提供的方法实现。阴影的处理我们可以使用shadowPath来处理阴影效果</p>
+<p>4.耗时操作可以等进入runloopbeforewaitting后进行</p>
+<p>5、instruments 检查影响性能。</p>
+<p><strong>Instruments</strong><br>1.CPU,内存,磁盘,网络,能耗等监控, 2.内存泄露 3.方法执行耗时分析</p>
+<p><strong>提高启动速度</strong> 3.6s左右减低到1.9-2,2.1秒<br>1、加载可执行文件<br>2、加载动态链接库（系统和应用的动态链接库），进行rebase指针调整和bind符号绑定<br>3、Objc运行时的初始处理，包括Objc相关类的注册，category注册，selector唯一性检查<br>4、初始化+load()等方法<br>5、main方法、UIApplicationDelegate生命周期application:willFinishLaunchingWithOptions:和application:didFinishLaunchingWithOptions、applicationDidBecomeActive</p>
+<p>6、启动业务，首屏渲染等</p>
+<p>1、减少不必要的 framework，因为动态链接比较耗时，动态库合并，动态库转静态库<br>2、排查删除无用类和方法。<br>3、+ load方法，减少耗时操作，异步加载，部分任务移动+initialize<br>3、分必要和非必要延后加载，比如<strong>wkwebView的预加载</strong><br><strong>播放器预热功能</strong>，提前创建好播放器。这个优化的主要设计难点在于如何选取预热的时机。通过埋点数据分析可以确认一个时机为弹窗弹出时，此时用户会等待一段时间看弹窗，非常适合做资源预加载。但不是每次启动都有弹窗，因此还需要另一个时机。看如下Trace，在启动首屏后会有一段时间在等待网络请求，runloop出于空闲状态，那么这个时机<strong>在启动首屏后</strong>。<br>4、使用Instruments调试，app lauch找到启动时的高频次方法或者耗时方法，可以做缓存处理，<strong>Trace打点调试</strong><br>5、动态库懒加载，合并<br>6、二进制重排<br>7、首屏渲染分阶段数据请求<br>8、首刷请求提前，首刷请求会紧接着网络库的初始化之后发送，并做好数据解析<br>9、数据解析后就开始图片和视频预加载</p>
+<p>10、防止劣化，线下防劣化采用了ByTest（质量平台）指标防劣化方案，其整体流程如下。每天会触发两次性能防劣化服务，每次触发服务后会构建一个性能防劣化包交付ByTest进行自动化测试。App在启动后上报启动相关埋点数据到(端监控平台），ByTest在获取埋点数据后通过算法排除掉异常数据，判断劣化情况并发送通知</p>
+<h2 id=""><a href="#" class="headerlink" title=""></a></h2><p><strong>监控启动时间</strong>：1、自定义AAA命名的动态库放在所有动态库加载的第一位， +load 方法中进行埋点作为 APP 的启动时间。Cocoapods会排序加载顺序，OTHER_LDFLAGS中可以看出来。<br>2、通过调试commit() 首屏渲染时间： didFinishLaunch监听进入kCFRunLoopBeforeTimers状态的时间。</p>
+<p><strong>动态库懒加载</strong><br>1、pod install之后，会生成Pods-xxx-frameworks.sh和Pods-xxx.release.xcconfig这两个文件，其中Pods-xxx-frameworks.sh文件脚本负责架构剔除和重签名等功能，而Pods-xxx.release.xcconfig文件则负责静态库和动态库的链接配置，我们自定义的动态库想要进行懒加载，只需要修改xxx.xcconfig配置文件，将需要懒加载的动态库从配置文件中移除，这样保证懒加载的动态库参与签名和拷贝，但是不参与链接。<br>2、原有动态库的调用方式需要修改成Runtime动态调用的形式，在使用某个动态库中的类时，先动态获取该类，如果获取不到，则通过dlopen的方式动态加载该动态库：</p>
+<p><strong>二进制重排</strong></p>
+<p>虚拟内存：当我们向系统申请内存时，系统并不会给你返回物理内存的地址，而是给你一个虚拟内存地。只有我们开始使用申请到的虚拟内存时，系统才会将虚拟地址映射到物理地址上，需要通过操作系统维护的一张映射表映射之后才可以真正访问到，而映射表是以页（Page）为单位进行管理的。</p>
+<p>当进程要访问的一个虚拟内存页在经过映射表映射之后发现对应的物理内存页不存在时，会触发一次缺页中断Page Fault。</p>
+<p>Instruments   Trace工具：File Backed Page In就是Page Fault的次数</p>
+<p>APP 启动过程中，会加载大量的类和方法，两个方法分布在不同的内存页时，产生Page Fault，繁触发Page Fault，产生不可小视的耗时。<br>获取启动的这些方法，按顺序排列在同一个内存页,或者连续的内存页中<br>1.基于 Clang 静态插桩的方式来获取启动过程中的所有函数符号，写到order_file中，<br>2.Clang 静态插桩收集符号的原理就是，利用编译期在每一个函数内部插入回调函数<br>3.Other C Flags，Other swift Flags添加配置<br>4.多线程问题：启动的相关方法可能在不同的线程执行，使用原子队列收集</p>
+<p>对于进程间通信，比如使用系统库获取一些必要数据，去获取keychain中的数据，获取idfa、udid等等。一种是在使用前在后台线程提前获取并缓存在内存中，当使用时直接使用缓存数据，此方案必须需要考虑的问题是系统库是否线程安全。另一种是在第一次获取后就写入持久化缓存，比如YYCache和MMKV等，之后使用时只需要读取本地缓存即可。</p>
+<p><strong>监控内存泄漏</strong><br>1、MLeaksFinder 则是在控制器销毁时，延迟 3s 后再向监测对象发送消息，根据监测对象能否响应消息判断其是否泄漏。</p>
+<p> <a target="_blank" rel="noopener" href="https://github.com/facebook/FBRetainCycleDetector">FBRetainCycleDetector</a>。当传入内存中的任意一个 OC 对象，FBRetainCycleDetector 会递归遍历该对象的所有强引用的对象，以检测以该对象为根结点的强引用树有没有循环引用。</p>
+<p> 1、hook 掉 UIViewController 和 UINavigationController 的 pop 跟 dismiss<br>2、为基类 NSObject 添加一个方法 -willDealloc 方法，该方法的作用是，先用一个弱指针指向 self，并在一小段时间(3秒)后，通过这个弱指针调用 -assertNotDealloc，而 -assertNotDealloc 主要作用是直接中断言。<br>3、遍历该 UIViewController 上的所有 view，依次调 -willDealloc</p>
+<p>采用<code>stack</code>的方式，对某个对象获取所有被其强引用的对象，然后依次以递归思想将这些对象入栈，如果某次入栈的对象已经存在<code>stack</code>中，说明该对象在<code>stack</code>中的位置直到当前为止，存在引用环。</p>
+<p>如何获取强引用成员变量：</p>
+<p>1、类的成员变量：<code>runtime</code>的<code>class_getIvarLayout</code>获取描述该类成员变量的布局信息，<code>ivar_getOffset</code>遍历获取成员变量在类结构中的偏移地址,然后获取强引用变量的集合。</p>
+<p>2、<code>block</code>强引用变量的获取：依据<code>block</code>引用的对象总是基于<code>block</code>地址偏移整个结构体的<code>size</code>,并且被持有的对象按照<code>强引用在前，弱引用在后</code>的顺序排列，因为<code>block</code>强引用的对象都会进行<code>copy</code>到堆上和<code>release</code>对象引用的操作，因此可以通过接收类<code>FBBlockStrongRelationDetector</code>构造<code>detector</code>对象，然后用<code>block</code>的<code>dispose_helper</code>方法调用，判断如果<code>detector</code>对象调用<code>release</code>方法，就说明当前对象是强引用对象，然后获取<code>block</code>持有的所有强引用变量的集合</p>
+<p>3、Instruments工具调试leaks内存泄漏</p>
+<p><strong>如何检测卡顿</strong></p>
+<ul>
+<li>利用Runloop，通过开辟一个子线程来监测主线程的 RunLoop，当两个状态区域的耗时大于设定的阈值时，即为一次卡顿,实时计算 kCFRunLoopBeforeSources 和 kCFRunLoopAfterWaiting 。<br>检测到卡顿：可以借助开源库 <strong>PLCrashReporter</strong>上传堆栈调用。</li>
+</ul>
+<p><strong>连续3次超时80ms</strong></p>
+<p><strong>卡死</strong>：预先设定一个卡死的阈值T（默认是8s）。</p>
+<p>卡死：死锁、死循环，当应用启动过程中，没有在限定时间内完成初始化工作也会被系统杀死。</p>
+<p>在超过卡死阈值T的时候，获取全线程的堆栈，并保存至本地文件中。之后每隔一段时间（采样间隔，默认是1s），会进行一次采样。采样的目的不是为了获取新的堆栈，而是为了更新卡死持续的时间，将该信息保存至本地文件中。</p>
+<p>直至到某一个时间节点，系统把App杀死。当App下一次启动时，卡死模块会根据上一次启动中保留的本地文件信息，还原出卡死的堆栈、持续时间等信息，并上报卡死异常。</p>
+<ul>
+<li>FPS 降低</li>
+<li>CPU 占用率很高</li>
+<li>主线程 Runloop 执行了很久</li>
+</ul>
+<p>CPU,GPU的处理结果错过了下一次垂直同步信号（v-sync）到来时，这样显示屏还是之前帧的内容。结合主线程监控、FPS 监控，以及 CPU 使用率等指标，作为判断卡顿的标准。<strong>Bugly</strong> 的卡顿检测也是基于这套标准<br>  参考ANREye的实现</p>
+<p><strong>网络优化及监控</strong></p>
+<p>DNS，它的作用是根据域名查出IP地址一</p>
+<p>短连接优化方案<br>1、域名合并：<br>客户端修改huiyuan.api.2dfire.com、tuangou.api.2dfire.com合并api.2dfire.com&#x2F;huiyuan 、api.2dfire.com&#x2F;tuangou ，服务端Server Load Balancing中还原转发到不同业务服务器<br>优势：<br>1）域名得到了收编，减少了DNS调用次数，降低了DNS劫持风险；<br>2）针对同一域名，可以利用Keep-Alive来复用Http的连接；<br>3）客户端业务层不需要修改代码，后端业务服务也不需要进行任何修改。</p>
+<p>2、IP直连<br>客户端架设自己的DNS服务<br>1）程序启动的时候拉取“api.2dfire.com”对应的所有的IP列表；<br>2）对所有IP进行跑马测试，找到速度最快的IP（后续所有的HTTPS请求都将域名更换为跑马最快的IP即可）。<br>比如：经过跑马测试发现域名“api.dianping.com”对应最快的IP是“1.23.456.789”。<br>URL“<a target="_blank" rel="noopener" href="http://api.2dfire.com/ad/command?param1=123%E2%80%9D%E5%B0%86%E8%A2%AB%E6%9B%BF%E6%8D%A2%E4%B8%BA%E2%80%9Chttp://">http://api.2dfire.com/ad/command?param1=123”将被替换为“http://</a> 1.23.456.789&#x2F;ad&#x2F;command?param1&#x3D;123”<br>优势：<br>1）摒弃了系统DNS，减少外界干扰，摆脱DNS劫持困扰；<br>2）自建DNS更新时机可以控制；<br>3）IP列表更换方便。</p>
+<p>3、代理长连模式<br>客户端与代理服务器之间的长连通道是通过IP建立的，与DNS没有关系。客户端的HTTP请求被转换为二进制数据流送到代理服务器，也不需要进行DNS解析。代理服务器转发请求到业务服务器时，都处于同一内网，因此可以自己搭建DNS服务，减少对公网DNS服务的依赖。<br>相比公网http通道，代理服务器与业务服务器之间的网络通道也可以进行优化，通过架设专线或者租用腾讯云等方式可以大大提升通道服务质量</p>
+<img src="/Users/xushuanghui/Library/Application Support/typora-user-images/image-20211123121958366.png" alt="image-20211123121958366" style="zoom:33%;" />
+
+<p>应用层、传输层、网络层、数据链路层、物理层<br>HTTP请求是基于Socket设计的，请求发起之前会经历三次握手，断开时又会进行四次挥手<br>http：无连接无状态</p>
+<p><strong>udp：</strong></p>
+<p>1、UDP是无连接的、不可靠的一种数据传输协议，所以速度更快一些<br>请求速度<br>弱网适应<br>安全保障</p>
+<p><strong>TCP：</strong>传输控制协议（TCP，Transmission Control Protocol）是一种面向连接的、可靠的、基于字节流的传输层通信协议</p>
+<p>1、可靠的、面向连接的。</p>
+<p>2、TCP建立连接三次握手，断开四次分手</p>
+<p>TCP KeepAlive 的基本原理是，隔一段时间给连接对端发送一个探测包，如果收到对方回应的 ACK，则认为连接还是存活的，在超过一定重试次数之后还是没有收到对方的回应，则丢弃该 TCP 连接。</p>
+<p><strong>三次握手：</strong></p>
+<p>1、客户端发送syn报文给服务端，syn_send状态。客户端发送消息正常</p>
+<p>2、服务端接收到后，返回给客户端一个syn+ack报文答复，syn_rcvd状态。服务端：接收消息正常，发送正常</p>
+<p>3、客户端接收到后，想服务端发送一个ack报文，双方都处于ESTABLISHED状态（已建立）。：告诉服务端，客户端接收消息也正常</p>
+<p><strong>四次挥手</strong></p>
+<p>1、客户端向服务端一个FIN报文段，FIN_WAIT_1状态，表示：没有数据要发送给你了。</p>
+<p>2、服务端收到FIN报文，回复一个ACK，FIN_WAIT_2状态，：同意你的关闭请求。</p>
+<p>3、服务端想客户端发送FIN报文，请求关闭连接，服务端进入LAST_ACK状态</p>
+<p>4、客户端收到FIN报文，向服务端发送ACK，客户端进入TIME_WAIT。服务端收到ACK报文就关闭连接。客户端等待2MSL后还未收到回复则证明服务端已经关闭，客户端也可以关闭连接了。</p>
+<p>对方处于<code>LAST_ACK</code>状态下的<code>Socket</code>可能会因为超时未收到<code>ACK</code>报文，而重发<code>FIN</code>报文，所以这个<code>TIME_WAIT</code>状态的作用就是用来重发可能丢失的<code>ACK</code>报文。</p>
+<p><strong>HTTP和TCP关系</strong></p>
+<p>我们在传输数据时，可以只使用(传输层)TCP&#x2F;IP协议，但是那样的话，如果没有应用层，便无法识别数据内容。如果想要使传输的数据有意义，则必须使用到应用层协议。应用层协议有很多，比如HTTP、FTP、TELNET等，也可以自己定义应用层协议。</p>
+<p><strong>Socket</strong></p>
+<p>Socket可以更方便的使用TCP&#x2F;IP协议栈，其对TCP&#x2F;IP进行了抽象，形成了几个最基本的函数接口。比如create，listen，accept，connect，read和write等等。</p>
+<p><strong>Socket长连接</strong></p>
+<p>短连接：<br>连接→数据传输→关闭连接；</p>
+<p>长连接：<br>连接→数据传输→保持连接(心跳包,双方发检测包)→数据传输→保持连接(心跳)→……→关闭连接；</p>
+<p>长连接多用于操作频繁，点对点的通讯。TCP提供了发送心跳包机制，setInterval设置发送时间，监听heartbeat</p>
+<p>如果想要使传输的数据有意义，则必须使用到应用层协议比如Http。</p>
+<p>基于TCP协议上自定义自己的应用层的协议需要解决的几个问题：</p>
+<ol>
+<li>心跳包格式的定义及处理</li>
+<li>报文头的定义，就是你发送数据的时候需要先发送报文头，报文里面能解析出你将要发送的数据长度</li>
+<li>你发送数据包的格式，是json的还是其他序列化的方式</li>
+</ol>
+<p>客户端先发送报文头，在发送内容数据，另外一个定时器发送心跳数据</p>
+<h2 id="Socket连接池"><a href="#Socket连接池" class="headerlink" title="Socket连接池"></a>Socket连接池</h2><p>就是维护着一定数量Socket长连接的集合，它能自动检测Socket长连接的有效性，剔除无效的连接，补充连接池的长连接的数量。</p>
+<p>一个请求过来，首先去资源池要求获取一个长连接资源，如果空闲队列里面有长连接，就获取到这个长连接Socket,并把这个Socket移到正在运行的长连接队列。如果空闲队列里面没有，且正在运行的队列长度小于配置的连接池资源的数量，就新建一个长连接到正在运行的队列去，如果正在运行的不下于配置的资源池长度，则这个请求进入到等待队列去。当一个正在运行的Socket完成了请求，就从正在运行的队列移到空闲的队列，并触发等待请求队列去获取空闲资源，如果有等待的情况。</p>
+<p><strong>layoutsubviews触发时机</strong></p>
+<ul>
+<li>init初始化不会触发。</li>
+<li>addSubview时。</li>
+<li>设置frame且前后值变化，frame为zero且不添加到指定视图不会触发。</li>
+<li>旋转Screen会触发父视图的layoutSubviews。</li>
+<li>滚动UIScrollView引起View重新布局时会触发layoutSubviews。</li>
+</ul>
+<p><strong>Runloop</strong></p>
+<ul>
+<li>检测卡顿</li>
+<li>线程保活</li>
+<li>性能优化，将一些耗时操作放到runloop wait的情况处理。</li>
+</ul>
+<p>深入了解推荐ibireme的这篇深入理解RunLoop<br><img src="/Users/xushuanghui/Library/Application Support/typora-user-images/image-20211122163848053.png" alt="image-20211122163848053" style="zoom:50%;" /></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">- kCFRunLoopDefaultMode, <span class="title class_">App</span>的默认运行模式，通常主线程是在这个运行模式下运行</span><br><span class="line">- <span class="title class_">UITrackingRunLoopMode</span>, 跟踪用户交互事件（用于 <span class="title class_">ScrollView</span> 追踪触摸滑动，保证界面滑动时不受其他<span class="title class_">Mode</span>影响）</span><br><span class="line">- kCFRunLoopCommonModes, 伪模式，不是一种真正的运行模式</span><br><span class="line">- <span class="title class_">UIInitializationRunLoopMode</span>：在刚启动<span class="title class_">App</span>时第进入的第一个<span class="title class_">Mode</span>，启动完成后就不再使用</span><br><span class="line">- <span class="title class_">GSEventReceiveRunLoopMode</span>：接受系统内部事件，通常用不到</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">typedef <span class="title function_">CF_OPTIONS</span>(<span class="params">CFOptionFlags, CFRunLoopActivity</span>) &#123; 状态</span><br><span class="line">	  kCFRunLoopEntry         = (1UL &lt;&lt; <span class="number">0</span>), <span class="comment">// 即将进入Loop</span></span><br><span class="line">    kCFRunLoopBeforeTimers  = (1UL &lt;&lt; <span class="number">1</span>), <span class="comment">// 即将处理 Timer</span></span><br><span class="line">    kCFRunLoopBeforeSources = (1UL &lt;&lt; <span class="number">2</span>), <span class="comment">// 即将处理 Source</span></span><br><span class="line">    kCFRunLoopBeforeWaiting = (1UL &lt;&lt; <span class="number">5</span>), <span class="comment">// 即将进入休眠</span></span><br><span class="line">    kCFRunLoopAfterWaiting  = (1UL &lt;&lt; <span class="number">6</span>), <span class="comment">// 刚从休眠中唤醒</span></span><br><span class="line">    kCFRunLoopExit <span class="comment">// 即将退出Loop</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="控制线程的生命周期【线程保活】"><a href="#控制线程的生命周期【线程保活】" class="headerlink" title="控制线程的生命周期【线程保活】"></a>控制线程的生命周期【线程保活】</h3><ul>
+<li>解决NSTimer在滑动过程中停止工作的问题及衍生问题</li>
+<li>监控应用卡顿，kCFRunLoopBeforeSources和kCFRunLoopAfterWaiting两个状态耗时。</li>
+<li>性能优化，监控runloopbeforewaitting时候做一些耗时工作</li>
+</ul>
+<p><strong>Runtime运行时机制</strong></p>
+<ol>
+<li>说说你对 runtime 的理解。——主要是方法调用时如何查找缓存，如何找到方法，找不到方法时怎么转发，对象的内存布局。<br>OC 是动态语言 Runtime 解决如何在运行时期找到调用方法  </li>
+<li>Runtime使用 objc_msgSend 函数，通过给类发送 SEL 以传递消息，找到匹配的 IMP<br> 类中的 super_class 指针可以追溯整个继承链</li>
+</ol>
+<p>实例变量：instance -&gt;isa -&gt; class -&gt; method列表 -&gt; SEL -&gt; IMP -&gt; 实现函数<br>实例对象中存放 isa ,isa指针找到实例对象所属类，类中存放着实例方法列表，方法列表中 SEL 作为 key，IMP 作为 value。IMP 其实就是函数指针指向了最终的函数实现。</p>
+<p><strong>调用实例方法</strong>，通过 isa 指针找到实例对应的 class 并且在其中的缓存方法列表以及方法列表中进行查询，如果找不到则根据 super_class 指针在父类中查询，直至根类(NSObject 或 NSProxy).</p>
+<p><strong>调用类方法</strong>，通过 isa 指针找到实例对应的 metaclass 并且在其中的缓存方法列表以及方法列表中进行查询，如果找不到则根据 super_class 指针在父类中查询，直至根类(NSObject 或 NSProxy). (根据此前的开篇中的图，Root Meta Class 还是有根类的。)</p>
+<p>还没有找到方法，进入<strong>动态消息解析</strong><br>1.通过 resolveInstanceMethod 得知方法是否为动态添加，YES则通过 class_addMethod 动态添加方法，处理消息，否则进入下一步。dynamic 属性就与这个过程有关，当一个属性声明为 dynamic 时 就是告诉编译器：开发者一定会添加 setter&#x2F;getter 的实现，而编译时不用自动生成。<br>2.这步会进入 forwardingTargetForSelector 用于指定哪个对象来响应消息。如果返回nil 则进入第三步。这种方式把消息原封不动地转发给目标对象，有着比较高的效率。如果不能自己的类里面找到替代方法，可以重载这个方法，然后把消息转给其他的对象。<br>3.这步调用 methodSignatureForSelector 进行方法签名，这可以将函数的参数类型和返回值封装。如果返回 nil 说明消息无法处理并报错 unrecognized selector sent to instance，如果返回 methodSignature，则进入 forwardInvocation ，在这里可以修改实现方法，修改响应对象等，如果方法调用成功，则结束。如果依然不能正确响应消息，则报错 unrecognized selector sent to instance.</p>
+<p><strong>+initializ和+load</strong><br>+load:在main函数之前调用类被加载进runtime时候，只调用一次。父类的load先调用, +load中添加method swizzling</p>
+<p>+initialize：在第一次接收到消息之前被调用，线程安全的。<br>父类先调用，子类没有实现的+initialize会调用父类的+initialize，所以+initialize会被调用多次。</p>
+<p><strong>KVO</strong><br>利用Runtime创建一个新的继承自这个对象的<code>class</code>的<code>subclass</code>，让原对象的isa指针指向它，然后重写setter方法，插入willChangeValueForKey和didChangeValueForKey方法。当属性变化时会调用，会调用这两个方法通知到外界属性变化。</p>
+<p><code>run time</code>会创建一个新的继承自这个对象的<code>class</code>的<code>subclass</code>。在这个新的<code>subclass</code>中，它会重写所有被观察的<code>key</code>的<code>setter</code>，然后将对象的<code>isa</code>指针指向新创建的<code>class</code>(这个指针告诉<code>Objective-C</code>运行时某个对象到底是什么类型的)。所以实例对象神奇地变成了新的子类的实例。完成以上操作后，通过调用<code>setter</code>方法进行相关属性的变化时，操作的就是这个中间的子类</p>
+<p><strong>KVC</strong><br>-(id)valueForKeyPath:(NSString *)keyPath;<br>-(id)valueForKey:(NSString *)key;<br>-valueForKey: 首先查找以键 -getKey、 -key 或 -isKey 命名的 getter 方法，它将在对象内部查找名为 _key 或 key 的实例变量。最后没找调用 valueForUndefinedKey: 方法。</p>
+<p><strong>组件化之组件生命周期管理</strong><br>先注册各个启动组件，在 AppDelegate 的各个代理方法里，手动调一遍各个组件的对应方法，如果组件实现了对应的代理方法，就执行</p>
+<h2 id="为什么要用swift"><a href="#为什么要用swift" class="headerlink" title="为什么要用swift"></a>为什么要用swift</h2><p>如果从大点儿的维度来说的话，想oc和swift、Java和kotlin、c++和新发布的carbon。他们都是原有语言的继承者。开发者会因为更现代的语法喜欢新的语言，而新的语言使用全新的思路去打破原来的僵局。语法、性能速度、更适合初级者快速上手等。</p>
+<p>它是一个类型安全语言，变量和方法都有明确的类型，并且有比 OC 更严格的编译时静态类型检查，检测出更多的错误，还有有类型推导机制，写起来更加简洁方便。<br>它包含面向对象编程语言和函数式编程语言的所有特性，还可面向协议编程， 不局限于某种特定编程的范式。<br>在oc基础上添加很多新的特性。</p>
+<p> <strong>Swift和OC的区别</strong>：<br>Swift静态、OC:动态语言，最大的特点就是面向对象，万物皆对象，封装、继承、多态，方法的调用就是动态发送消息去查找对应的方法<br>Swift有元组，option类型<br>面向协议编程可菱形继承<br>struct 分配在栈中,值引用、 class 分配在堆中，类型引用.String，Array和 Dictionary都是结构体，因此赋值直接是拷贝，而NSString, NSArray 和NSDictionary则是类，所以是使用引用的方式。</p>
+<p><strong>OC接入swift遇到问题</strong><br>早之前使用Bridging-Header.h文件的方式，将需要暴露给swift的oc类包含进去。<br>Swift 访问 OC可以直接import xxx，<br>Objective-C 访问 Swift，#import <code>ProductName-Swift.h</code><br>OC调用Swift，需要在属性和方法名前面加上@objc，<br>方法调用：直接调用，函数表调用，消息转发,swift性能更高，消息转发主要靠缓存来提升效率<br>swift面向协议编程，<br>通知名由字符串变成了NSNotification.Name的结构体。<br>oc中kvo监听Swift的属性，需要加上dynamic。<br>Swift对enum的使用做了很大的扩展，可以支持任意类型，而OC枚举仅支持Int类型<br>Swift中Int和Float是不能直接做运算的，必须要将他们转成同一类型才可以运算<br>对于初始化方法OC先调用父类的初始化方法，然后初始自己的成员变量。Swift先初始化自己的成员变量，然后在调用父类的初始化方法。</p>
+<p>OC中id类型被Swift调用时会自动转成AnyObject<br>id 指向任何类的对象，可以代表所有继承于NSObject的对象<br>AnyObject可以代表任何class类型的实例。<br>Any可以代表任何类型，甚至包括func类型。</p>
+<p><strong>closure和block</strong></p>
+<ul>
+<li>closure是匿名函数、block是一个结构体对象</li>
+<li>closure通过逃逸闭包来在内部修改变量，block 通过 __block 修饰符</li>
+</ul>
+<p><strong>逃逸闭包@escaping</strong> 概念：一个接受闭包作为参数的函数，该闭包可能在函数返回后才被调用，也就是说这个闭包逃离了函数的作用域，这种闭包称为逃逸闭包。当你声明一个接受闭包作为形式参数的函数时，你可以在形式参数前写@escaping来明确闭包是允许逃逸。</p>
+<p><strong>非逃逸闭包</strong> 概念：一个接受闭包作为参数的函数， 闭包是在这个函数结束前内被调用</p>
+<p>为什么要分逃逸闭包和非逃逸闭包 ：逃逸闭包会强引用它捕获的所有对象，比如在闭包中访问当前对象中的属性或方法，会持有当前对象，很容易导致循环引用。</p>
+<p><strong>直接调用、静态派发</strong> 函数声明位置的不同也会导致派发方式的不同<br>值类型对象的函数的调用方式是静态调用，即直接地址调用，调用函数指针，这个函数指针在编译、链接完成后，当前函数的地址就已经确定了，在执行代码的过程中就直接跳转到这个地址来执行当前对应的方法，存放在代码段，而结构体内部并不存放方法。因此可以通过地址直接调用。<br><strong>函数表调用</strong><br>函数表的本质就类似于我们理解的数组，声明在class内部的方法在不加任何关键字修饰的过程中，连续存放在我们当前的地址空间中。<br>class中函数来说，是通过V-Taable，其本质就是一个连续的内存空间（数组结构）</p>
+<p>extension中的方法是直接调用的</p>
+<p>struct是值类型，其中函数的调度属于直接调用地址，即静态调度。<br>class是引用类型，其中函数的调度是通过V-Table函数表来进行调度的，即动态调度。<br>extension中的函数调度方式是直接调度。<br>final修饰的函数调度方式是直接调度。<br>@objc随时的函数调度方式是函数表调度，如果OC中需要使用，class还必须继承NSObject。<br>dynamic修饰的函数的调度方式是函数表调度，是函数具有动态性。<br>@objc + dynamic组合修饰的函数调度，是执行的是objc_msgSend流程，即动态消息转发。</p>
+<h3 id="优选struct"><a href="#优选struct" class="headerlink" title="优选struct"></a>优选struct</h3><ul>
+<li><p>安全性</p>
+<p>struct是值引用,值类型是自动线程安全的、 Struct 没有引用计数不会循环引用导致内存泄漏</p>
+<p>速度</p>
+<p>栈由系统分配速度更快</p>
+</li>
+</ul>
+<p>继承OC某些类的的时候使用class</p>
+<ul>
+<li>使用struct不需要考虑内存泄漏和多线程读写的问题，因为在传递值的时候它会进行值的copy</li>
+<li>struct存储在stack中，class存储在heap中，struct为什么更快，栈由系统分配速度更快</li>
+</ul>
+<h2 id="为什么要用flutter"><a href="#为什么要用flutter" class="headerlink" title="为什么要用flutter"></a>为什么要用flutter</h2><p>flutter是跨平台框架，可用来为移动、桌面和 Web 平台构建应用程序。</p>
+<p>基于dart语言，干净简洁，易于上手，Dart是类型安全的语言，支持静态类型检测，所以可以在编译前就发现一些类型的错误，并排除潜在问题<br><strong>依赖于 C&#x2F;C++ 内置的图形渲染引擎</strong>，可生成非常快速且性能出众的应用程序。<br>热重载、节省人力，修改的UI实时显示。</p>
+<h5 id="OC接入flutter遇到问题"><a href="#OC接入flutter遇到问题" class="headerlink" title="OC接入flutter遇到问题"></a><strong>OC接入flutter遇到问题</strong></h5><p>为了复用Element从而减少频繁创建和销毁RenderObject</p>
+<p> 因为Widget是非常轻量级的，实例化耗费的性能很少，</p>
+<p>则只需要修改RenderObject的配置，不用进行耗费性能的RenderObject的实例化工作了</p>
+<p>Element是被抽离开来的，所以你不需要经常和它们打交道。每个Widget的build（BuildContext context）方法中传递的context就是实现了BuildContext接口的Element</p>
+<p><strong>flutter核心原理</strong><br>flutter中一切都是Widget，根据新的状态state来重新构建UI。<br>widget创建element, element生成对应的renderobject，renderobject是真正负责渲染的<br>BuildContext<code>就是widget对应的</code>Element<br><code>BuildContext</code>来获取主题(theme)或者另一个Widget的引用，Scaffold.of(context)来得到它，其中context就是上下文信息，通过of()来往上搜索树，直到找到最近的Scaffold</p>
+<p>父Widget的配置数据改变-&gt;重新构建对应的Element树-&gt;判断原来Element是否可以复用</p>
+<p>renderobject从顶部向下传递约束，从底部向上传递布局信息</p>
+<p>flutter_boost 、flutter_bloc:state,event,bloc,view</p>
+<p><strong>flutter生命周期</strong><br>CreateState-&gt;initState-&gt;didChangeDependencies(inheritedWidget)-&gt;build-&gt;didUpdateWidget-&gt;deactivate(dispose)</p>
+<p>createState：StatefulWidget 中用于创建 State<br>总体介绍一下生命周期,大致可以看成三个阶段:<br>初始化 (插入渲染树🌲) initState、didChangeDependencies、build<br>状态改变 (在渲染树中存在) didUpdateWidget、build<br>销毁 (从渲染树中移除) deactivate、dispose<br>initState: 插入渲染树时调用只调用一次, widget创建执行的第一个方法, 可以再里面初始化一些数据,以及绑定控制器<br>didChangeDependencies: 当State对象的依赖发生变化时被调用<br>build: 它主要用户构建Widget字树的,调用次数:多次,初始化之后开始绘制界面,当调用setState触发的时候会再次被调用<br>didUpdateWidget：当组件的状态改变的时候就会调用didUpdateWidget, 比如调用setState,<br>deactivate: 当State被暂时从视图树中移除时,会调用这个函数.<br>页面切换时也会调用它,因为此时State在视图树中的位置发送了变化,需要先暂时移除后添加<br>dispose: 当State对象从树中被永久移除时调用; 通常在此回调中释放资源.<br>————————————————</p>
+<p><strong>Flutter Boost</strong></p>
+<p>Flutter Boost插件分为平台和Dart两端，两头通过Message Channel连贯。平台侧提供了Flutter引擎的配置和治理、Native容器的创立&#x2F;销毁、页面可见性变动告诉，以及Flutter页面的关上&#x2F;敞开接口等。而Dart侧除了提供相似原生Navigator的页面导航接口的能力外，还负责Flutter页面的路由治理。</p>
+<p>未使用，flutter_boost对于连续的 Flutter 页面（Widget）只需要在当前 FlutterViewController 打开即可，对于间隔的 Flutter 页面我们初始化新的引擎</p>
+<p><strong>老的引擎共享方案：我们把共享的 Flutter View 当成一个画布，然后用一个 Native 的容器作为逻辑的页面。每次在打开一个容器的时候我们通过通信机制通知 Flutter View 绘制成当前的逻辑页面，然后将 Flutter View 放到当前容器里面</strong></p>
+<p><strong>新的方案：</strong></p>
+<p><strong>由Native容器Container通过消息驱动Flutter页面容器Container，从而达到Native Container与Flutter Container的同步目的。Flutter渲染的内容是由Naitve容器去驱动的。</strong></p>
+<p><strong>把Flutter容器做成Webview浏览器一样。填写一个页面地址，然后由容器去管理页面的绘制。</strong></p>
+<p>当一个Native的页面容器存在的时候，FlutteBoost保证一定会有一个Widget作为容器的内容</p>
+<p><strong>在Native初始化容器，设置容器对应的页面标志</strong></p>
+<p><strong>老方案在 Dart 层维护单个 Navigator 栈结构用于 Widget 的切换。而新的方案则是在 Dart 侧引入了 Container 的概念，不再用栈的结构去维护现有的页面，而是通过扁平化 key-value 映射的形式去维护当前所有的页面，每个页面拥有一个唯一的 id。这种结构很自然的支持了页面的查找和切换，不再受制于栈顶操作的问题，之前的一些由于 pop 导致的问题迎刃而解</strong></p>
+<p>所有页面路由操作，打开或者关闭页面，实际上都是对 Native 页面容器的直接操作</p>
+<p>无论路由请求来自何方，最终都会转发给 Native 去实现路由操作。这也是接入 FlutterBoost 的时候需要实现 Platform 协议的原因。</p>
+<p><strong>单引擎</strong></p>
+<ul>
+<li>所有路由操作都汇总到原生端进行管理</li>
+<li>每个页面都有一个pageId作为唯一标识，iOS使用的是container vc实例对象的hash值</li>
+<li>页面生命周期使用container vc的生命周期为准，并同步到dart端</li>
+<li>把Flutter容器做成Webview浏览器一样。填写一个页面地址，然后由容器去管理页面的绘制。**</li>
+</ul>
+<h4 id="多引擎模式"><a href="#多引擎模式" class="headerlink" title="多引擎模式"></a>多引擎模式</h4><p>混合方案：主要问题是如何去处理交替出现的Flutter和Native页面。对于连续的Flutter页面（Widget）只需要在当前FlutterViewController打开即可，对于间隔的Flutter页面我们初始化新的引擎。</p>
+<p>4.离线化、本地服务</p>
+<p>5.os_unfair_lock替代了自旋锁</p>
+<p>自旋锁 等待锁的线程会一直处于忙等待状态，一直占用着资源，最大的问题是：出现优先级反转，低优先级的线程先获得了锁，如果等待锁的线程优先级高，它会一直占用这cpu资源，优先级低的锁就无法释放</p>
+<ol start="6">
+<li>struct并不是全部存放在栈上的，也有存放在堆上的</li>
+<li>oc创建常量与swift创建的常量有什么区别</li>
+</ol>
+<p>2.<strong>flutter与native通信</strong><br>MethodChannel _channe&#x3D; const MethodChannel(‘battle_power’)<br>_channel.invokeMethod</p>
+<p>一种类型是method channel，数据在Dart侧进行序列化，然后会将数据发送到原生侧，你可以在原生侧编写代码响应交互，然后回传序列化后的数据。</p>
+<p>Event Channel: 用于数据流（event streams）的通信，持续通信，收到消息后无法回复此次消息，通常用于Native向Dart的通信，如：手机电量变化，网络连接变化，陀螺仪，传感器等</p>
+<h4 id="isolate是怎么进行通信和实例化的？"><a href="#isolate是怎么进行通信和实例化的？" class="headerlink" title="isolate是怎么进行通信和实例化的？"></a>isolate是怎么进行通信和实例化的？</h4><p>1、isolate实际就是一个隔离的Dart执行的上下文环境(或者容器)<br> 2、isolate是有自己的内存和单线程控制的事件循环<br> 3、isolate之间的内存在逻辑上是隔离的，不像Java一样是共享内存的<br> 4、任何Dart程序的并发都是运行多个isolate的结果。Dart没有共享内存的并发；</p>
+<p>isolate线程之间的通信主要通过port来进行，这个port消息传递过程是异步的</p>
+<h3 id="Isolate"><a href="#Isolate" class="headerlink" title="Isolate"></a>Isolate</h3><p>每一个isolate都有一个event loop，用于管理异步任务的运行，这些任务可能来自于两个队列之中：<code>microtask queue</code>，或者&#96;event queue<br>耗时任务同一个isolate上运行，使用async也没用。 通过运行在不同的Isolate来并行处理，提供了compute()处理</p>
+<ol>
+<li>如果代码片段<strong>不能</strong>被中断，则使用<em>正常的</em>同步过程（一个方法或多个相互调用的方法）；await..async</li>
+<li>如果代码片段可以独立运行<strong>而不</strong>影响应用程序的流动性，请考虑通过使用<strong>Futures</strong>来使用<strong>事件循环</strong>；</li>
+<li>如果繁重的处理可能需要一些时间才能完成并且可能会影响应用程序的流动性，请考虑使用<strong>Isolates</strong>。</li>
+</ol>
+<p><strong>怎么减少Widget的重新构建</strong><br>首先要做的就是将大的Widget树重构成较小的单个的Widget，每一个Widget都有它自己的<code>build</code>方法。<br>尽可能的使用<code>const</code>构造函数，这将告知Flutter不需要重建这个widget。<br>使stateful widget的子树尽可能的小，如果stateful widget有一个widget子树，那么为这个stateful widget创建一个自定义widget，并为其提供一个<code>child</code>参数。</p>
+<p><strong>ValueListenableBuilder</strong><br>从下到上或者横向共享数据，<br>他的功能是监听一个数据源，如果数据源发生变化，则会重新执行其 builder</p>
+<p>异步UI更新（FutureBuilder、StreamBuilder）现在改成使用flutter_bloc</p>
+<p><strong>Flutter  provider&#x2F; flutter_bloc 实现及原理，作用</strong><br>provider 中使用InheritedWidget ()作用<br>InheritedWidget的data发生变化时，就会更新依赖它的子孙组件，也就是会调这些子孙组件的didChangeDependencies()方法和build()方法。</p>
+<p>子组件如果使用了共享数据，在子组件获取父组件的数据时，可以通用<strong>dependOnInheritedWidgetOfExactType、<strong><strong>getElementForInheritedWidgetOfExactType</strong></strong>区别就是前者会注册依赖关系，而后者不会.</strong><br>ChangeNotifierProvider中return InheritedProvider extends InheritedWidget,</p>
+<p><strong>状态管理框架  Flutter bloc:state,event,bloc,view</strong></p>
+<p><strong>解决了视图逻辑分离与可测试性问题</strong></p>
+<p>数据流方式：决定项目的 分层结构 与 业务逻辑 间的解耦程度。</p>
+<p>  <strong>BlocProvider</strong></p>
+<ul>
+<li>负责储存 传入XxxBloc加以储存</li>
+<li>提供的of方法，在子节点获取到储存的XxxBloc</li>
+<li>页面构建的适用BlocBuilder获取state</li>
+</ul>
+<p><strong>Bloc</strong> 封装了Stream一系列对象,封装了关闭Stream流的操作等</p>
+<p><strong>flutter事件机制</strong></p>
+<ol>
+<li>组件只有通过命中测试才能响应事件。</li>
+<li>一个组件是否通过命中测试取决于 hitTestChildren(…) || hitTestSelf(…) 的值。</li>
+<li>组件树中组件的命中测试顺序是深度优先的。</li>
+<li>组件子节点命中测试的循序是倒序的，并且一旦有一个子节点的 hitTest 返回了 true，就会终止遍历，后续子节点将没有机会参与命中测试。这个原则可以结合 Stack 组件来理解。</li>
+<li>大多数情况下 Listener 的 HitTestBehavior 为 opaque 或 translucent 效果是相同的，只有当其子节点的 hitTest 返回为 false 时才会有区别。</li>
+<li>HitTestBlocker 是一个很灵活的组件，我们可以通过它干涉命中测试的各个阶段。</li>
+</ol>
+<p>Widget组件的大小是由自身决定的，而组件的位置是由父组件决定的</p>
+<p>Flutter 调用其 createElement() 方法，创建其对应的 Element</p>
+<h4 id="flutter的Element-根据什么来确定控件是否改变呢"><a href="#flutter的Element-根据什么来确定控件是否改变呢" class="headerlink" title="flutter的Element 根据什么来确定控件是否改变呢"></a>flutter的Element 根据什么来确定控件是否改变呢</h4><p>flutter 中的 Widget 一直在重建，每次重建之后，Element 都会判断新控件跟之前引用旧控件是否有所改变，如果没改变则只需要做更新操作，如果前后不同则会重创建。那么，Element 根据什么来确定控件是否改变呢？它会比较 Widget 以下两个属性：</p>
+<ul>
+<li><p>组件类型：是否是同一个类所创建的，Key 即为每个控件的唯一标识。</p>
+</li>
+<li><p>Widget 的 Key （如果有）</p>
+</li>
+<li><p>如果不是同一个类型，那就把Widget、Element、RenderObject分别从它们的树（包括它们的子树）上移除，然后创建新的对象；</p>
+</li>
+<li><p>如果是一个类型，那就仅仅修改RenderObject中的配置，然后继续向下遍历</p>
+</li>
+</ul>
+<p><strong>flutter高性能长列表容器 PowerScrollView，动画框架 Fish-Lottie，游戏引擎 Candy</strong></p>
+<h2 id="热修复"><a href="#热修复" class="headerlink" title="热修复"></a>热修复</h2><p>OCRunner：</p>
+<ul>
+<li>前后端分离：PatchGenerator把修改代码生成二进制补丁，上传到服务器，app中下载解析，OCRunner 解释执行补丁</li>
+</ul>
+<h4 id="Hook-Objective-C-方法"><a href="#Hook-Objective-C-方法" class="headerlink" title="Hook Objective-C 方法"></a>Hook Objective-C 方法</h4><ul>
+<li>JSPatch ，通过将类的目标方法替换为 objc_msgForward，同时将 forwardInvocation: 方法的 IMP 替换为 JPForwardInvocation 函数，当目标方法被调用时触发消息转发，在 JPForwardInvocation 函数中获取 NSInvocation 的各个参数值，再使用 JavaScriptCore 调用相应的函数，再将得到的结果设置到 NSInvocation 的返回值。</li>
+</ul>
+<p><strong>动态更新方案总结</strong><br>React Native使用了react的设计模式，但是其UI渲染、动画效果、网络请求等均是由原生来实现的。开发者编写JS代码，通过React Native的中间层转化为原生控件，并进行操作。也就是说通过JS代码来调用原生的组件，从而实现相应的功能</p>
+<h3 id="2、动态化UI"><a href="#2、动态化UI" class="headerlink" title="2、动态化UI"></a>2、动态化UI</h3><p>和服务端约定好的规则，数据格式。更具指定规则数据变化来动态展示页面。</p>
+<h3 id="1、动态化UI"><a href="#1、动态化UI" class="headerlink" title="1、动态化UI"></a>1、动态化UI</h3><p>这一套思想实现的技术点都是js和原生交互，和RN实现很像<br>每个页面会对应一个json,一个js文件，我们编写页面只需要一个人编写json,和js， Android和ios通用，共同维护一个库。<br>基础的功能抽成原生组件，通过一个plist文件也就是字典来维护所有的组件，在页面的json中就是把一个个组件拼接起来。每个组件都有对应的id，component，value等等。<br>json对应页面和设置，而具体业务逻辑等代码由js来完成，动作、传值(组件之间、界面之间)等等<br>通过set、getCompontValue(id)设置获取组件值<br>在开发过程中，查看需要的组件是否已存在，如果不存在，则需新建一个通用组件，尽量写的通用一些，方便后期多出调用<br>这些json,js，最后可以通过服务费下发的方式来加载。如果一个页面有问题，只需要修改json,js，通过服务端来发布。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;component&quot;</span><span class="punctuation">:</span> <span class="string">&quot;input&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;config&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;name&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;name&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;value&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;prop&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;title&quot;</span><span class="punctuation">:</span> <span class="string">&quot;标签名称（12个字以内）&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;placeholder&quot;</span><span class="punctuation">:</span> <span class="string">&quot;必填&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;maxLen&quot;</span><span class="punctuation">:</span> <span class="number">12</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;lenVerTip&quot;</span><span class="punctuation">:</span> <span class="string">&quot;标签名称必须在12字以内&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;keyboardType&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;remark&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;disable&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;required&quot;</span><span class="punctuation">:</span> <span class="number">1</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;requiredTip&quot;</span><span class="punctuation">:</span> <span class="string">&quot;标签名称不能为空&quot;</span></span><br><span class="line">        <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;style&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span><span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>**组件化过程 **<br>路由：tdf-manager:&#x2F;&#x2F;2dfire.com&#x2F;member&#x2F;scan<br>模块间解耦 • 模块重用<br>依赖中间层的库专门来定义跳转方法：TDFMediatorKit， A库调用TDFMediatorKit，通过performTarget：action:，target:是B库的分类Target_merber ，action:Action_controller</p>
+<p>[self performTarget:MemberModule action:ActiontoVC params:nil]</p>
+<p>组件化——AppDelegate 生命周期</p>
+<p><strong>Carthage动态库转静态库</strong></p>
+<p><strong>基于 CocoaPods 的组件二进制化实践</strong></p>
+<p>问题：组件越来越多，打包时间真加到1个小时，</p>
+<p>将非开发中的组件预先编译打包成静态 &#x2F; 动态库并存放至某处，待集成此组件时，直接使用二进制包，对比源码依赖，二进制依赖的组件只需要进行链接而无需编译</p>
+<p>1、二进制化需求  2、制作二进制包：Carthage打包，存储，3.切换依赖方式，双私有源单版本</p>
+<p><strong>Genkins持续集成</strong></p>
+<p><strong>GitLab CI 集成实践</strong><br>1.仓库的 Setting -&gt; CI&#x2F;CD,设置 <code>.gitlab-ci.yml</code>路径， ，按照注册GitLab Runner<br>2.gitlab-ci.yml、stages设置对应的阶段和脚本- component_check  - lint  - test  - package  - publish  - report。一个 stage 中可以有多个 job，多个job并行的，job中包含script、tags、only。<br>stage 的失败条件是任务最后一个执行的命令返回非零结果<br>component_check 这个入口主要对组件进行一些简单快速的校验，比如我们针对目前团队组件中存在的一些问题，<br>设置的 podspec 校验:1、校验依赖限制 2、校验业务线私有组件包含关系debug库等</p>
+<p><strong>GitLab CI 与组件自动化发布</strong></p>
+<p><strong>genkins</strong>：编写打包脚本，主要是：我们有接入flutter，切换flutter库分支，pod update，fastlane打包，非release版本上传本地服务器，通知钉钉。如果是release，上传包到app connect store，上传符号表到buggly，自动增加build。</p>
+<p>GitFlow 工作流</p>
+<p><strong>设计模式</strong><br>  工厂模式、观察者模式、中介者模式、单例模式</p>
+<p>  对比架构时，可以从是否职责分离，可测试性，可易维护性三个维度对比。<br>  更多对比可以参考我翻译的一篇文章：【译】iOS 架构模式–浅析MVC, MVP, MVVM 和 VIPER<br><strong>MVC</strong></p>
+<img src="/Users/xushuanghui/Library/Application Support/typora-user-images/image-20211214224452664.png" alt="image-20211214224452664" style="zoom:33%;" />
+
+<ul>
+<li><code>Model模型是数据所在的地方。 诸如持久性，模型对象，解析器，管理器和网络代码之类的东西都在这里。 View</code>视图层是应用程序的外观。 它的类通常不包含任何特定于域的逻辑，因此通常可以重用。<br>&#96;Controller*通过委派模式在 View 和模型之间进行中介。 在理想情况下，控制器实体将不知道其处理的具体视图，它将通过协议与抽象进行通信。 一个经典的示例是 UITableView 通 UITableViewDataSource 协议与其数据源进行通信的方式。<br><strong>MVC缺点</strong><ul>
+<li>分层设计弱，控制器几乎在这里处理所有事情，它处理业务逻辑和表示逻辑，包括更新 UI，动画等。</li>
+<li>由于业务逻辑，表示逻辑和 UIKit 成员在控制器中混合在一起，因此难以进行单元测试。 可测试的类不应依赖任何 UIKit 成员无法轻易扩大规模。</li>
+<li>难以维护，当项目成长时，控制器将变得混乱和沉重。</li>
+</ul>
+</li>
+</ul>
+<p><strong>MVP</strong></p>
+<img src="/Users/xushuanghui/Library/Application Support/typora-user-images/image-20211214224432422.png" alt="image-20211214224432422" style="zoom:33%;" />
+
+<p>这里的 View 与 Model-View-Controller 模式中的 View 相同，除了 View 不应直接与 Model 交互，View 只能与 Presenter 交互。<br>Model 也与 Model-View-Controller 模式中的模型相同，但是 Model 也不能直接与 View 交互，它应该仅与 Presenter 交互<br>Presenter 是 Model-View-Presenter 模式引入的新层，如图所示，Presenter 是一个中间层，用于处理 View 和 Model 之间的通信。 它解决了许多 MVC 问题，例如可测试性，可维护性，可伸缩性。<br>缺点：<br>视图的渲染放在 Presenter 中，所以视图和 Presenter 的交互会过于频繁。如果 Presenter 过多地渲染视图，往往会使得它与特定的视图的联系过于紧密。</p>
+<p><strong>MVVM</strong></p>
+<img src="/Users/xushuanghui/Library/Application Support/typora-user-images/image-20211214224358994.png" alt="image-20211214224358994" style="zoom:33%;" />
+
+<p>1、 View 与 ViewModel 之间的通过数据绑定实现通信。<br>2、ViewModel提供了业务&#x2F;表示逻辑与 View &#x2F; ViewController 之间的连接。视图（UI）通过将输入数据（由模型定义）传递给 ViewModel 来响应用户输入。反过来，ViewModel 评估输入数据，并根据业务逻辑工作流以适当的 UI 呈现进行响应。<br>ViewModel 易于测试和重用</p>
+<ul>
+<li>双向绑定时，当 Model 变化时，View-Model 会自动更新，View 也会自动变化。</li>
+<li>View 的功能进一步的强化，具有控制的部分功能。</li>
+<li>控制器的功能大部分移动到 View 上处理，大大的对控制器进行了瘦身。</li>
+<li>MVVM搭配这RAC使用</li>
+</ul>
+<p><strong>缺点</strong><br>数据绑定使得 Bug 很难被调试。<br>数据双向绑定不利于代码重用。<br>大的模块，model 很大，不利于内存的释放。</p>
+<p>RAC 如何实现双向绑定</p>
+<p>1.Model—-&gt;View 这种流向很简单，你请求数据之后，通过Block的回调，最终更新UI<br>2.View—–&gt;Model 反向绑定也一样，View触发事件，更新对面ViewModel里面绑定的数据源，例如登录注册的Textfield，你输入和删除的时候，你的Model字段会对应更新，当你提交的时候，读取ViewModel的字段，就是已经更新的最新数据。这是一种方式，我个人感觉如下图的另一种更容易理解，比如你选择某个cell或者点赞的时候，View事件触发，更新绑定的ViewModel字段，拥有ViewModel的控制器，用RACObserve来进行该字段开关的读取，如果监听到YES，就刷新对应的页面UI</p>
+<p>![image-20211224152905126](&#x2F;Users&#x2F;xushuanghui&#x2F;Library&#x2F;Application Support&#x2F;typora-user-images&#x2F;image-20211224152905126.png)</p>
+<p>热信号一般在开发中充当的角色如下图所示：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3279997-a6dd1e0ca591dd88.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1200/format/webp" alt="img"></p>
+<p>RAC中的<code>RACSiganl</code>类中几乎都是<strong>冷信号</strong>，初始化一个<code>RACDynamicSignal</code>保存一个block，等到有订阅者去订阅，如果没有订阅者的话，一直不会被调用，也就是冷信号被调用的前提是要有订阅者，这就是冷信号。</p>
+<p><strong>热信号</strong>就是使用<code>RACSubject</code>对象订阅源信号，而其他的订阅者订阅<code>RACSubject</code>，等待有值发出的时候，就会告诉所有的订阅者</p>
+<p><code>RACSubject</code>这个类会保存所有的订阅者，一旦被订阅，就会保存订阅者，等待有值发出的时候，就会告诉所有的订阅者。</p>
+<p><strong>LRU算法</strong><br>  LRU（Least recently used 最近最少使用）算法是一个缓存淘汰算法，其作用就是当缓存很多时，该淘汰哪些内容，见名知意，它的核心思想是淘汰最近使用最少的内容。实现它的关键步骤是：1.新数据插入到链表的头部 2.每当缓存命中时，则将数据移动到链表头部3.链表满时，将尾部数据清除</p>
+<ul>
+<li>维护一个有序链表（我使用的双向链表）<ul>
+<li>靠近尾部的节点则在时间上越早被访问</li>
+</ul>
+</li>
+<li>当有新数据时，先从头开始遍历链表<ul>
+<li>如果数据已经在缓存中<ul>
+<li>遍历后得到数据所在的结点，从这个位置删除</li>
+<li>最后插入到链表头部</li>
+</ul>
+</li>
+<li>如果数据没在缓存中，再次分为两种情况<ul>
+<li>如果缓存的空间没有满<ul>
+<li>直接把这个数据所在的结点插入到链表头部</li>
+</ul>
+</li>
+<li>如果缓存空间已满<ul>
+<li>先删除尾结点</li>
+<li>把新数据的结点插入到链表头部 （这个思路不包含哈希表）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>weak的实现原理是什么？当引用对象销毁是它是如何管理内部的Hash表的？</strong></p>
+<p>runTime会把对weak修饰的对象放到一个全局的哈希表中，用weak修饰的对象的内存地址为key，weak指针为值，在对象进行销毁时，用通过自身地址去哈希表中查找到所有指向此对象的weak指针，并把所有的weak指针置位nil。</p>
+<p><strong>什么是哈希表？</strong><br>    哈希表（Hash table，也叫散列表），是根据关键码值(Key value)而直接进行访问的数据结构。也就是说，它通过把关键码值映射到表中一个位置来访问记录，以加快查找的速度。这个映射函数叫做散列函数，存放记录的数组叫做散列表。<br>    哈希表hashtable(key，value) 的做法其实很简单，就是把Key通过一个固定的算法函数既所谓的哈希函数转换成一个整型数字，然后就将该数字对数组长度进行取余，取余结果就当作数组的下标，将value存储在以该数字为下标的数组空间里。<br>    而当使用哈希表进行查询的时候，就是再次使用哈希函数将key转换为对应的数组下标，并定位到该空间获取value，如此一来，就可以充分利用到数组的定位性能进行数据定位。</p>
+<p><strong>数据结构</strong><br>链表：<br>二分搜索：一种在有序数组中查找某一特定元素的搜索算法<br>二叉树</p>
+<p><strong>算法</strong><br>冒泡排序：两两相互比较，较大的交换位置后移。稳定<br>选择排序：在未排序队列选出最小值，放在已排序队列的后面<br>插入排序：未排序的值依次与有序队列的值对比，小于则交换位置，插入有序序列的适当位置。稳定，时间O(N2)， 空间O(1)<br>归并排序：递归把数组对半分成若干个，两个数组排序合并， 设定两个指针i,j指向两个已经排序序列的起始位置，比较两个指针所指向的元素，选择相对小的元素放入到临时数组中，并移动指针到下一位置。稳定，时间O(NlogN), 空间O(n)<br>快速排序：随机选择一个数作为基准，小于基准的交换位置与第一个大于基准的数交换，大于基准的数不动。可以确定基准的最终位置。再依次排序基准左边和右边的序列。<br>堆排序：1.构建大顶堆 2.调整堆结构+交换堆顶元素与末尾元素 ，排序列表减一。</p>
+<p>![image-20220804154753630](&#x2F;Users&#x2F;xushuanghui&#x2F;Library&#x2F;Application Support&#x2F;typora-user-images&#x2F;image-20220804154753630.png)</p>
+<p>topK:<br>1、<strong>Hash Table法</strong>:维护一个Key为Query字串，Value为该Query出现次数的HashTable，每次读取一个Query，如果该字串不在Table中，那么加入该字串，并且将Value值设为1；如果该字串在Table中，那么将该字串的计数加一即可。最终我们在O(N)的时间复杂度内完成了对该海量数据的处理。<br>300万中找到10个最大的数<br>2、维护一个K(该题目中是10)大小的最小堆，然后遍历300万的Query，<strong>分别和堆顶进行对比。</strong></p>
+<p>先用Hash表统计每个Query出现的次数，O（N）；然后第二步、采用堆数据结构找出Top 10，N*O（logK）。所以，我们最终的时间复杂度是：<strong>O（N） + N’*O（logK）。</strong>（N为1000万，N’为300万）。</p>
+<p><strong><code>autorelease</code></strong><br><code>RunLoop</code>)的每次循环开始时，在主线程创建一个自动释放池，并在每次循环结束时销毁它，在销毁时释放自动释放池中的所有<code>autorelease</code>对象。通常情况下我们不需要手动创建自动释放池，但是如果我们在循环中创建了很多临时的<code>autorelease</code>对象，则手动创建自动释放池来管理这些对象可以很大程度地减少内存峰值</p>
+<p>RunLoop循环开始kCFRunLoopEntry，时自动创建AutoreleasePool，kCFRunLoopBeforeExit自动消耗<br>AutoreleasePoolPage是以栈为结点通过双向链表的形式组合而成；遵循先进后出规则，整个自动释放池由一系列的AutoreleasePoolPage组成的<br>自动释放池与线程一一对应；<br>POOL_BOUNDARY为哨兵对象，入栈时插入，出栈时释放对象到此传入的哨兵对象</p>
+<h4 id="Core-Animation"><a href="#Core-Animation" class="headerlink" title="Core Animation"></a>Core Animation</h4><p>UIView Animation、CABasicAnimation、CAKeyframeAnimation、CAAnimationGroup、CATransition</p>
+<p><strong>OClint实现静态分析的原理是什么，它是如何做到的？</strong><br>具体可以参考我之前写的如何通过静态分析提高iOS代码质量。</p>
+<p><strong>1、多线程、线程安全、锁</strong><br>1、多条线程访问读写同一数据时,会出现数据错乱的情况,在写之前加一把🔐<br>2、dispatch_semaphore_wait：信号量值为0时会阻塞等待<br>Main Dispatch Queue、Global Dispatch Queue、DISPATCH_QUEUE_CONCURRENT并行队列<br>dispatch_async：异步，dispatch_sync同步<br>dispatch_group_wait、dispatch_once<br><strong>dispatch_barrier_async</strong><br>dispatch_barrier_async一般叫做“栅栏函数”，它就好像栅栏一样可以将多个操作分隔开，在它前面追加的操作先执行，在它后面追加的操作后执行。</p>
+<p><strong>多线程举例</strong><br>dispatch_group_wait,notify，多个请求完成获取到数据，结合之后用作其他请求或者dispatch_get_main_queen回主线程UI的更新。<br>多线程对数组的添加删除，给临界区代码加锁等<br>dispatch_semaphore_wait，使用信号量在多线程环境下顺序的添加计数等</p>
+<p>死锁：<br>1、串行队列任务中添加同步任务，同步需要等待当前任务完成，而它自身是就在任务当中<br>2、一个线程多次获取同一个非递归锁，则会产生死锁。<br>3、自旋锁spin_lock，线程会死循环的方式等待锁，白白浪费 CPU 时间，最终因为超时被操作系统抢占时间片，造成了任务的优先级反转</p>
+<p>NSLock：互斥锁<br>@synchronized递归锁<br>NSRecursiveLock递归锁：递归锁有一个特点，就是同一个线程可以加锁N次而不会引发死锁，记录了一个线程加锁次数，直到一个线程所有的锁都被解锁了，其他线程才能得到资源<br>递归锁会跟踪它被lock的次数。每次成功的lock都必须平衡调用unlock操作</p>
+<p>递归锁：同一个线程可以多次获取同一个递归锁，不会产生死锁。<br>非递归锁：如果一个线程多次获取同一个非递归锁，则会产生死锁。</p>
+<p>递归锁是在非递归互斥锁加引用计数器来实现的</p>
+<p>NSConditionLock：条件变量锁</p>
+<p>atomic：用atomic修饰后，这个属性的setter、getter方法是线程安全的，但是对于整个对象来说不一定是线程安全的。<br>使用的是pthread_mutex(互斥锁，也可设置递归锁、跨平台）<br>原因：当A线程的写操作结束后，B线程进行写操作，然后当A线程需要读操作时，却获得了在B线程中的值，这就破坏了线程安全。</p>
+<p>自旋锁: 等待时间比短，竞争不激烈时候。</p>
+<p>互斥锁：耗时技术，读写操作等</p>
+<p>自旋锁: 线程会死循环的方式等待锁，白白浪费 CPU 时间，最终因为超时被操作系统抢占时间片，造成了任务的优先级反转<br>自旋锁：os_unfair_lock:当预计线程等待锁的时间很短，线程反复检查锁变量是否可⽤</p>
+<p>自旋锁：如果共享数据已经有其他线程加锁了，线程会以死循环的方式等待锁，一旦被访问的资源被解锁，则等待资源的线程会立即执行。<br>互斥锁：如果共享数据已经有其他线程加锁了，线程会进入休眠状态等待锁。一旦被访问的资源被解锁，则等待资源的线程会被唤醒。</p>
+<p>1、os_unfair_lock</p>
+<p>2、OSSpinLock</p>
+<p>3、dispatch_semaphore</p>
+<p>4、pthread_mutex</p>
+<p>5、dispatch_queue(DISPATCH_QUEUE_SERIAL)</p>
+<p>6、NSLock</p>
+<p>7、NSCondition</p>
+<p>8、pthread_mutex(recursive)</p>
+<p>9、NSRecursiveLock</p>
+<p>10、NSConditionLock</p>
+<p>11、@synchronized</p>
+<p><strong>2、SDWebimage</strong><br>SDWebImage提供了图片从加载、解析、处理、缓存、清理等一系列功能<br>sd_setImageWithURL-&gt;SDImageCache从缓存中查找-&gt;用以url为key在硬盘缓存目录下查找，回到主线程进行查找结果的回调–&gt;如果硬盘中读取到图片，则将图片添加到内存缓存，并显示图片–&gt;如果硬盘未找到，则SDWebImageDownloader下载图片-&gt;在异步NSOperationQueue中，使用SDWebImageDecoder图片解码，-&gt;下载解析完成后，同时异步保存到内存缓存和硬盘缓存中。</p>
+<p>清理缓存：</p>
+<p>在app收到内存警告时清理缓存，</p>
+<p>在app将要退出时 删除旧的缓存文件，</p>
+<p>还有在app进入后台后，删除旧的缓存文件</p>
+<p><strong>YYlabel异步渲染</strong><br>YYText 核心思路：在异步线程创建图形上下文，然后利用 CoreText 绘制富文本，利用 CoreGraphics 绘制图片、阴影、边框等，最后将绘制完成的位图放到主线程显示。</p>
+<ul>
+<li>(Class)layerClass;自定义CALayer子类作为UIview的layer</li>
+<li>display方法用来设置contents属性</li>
+</ul>
+<p><strong>3、cocoapod各个参数</strong><br><strong>使用 use_frameworks! 时</strong>，cocoapods以动态库(dynamic frameworks)的方式引入外部库</p>
+<p>不使用 use_frameworks! 时，cocoapods以静态库(static libraries)的方式引入外部库</p>
+<p><strong>4、动态库、静态库区别、二进制</strong></p>
+<p>**静态库(.a)**：链接时会被完整的复制到可执行文件中，被多次使用就有多分拷贝，但程序包会变的比较大；</p>
+<p>.a和.framework </p>
+<p><strong>动态库</strong>：编译时只存储指向动态库的引用，运行时动态加载到内存，系统只加载一次，多个程序共用，节省内存</p>
+<p>动态库：.dylib和.framework  </p>
+<p>.h+资源文件+库文件</p>
+<p>.a 是单纯的二进制文件，.framework是二进制问价+资源文件。<br> 其中.a 不能直接使用，需要 .h文件配合，而.framework则可以直接使用。<br> .framework &#x3D; .a + .h + sorrceFile(资源文件)</p>
+<p><strong>Framework</strong>：是资源的打包方式，和静态库、动态库本质没什么关系。</p>
+<p><strong>5、gitlab、genkins添加新的机器方式，快速添加</strong></p>
+<p><strong>6、https、afnetworking、dns</strong><br>HTTPS: 在HTTP的基础下加入了SSL&#x2F;TLS层，这也HTTPS的安全基础。<br>HTTPS建立连接的阶段也就是非对称加密+对称加密+数字证书协同作用的过程<br>dns:域名系统 (DNS)  ,DNS 将域名转换为 IP 地址</p>
+<p><strong>SSL协议的握手过程</strong><br>1、客户端向服务器发送支持的SSL&#x2F;TSL的协议版本号，以及客户端支持的加密方法，和一个客户端生成的随机数<br>2、服务器确认协议版本和加密方法，向客户端发送一个由服务器生成的随机数，以及数字证书<br>3、客户端验证证书是否有效，有效则从证书中取出公钥，生成一个随机数，然后用公钥加密这个随机数，发给服务器<br>4、服务器用私钥解密，获取发来的随机数<br>5、客户端和服务器根据约定好的加密方法，使用前面生成的三个随机数，生成对话密钥，用来加密接下来的整个对话过程</p>
+<p>数字证书：包括 公钥和数字签名 公钥通过hash算法可以得到数据摘要，数据摘要使用CA的私钥加密得到数字签名。</p>
+<p>（1）生成对话密钥一共需要三个随机数。<br>（2）握手之后的对话使用”对话密钥”加密（对称加密），服务器的公钥和私钥只用于加密和解密”对话密钥”（非对称加密），无其他作用。<br>（3）服务器公钥放在服务器的数字证书之中。</p>
+<h3 id="CA机构加密"><a href="#CA机构加密" class="headerlink" title="CA机构加密"></a>CA机构加密</h3><p>CA 签发证书的过程，如上图左边部分：首先 CA 会把持有者的公钥、用途、颁发者、有效时间等信息打成一个包，然后对这些信息进行 Hash 计算，得到一个 Hash 值；然后 CA 会使用自己的私钥将该 Hash 值加密，生成 Certificate Signature，也就是 CA 对证书做了签名；最后将 Certificate Signature 添加在文件证书上，形成数字证书；客户端校验服务端的数字证书的过程，</p>
+<h3 id="客户端解密验证证书有效性"><a href="#客户端解密验证证书有效性" class="headerlink" title="客户端解密验证证书有效性"></a>客户端解密验证证书有效性</h3><p>首先客户端会使用同样的 Hash 算法获取该证书的 Hash 值 H1；通常浏览器和操作系统中集成了 CA 的公钥信息，浏览器收到证书后可以使用 CA 的公钥解密 Certificate Signature 内容，得到一个 Hash 值 H2 ；最后比较 H1 和 H2，如果值相同，则为可信赖的证书，否则则认为证书不可信。</p>
+<p><strong>AFNetWorking</strong><br><strong>策略、缓存、安全校验</strong><br><strong>断点续传、分片上传</strong><br>断点续传的主要思路:检查服务器文件信息、检查本地文件、如果比服务器文件小, 断点续传, 利用 HTTP 请求头的 content-range实现断点续传（如果content-range不存在就取Content-Length的大小）</p>
+<p>AFURLSessionManager&#x2F;AFHTTPSessionManager：<br> NSURLSession 网络通信模块：负责网络请求的发起，回调处理，是在系统网络相关API上的一层封装。<br>Serialization序列化模块：AFURLRequestSerialization是将传入的参数构造成NSURLRequest、AFURLResponseSerialization主要是将系统返回的NSURLResponse处理成我们需要的responseObject，比如json、xml、image<br>Reachability 网络状态监听模块<br>Security 网络通讯安全策略模块、AFSecurityPolicy https相关的公钥和证书验证逻辑。但 NSURLConnection 和 NSURLSession 并没有验证证书是否合法，无法避免中间人攻击</p>
+<p><strong>客户端加密方式</strong><br>客户端：<br>sign：把所有参数拼接成字符串+时间戳timestamp+约定的Key+RSA、SHA256、MD5+salt加密<br>约定的Key可以转换一下或者加密，然后存入Keychain<br>token：登录的用户需要把后台返回的token一起上传（Token是否有效根据后台设定refreshToken是否过期判断,过期要重新加载）<br>服务端：<br>服务端对token、timestamp和sign进行验证，<br>服务器缓存：将sign、Token以键值对的形式存放在缓存服务器中,验证sign屏蔽重复请求</p>
+<p><strong>8、热修复方案及原理</strong></p>
+<p><strong>10、组件化方案对比</strong><br>URL Router</p>
+<ul>
+<li><p>App启动时实例化各组件模块，然后这些组件向<code>ModuleManager</code>注册<code>Url</code>，有些时候不需要实例化，使用class注册</p>
+</li>
+<li><p>当组件A需要调用组件B时，向<code>ModuleManager</code>传递URL，参数跟随URL以GET方式传递，类似openURL。然后由ModuleManager负责调度组件B，最后完成任务</p>
+</li>
+<li><p>极高的动态性，适合经常开展运营活动的app，例如电商</p>
+</li>
+<li><p>传参方式有限，并且无法利用编译器进行参数类型检查，因此所有的参数都是通过字符串转换而来</p>
+</li>
+<li><p>参数的格式不明确，是个灵活的 dictionary，也需要有个地方可以查参数格式</p>
+</li>
+</ul>
+<p>Target-Action</p>
+<ul>
+<li><p>抽离业务逻辑</p>
+</li>
+<li><p>通过中间层进行调⽤</p>
+</li>
+<li><p>中间层使⽤ runtime 反射 </p>
+</li>
+<li><p>中间层代码优化</p>
+</li>
+<li><p>业务逻辑柔合在Mediator中，可以各个模块写各自的MTMediator扩展</p>
+</li>
+<li><p>这个方案是基于OC的runtime、category特性动态获取模块，例如通过<code>NSClassFromString</code>获取类并创建实例，通过<code>performSelector + NSInvocation</code>动态调用方法</p>
+<p>其实现思路是：</p>
+<ul>
+<li>1、利用分类为路由添加新接口，在接口中通过字符串获取对应的类</li>
+<li>2、通过runtime创建实例，动态调用实例的方法</li>
+</ul>
+<p>需要在<code>mediator</code> 和 <code>target</code>中重新添加每一个接口，模块化时代码较为繁琐</p>
+<p>Target_B，Action_B_VC</p>
+<p>![image-20220904164900755](&#x2F;Users&#x2F;xushuanghui&#x2F;Library&#x2F;Application Support&#x2F;typora-user-images&#x2F;image-20220904164900755.png)</p>
+</li>
+</ul>
+<p>Protocol-Class</p>
+<ul>
+<li>增加 Protocol Wrapper层 （中间件先注册Protocol和Class对应关系，将<code>protocol</code>和对应的<code>类</code>进行<code>字典匹配</code>）</li>
+<li>中间件返回 Protocol 对应的 Class，然后<code>动态创建实例</code></li>
+</ul>
+<p><strong>11、swift优点，为什么使用swift</strong></p>
+<p><strong>12、flutter优点，为什么不使用RN</strong></p>
+<p>React Native使用了react的设计模式，但是其UI渲染、动画效果、网络请求等均是由原生来实现的。开发者编写JS代码，通过React Native的中间层转化为原生控件，并进行操作。也就是说通过JS代码来调用原生的组件，从而实现相应的功能</p>
+<p><strong>通过写 JS 代码配置页面布局，然后 React Native 最终会解析渲染成原生控件</strong></p>
+<p><strong>13、说一个完全有你主导的项目、优化等</strong></p>
+<p><strong>14、说一个你认为最难得，最优秀的项目</strong></p>
+<p><strong>15、直播短视频相关优化</strong></p>
+<p>动态库懒加载</p>
+<p>pagefault原理</p>
+<p><strong>OC内存管理机制，autoreleasepool</strong></p>
+<p><strong>atomic</strong></p>
+<p><strong>flutter_boost</strong></p>
+<p><strong>线上网络监控</strong></p>
+<p><strong>域名dns劫持</strong></p>
+<p><strong>美团、微信、360等性能监控技术</strong></p>
+<p><strong>RAC原理</strong></p>
+<p>1、Cold Observable是被动的，只有当你订阅的时候，它才会发布消息。Cold Observable只能一对一，当有不同的订阅者，消息是重新完整发送</p>
+<p>2、Hot Observable是主动的，多个订阅者，是一对多，尽管你并没有订阅事件，但是它会时刻推送，就像鼠标移动；<br>。</p>
+<p>如何将一个冷信号转化成热信号——广播<br>冷信号与热信号的本质区别在于是否保持状态，冷信号的多次订阅是不保持状态的，而热信号的多次订阅可以保持状态。所以一种将冷信号转换为热信号的方法就是，将冷信号订阅，订阅到的每一个时间通过RACSbuject发送出去，其他订阅者只订阅这个RACSubject。</p>
+<p><strong>纯函数</strong>就是返回值只由输入值决定、而且没有可见副作用的函数或者表达式。这和数学中的函数是一样的</p>
+<p><strong>设计模式</strong></p>
+<p><strong>如何和h5交互</strong><br>WKWebView<br>1、JS调用OC代码<br>  [self.webView.configuration.userContentController addScriptMessageHandler:self name:@”Share”];<br>2、OC调用JS代码<br>    [self.webView evaluateJavaScript:@”show()” completionHandler:^(id _Nullable response, NSError * _Nullable error) {<br>                &#x2F;&#x2F;TODO<br>      }];</p>
+<p>费曼学习法</p>
+<p><strong>多问为什么，找为什么</strong></p>
+<p><strong>视洞科技：视频，摄像机，录像功能</strong></p>
+<p><strong>丁香医生：线上问诊，报告解读，疾病查询，健康百科</strong></p>
+<h2 id="回答自信"><a href="#回答自信" class="headerlink" title="回答自信"></a><strong>回答自信</strong></h2><h2 id="小影一面"><a href="#小影一面" class="headerlink" title="小影一面"></a>小影一面</h2><p>1、layoutSubviews、layoutIfNeeded、setNeedsLayout、layoutSubviews在runloop哪一阶段</p>
+<p>layoutSubviews()：不要直接调用，可以在子类中重写该方法以获得子视图更加精细的布局。</p>
+<p>layoutIfNeeded()：同步、立即更新重绘当前视图及子视图，不等待更新周期。</p>
+<p>setNeedsLayout()：异步、会等待下一个runloop更新周期时候更新</p>
+<p><strong>setNeedDiplay</strong>：调用该方法后，系统会自动调用drawRect:</p>
+<p>Core Animation 在 RunLoop 中注册了一个 Observer，监听了 BeforeWaiting 和 Exit 事件，<br>然后统一渲染需要修改的UI</p>
+<ul>
+<li><p>在主 RunLoop 中，包含了一个 Update Cycle<br>当主 RunLoop 中的事件处理完毕之后，将会进入到 Update Cycle, 对界面进行需要的更新<br>在 Update Cycle 中，系统会处理 UI 的布局，约束，显示的更新</p>
+<p>当我们对某个 view 进行了一次改变，也就是发起了一次改变请求后，系统就会将这个 view 标识为需要重绘，当在下一个 Update Cycle 时，系统就会对之前标记的 view, 根据相应的改变进行更新</p>
+<p>在 iOS 系统中，界面的更新频率是 60 fps(Frames Per Second). 即每秒会传输 60 帧的画面。因此，在每次的需要对 UI 进行计算时，都需要在 1&#x2F;60 秒内完成，否则，就会造成视觉上的卡顿</p>
+<h3 id="Layout"><a href="#Layout" class="headerlink" title="Layout"></a>Layout</h3><h4 id="layoutSubviews"><a href="#layoutSubviews" class="headerlink" title="layoutSubviews"></a>layoutSubviews</h4><p>做什么</p>
+<ul>
+<li>用于对一个 view 及其 subview 进行重新定位以及重置大小</li>
+<li>它会对当前的 view 及其 subview 一个位置及大小的值</li>
+</ul>
+<p>调用时机</p>
+<ul>
+<li>若 view 需要重新计算frame 值时，系统将会调用此方法</li>
+</ul>
+<p>注意</p>
+<ul>
+<li>这个方法实际上是非常耗费资源的，因为它需要不断调用 view 及其 subview 的对应方法</li>
+<li>不要直接调用，而是利用系统提供的机制来间接调用</li>
+</ul>
+<h4 id="viewDidLayoutSubviews"><a href="#viewDidLayoutSubviews" class="headerlink" title="viewDidLayoutSubviews"></a>viewDidLayoutSubviews</h4><p>调用时机</p>
+<ul>
+<li>当 <code>layoutSubviews</code> 完成后，将会触发控制器中的这个方法<br>注意</li>
+<li>当逻辑需要依赖于布局或 view 大小的时候，将逻辑放到此方法中实现，而不是放到 <code>viewDidLoad</code> 或 <code>viewDidAppear</code></li>
+</ul>
+<h4 id="通知系统-view-的布局状态发生变化"><a href="#通知系统-view-的布局状态发生变化" class="headerlink" title="通知系统 view 的布局状态发生变化"></a>通知系统 view 的布局状态发生变化</h4><p>自动通知</p>
+<ul>
+<li>对一个 view 进行 resize</li>
+<li>添加一个 subview</li>
+<li>滚动 <code>UIScrollView</code>, <code>layoutSubviews</code> 会在 <code>UIScrollView</code> 及其 superview 上进行调用</li>
+<li>屏幕旋转</li>
+<li>更新 view 的约束</li>
+</ul>
+<p>手动通知</p>
+<ul>
+<li><code>setNeedsLayout</code></li>
+<li><code>layoutIfNeeded</code></li>
+</ul>
+<h4 id="setNeedsLayout"><a href="#setNeedsLayout" class="headerlink" title="setNeedsLayout"></a>setNeedsLayout</h4><ul>
+<li>触发 <code>layoutSubviews</code> 的消耗最小的方法</li>
+<li>并不会立刻更新 view, 而是等待下一个 Update Cycle</li>
+</ul>
+<h4 id="layoutIfNeeded"><a href="#layoutIfNeeded" class="headerlink" title="layoutIfNeeded"></a>layoutIfNeeded</h4><p>调用时机</p>
+<ul>
+<li>并不会等待下一个 Update Cycle, 而是直接调用 <code>layoutSubviews</code></li>
+<li>当调用了 <code>setNeedsLayout</code> 或设置了上面能自动通知的属性后，再调用此方法，<code>layoutSubviews</code> 将会在那些需要更新的 view 上调用</li>
+<li>当调用了此方法，但之前并没有 view 的视图发生了变化，那么，<code>layoutSubviews</code> 不会被调用</li>
+<li>当在同一个 RunLoop 调用了两次此方法，并且在两次调用之间没有发生 view 的改变，那么，第二次的调用不会出发 <code>layoutSubviews</code></li>
+</ul>
+<h3 id="Display"><a href="#Display" class="headerlink" title="Display"></a>Display</h3><h4 id="drawRect-重绘机制"><a href="#drawRect-重绘机制" class="headerlink" title="drawRect 重绘机制"></a>drawRect 重绘机制</h4><p><strong>iOS的绘图操作是在UIView的drawRect中完成的，</strong>我们想要在UIView中完成绘图（或者自定义控件），需要在UIView的拓展类（或者子类）中重写drawRect函数，在这里进行绘图的操作，系统会自动调用该函数进行绘图。<br> <strong>重绘也是在drawRect:中完成的</strong></p>
+<p><code>sizeToFit:会计算出最优的 size 而且会改变自己的size</code><br>sizeThatFits:会计算出最优的 size 但是不会改变 自己的 size</p>
+<p>Cocoa animation</p>
+<p>UIKit的UIview相关动画</p>
+<p><strong>CAAnimation</strong></p>
+<p>![image-20230418140432263](&#x2F;Users&#x2F;xushuanghui&#x2F;Library&#x2F;Application Support&#x2F;typora-user-images&#x2F;image-20230418140432263.png)</p>
+</li>
+</ul>
+<p>2、dealloc使用self发送消息</p>
+<ul>
+<li>一般移除一些通知，监听，计时器等</li>
+</ul>
+<p>3、多线程：GCD如何控制并发量</p>
+<p>4、多线程累加计数</p>
+<ul>
+<li>GCD_barrira—-需要写代码</li>
+</ul>
+<p>5、for（int i;i &lt; 1000;i++）里边异步并发输出i</p>
+<p>6、SDwebimageView</p>
+<p>7、代理设置多个对象，内存问题</p>
+<p>8、wwdc、学习方法，看过哪些书</p>
+<p>storeKit应用内购买（收据验证、发票查询 API 和退款查询 API）、小窗口组件、图文翻译、照片搜索、添加电子钥匙<br>丢单：这里会收到苹果支付的返回凭证，这里要做下本地存储，防止发送后台失败引起的丢单。等后台验证成功再删除本地凭证<br>串单：收到支付结果的时候就可以去取出这个订单号，发送后台进行验证，这样就能有效的规避串单问题。<br>如何没有获取到支付返回的凭证，崩溃了，下次启动时候设置监听获取交易回调，再发给服务端验证</p>
+<p><strong>网易：</strong></p>
+<p>1、数据库</p>
+<p>2、sokets</p>
+<p>2、二叉树的根节点，返回值是二叉树的高度</p>
+<p>3、多线程</p>
+<p><strong>小可智能：</strong></p>
+<p>浅 copy ：是对指针的 copy ，指针指向的内容是同一个地址，对象的引用计数+1;</p>
+<p>深 copy ：是对内容的 copy ，会开辟新的内存空间，将内容重新 copy 一份；</p>
+<p>1、浅拷贝：拷贝指针，不开辟内存地址 深拷贝：拷贝指针和内容，开辟新内存地址（存放拷贝的内容）</p>
+<p>不可变对象copy浅拷贝。    可变对象copy、不可变对象mutableCopy、可变对象mutableCopy都是深拷贝。</p>
+<ul>
+<li>字符串一般使用copy，不希望改变原来的对象的值。</li>
+<li>注意：当使用 <code>copy</code> 修饰的属性赋值时，<code>copy</code> 出来的是一份不可变对象。因此当对象是一个可变对象时，切记不要使用 <code>copy</code> 进行修饰。如果这时使用 <code>copy</code> 修饰，当使用 <code>copy</code> 出来的对象调用可变对象所特有的方法时，会因为找不到对应的方法而 Crash。</li>
+</ul>
+<h3 id="修饰属性时用strong还是copy"><a href="#修饰属性时用strong还是copy" class="headerlink" title="修饰属性时用strong还是copy?"></a>修饰属性时用<code>strong</code>还是<code>copy</code>?</h3><p>最安全的做法（推荐）：修饰不可变对象（<code>NSString</code>，<code>NSArray</code>，<code>NSDictionary</code>等）用<code>copy</code>，修饰可变对象（<code>NSMutableString</code>，<code>NSMutableArray</code>，<code>NSMutableDictionary</code>等）用<code>strong</code></p>
+<p><strong>同花顺：</strong></p>
+<p>1、链表</p>
+<p>2、二叉树</p>
+<p><strong>登虹</strong></p>
+<p>1、[super instants]</p>
+<p>2、UITouch 的 gestureRecognizers 属性中的存储了在寻找第一响应者的过程中收集到的手势，而在不断触发 touches 系列方法的过程中，手势识别系统也在在不停的判断当前这个 UITouch 是否符合收集到的某个手势。<br>当手势识别成功： 被触摸的那个视图，也就是第一响应者会收到 touchesCancelled 的消息，并且该视图不会再收到来自该 UITouch 的 touches 事件</p>
+<p>3、自动释放池<br>自动释放池是OC中的一种内存自动回收机制，它可以将加入 AutoreleasePool 中的变量 release 的时机延迟，简单来说，就是当创建一个对象，在正常情况下，变量会在超出其作用域的时立即 release。如果将对象加入到了自动释放池中，这个对象并不会立即释放，会等到 runloop 休眠&#x2F;超出 autoreleasepool 作用域{}之后才会被释放。其机制如下图所示</p>
+<p>autoreleasepool：runloop Entry时候创建，BeforeWaiting和exit时候释放</p>
+<p>哪些对象会加入自动释放池：<br>1.主动调用autorelase方法的<br>用alloc, init,copy等方法创建的对象，这些我们自己持有的，我们想让他延迟释放，就调用autorelase方法，这样在自动释放池出栈的时候，对象就会释放掉。<br>2.而对于那种stringwithformt这种从名字来看，没有被调用者持有的情况，要么是自动加到自动释放池里的，要么是常量字符串，不用引用计数来管理。</p>
+<p>4、__block</p>
+<h3 id="网易"><a href="#网易" class="headerlink" title="网易"></a>网易</h3><h2 id="1、从0开始搭建app需要注意哪些东西"><a href="#1、从0开始搭建app需要注意哪些东西" class="headerlink" title="1、从0开始搭建app需要注意哪些东西"></a>1、从0开始搭建app需要注意哪些东西</h2><p>补充</p>
+<p>架构选型，根据自身业务选择适合的语言，如果是快速成型的，导入各个基础功能组件库，网络库，定制路由方案，开发设计模式，快速接入一些第三方的监控平台比如bugly,友盟等，</p>
+<h3 id="容器化"><a href="#容器化" class="headerlink" title="容器化"></a>容器化</h3><h3 id="区块化"><a href="#区块化" class="headerlink" title="区块化"></a>区块化</h3><h3 id="-1"><a href="#-1" class="headerlink" title=""></a></h3><h3 id="埋点"><a href="#埋点" class="headerlink" title="埋点"></a>埋点</h3><p><strong>sdwebimage相同url，但图片资源更新验证</strong>：Http、Https缓存机制中提供了验证机制，利用Last-Modified 或者Entity Tag（ET）来验证当前已缓存的资源是否与服务端最新资源相同。</p>
+<h3 id="WKWebview预加载"><a href="#WKWebview预加载" class="headerlink" title="WKWebview预加载"></a>WKWebview预加载</h3><p>全局WebView<br>由于初始化过程发生在客户端原生代码中，而大部分方案也是通过前端和客户端协作完成，而全局WebView也是业界采用的比较通用的方案。<br>方法：<br>在客户端刚启动时，就初始化一个全局的WebView待用，并隐藏；<br>当用户访问了WebView时，直接使用这个WebView加载对应网页，并展示。<br>这种方法可以比较有效的减少WebView在App中的首次打开时间。当用户访问页面时，不需要初始化WebView的时间。当然这也带来了一些问题，包括：额外的内存消耗。<br>页面间跳转需要清空上一个页面的痕迹，更容易内存泄露。</p>
+<h3 id="光相"><a href="#光相" class="headerlink" title="光相"></a>光相</h3><p><strong>block重新梳理</strong></p>
+<p><strong>组件化重新梳理文字</strong></p>
+<p><strong>Carsh定位</strong></p>
+<p><strong>runloop与线程的关系</strong></p>
+<p>简单地说<code>Runloop</code>就是一种循环机制，让线程在有任务时工作，没有任务时睡眠。避免线程执行完就直接结束</p>
+<ol>
+<li><code>Runloop</code>和线程是绑定的，它们存在一一对应的关系；</li>
+<li><code>Runloop</code>是由系统进行创建管理的，你只能获取不能创建；</li>
+<li>主线程的<code>Runloop</code>在程序启动时就开启了，子线程的<code>Runloop</code>需要我们手动开启；</li>
+</ol>
+<p><strong>计时器nstimer准确吗</strong></p>
+<p>使用mach_absolute_time()获取CPU已运行的tick数量。GCD计时器dispatch_source_t</p>
+<h3 id="-2"><a href="#-2" class="headerlink" title=""></a></h3><h3 id="SDK-a-framework"><a href="#SDK-a-framework" class="headerlink" title="SDK .a  .framework"></a>SDK .a  .framework</h3><h3 id="静态库与动态库的区别？"><a href="#静态库与动态库的区别？" class="headerlink" title="静态库与动态库的区别？"></a>静态库与动态库的区别？</h3><p>静态库：链接时完整地拷贝至可执行文件中，被多次使用就有多份冗余拷贝。表现形式为 <strong>.a和.framework。</strong>动态库：链接时不复制，程序运行时由系统动态加载到内存，供程序调用，系统只加载一次，多个程序共用，节省内存。 表现形式为 <strong>.dylib和.framework。</strong>注意：动态库只能苹果使用，如果项目中使用了动态库不允许上架(如：jspatch)</p>
+<h3 id="a与-framework有什么区别？"><a href="#a与-framework有什么区别？" class="headerlink" title="a与.framework有什么区别？"></a>a与.framework有什么区别？</h3><p>.a是一个纯二进制文件，.framework中除了有二进制文件之外还有资源文件。 .a文件不能直接使用，至少要有.h文件配合（微信的SDK就是这种形式），.framework文件可以直接使用。 .a + .h + sourceFile &#x3D; .framework。 建议用.framework。再者 静态方式开发，一直是iOS SDK开发的主流方式</p>
+<h3 id="网络安全"><a href="#网络安全" class="headerlink" title="网络安全"></a>网络安全</h3><p><strong>WKWebview预加载</strong></p>
+<p><strong>组件化方案</strong></p>
+<h3 id="多线程问题排查处理"><a href="#多线程问题排查处理" class="headerlink" title="多线程问题排查处理"></a>多线程问题排查处理</h3><h3 id="离线化"><a href="#离线化" class="headerlink" title="离线化"></a>离线化</h3><h2 id="客户端技术中台-？？"><a href="#客户端技术中台-？？" class="headerlink" title="客户端技术中台 ？？"></a>客户端技术中台 ？？</h2><p>容器化方案、组件化方案、webview离线化方案、多线程问题专项治理、弱网优化方案、启动速度优化方案、二进制重排、直播性能监控、Instruments性能调优、缩小包体、内存泄露监控、UITableView优化、WKWebview预加载、播放器预热、动态UI更新方案</p>
+<p>swift和oc中的初始化方法</p>
+<p>swift和oc常量定义有什么不同</p>
+<p>ObjC中 <code>const</code>表明的常量类型和数值是在 <code>compilation time</code> 编译时确定的；而 Swift 中 <code>let</code> 只是表明常量（只能赋值一次），其类型和值既可以是静态的，也可以是一个动态的计算方法，它们在 <code>runtime</code> 运行时确定的</p>
+<p>Static</p>
+<p>什么时候确定的，内存分布</p>
+<p>static修饰的变量只会初始化一次，永远都只有一份内存</p>
+<p>、finnal，内存分布</p>
+<p>内联函数</p>
+<p>yykit</p>
+<h2 id="绿点"><a href="#绿点" class="headerlink" title="绿点"></a>绿点</h2><p>1、思路不清晰。</p>
+<p>2、架构分层，不清晰</p>
+<p>3、oc、swift、flutter、reactNavite 选型分析，基于原理</p>
+<p>性能、体验：oc、swift是最优选择，生态环境也稳定。flutter基于dart语言，react</p>
+<p>跨端能力：</p>
+<p>热更新能力：</p>
+<p>4、容器化分层不清晰</p>
+<p>5、 刚刚几个问题有哪几点是答错的，可以提点一下吗。 </p>
+<p>6、 业务主要产品，团队成员情况</p>
+<p>7、如果我加入之后会做哪个反向</p>
+<h2 id="思享无限"><a href="#思享无限" class="headerlink" title="思享无限"></a>思享无限</h2><p>1、<strong>组件化重新梳理</strong> 、多APP间跳转</p>
+<p>2、swift 初始化方法</p>
+<p>3、swift单例</p>
+<p>4、runtime中结构体成员有哪些</p>
+<p>5、coroGraphore 绘图， drawRect</p>
+<p>6、swift，set,get 方法，super init</p>
+<p>构造器的继承和重载</p>
+<p>Swift 中的子类不会默认继承父类的构造器。</p>
+<p>父类的构造器仅在确定和安全的情况下被继承。</p>
+<p>当你重写一个父类指定构造器时，你需要写override修饰符。</p>
+<p>7、<strong>对于生命周期中会变为nil的实例使用弱引用。相反的，对于初始化赋值后再也不会被赋值为nil的实例，使用无主引用。</strong></p>
+<p>不同点是 unowned 是永远有值的。weak可以声明可选型</p>
+<p>8、程序安全</p>
+<h2 id="flutter问题"><a href="#flutter问题" class="headerlink" title="flutter问题"></a>flutter问题</h2><p>1、如何定位视图的位置</p>
+<p>2、页面返回，刷新数据，如何出发。（原生和flutter混编）</p>
+<h3 id="ios问题"><a href="#ios问题" class="headerlink" title="ios问题"></a>ios问题</h3><p>1、多个地方同时hook同一个方法</p>
+<p>依次hook,按照被hook的顺序执行，后面hook的先执行。其实就是看+load方法，该类被加载进runtime的时候。</p>
+<p>调用顺序：+load父类&gt;子类&gt;分类（加载顺序取决于编译的顺序）</p>
+<p>2、多线程nsoperation 如果取消一个任务，任务还会继续吗，任务能完成吗</p>
+<p>在NSOperationQueue中已经添加的任务不能被直接移除</p>
+<p>对于还没有执行的任务，队列还是要去调用“start”方法，然后任务才能去完成取消这个动作</p>
+<p>取消任务这个操作会让任务忽略任何一个依赖关系，而快速去执行“start”方法，从而让任务取消</p>
+<p>3、多个组件化细节落实。</p>
+<p>4、容器化，细节落实，tableviewcell代理方法生命周期分发，那么cell复用会有问题吗</p>
+<p> carsh定位总结</p>
+<p>swift单例</p>
+<h3 id="学习"><a href="#学习" class="headerlink" title="学习"></a>学习</h3><p>1、Shell、python脚本语言</p>
+<p>2、socket协议</p>
+<p>3、手机与设备间的通信协议</p>
+<p>Flutter webview</p>
+<h3 id="Flutter-动画"><a href="#Flutter-动画" class="headerlink" title="Flutter 动画"></a>Flutter 动画</h3><p>描述：</p>
+<p>参与项目技术方案制定、技术评审、代码审核、内部技术交流分享等</p>
+<p>参与客户端业务和框架的开发和维护，实现关键技术选型、验证、落地</p>
+<p>负责高质量的技术设计和编码、设计良好的代码结构，不断迭代重构</p>
+<p>规范文档的编写、维护、以及其他与项目相关工作</p>
+<p>学习与探索新技术，提升项目性能与提高开发效率</p>
+<p>具备良好的职业素养和团队协作精神，以及较强的学习能力，可独立承担部分的开发任务；</p>
+<p>具有良好的沟通能力和团队合作精神，以及较强的学习能力，工作踏实诚恳，认真负责</p>
+<p>扎实的iOS开发基础，熟练掌握Objective-C&#x2F;Swift开发语言,熟悉Xcode开发环境<br>3、熟悉iOS底层、多线程处理，熟悉模块化开发及常见设计模式<br>4、对iOS的基础架构、组件、性能优化、内存优化有深刻的了解</p>
+<p>重点负责iOS产品研发，参与客户端技术中台的开发和架构；<br>2、参与移动平台软件框架的研究，设计和实现、关键技术验证和选型等工作；<br>3、体系化梳理和优化架构设计，确保系统的高可用和在线服务的稳定<br>4、优化和迭代已有产品软件的模块结构和流程逻辑；<br>5、跟进iOS的新技术发展，对新技术进行学习、研究和应用</p>
+<p>跟踪并修复业务中的bug，保障app达到质量要求</p>
+<p>1、参与相关产品的需求分析、交互设计，根据相应资源及时间制定版本计划和技术方案；<br>2、负责相关产品的系统分析，架构设计，模块编码，保证质量、追求性能及思考多国家版本复用；<br>3、掌握性能调优，提供APP稳定性，负责发现并改进现有软件的的架构以及实现缺陷，对网络、链路及协议有一定理解和掌握；<br>4、研究探索前沿技术，满足产品需求、促进业务发展及改进架构、提升效能</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/%E5%B0%8F%E7%BB%93.html" data-id="clgowamph000ytjd3bk44a5ox" data-title="" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xcode/" rel="tag">Xcode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cocoaPods/" rel="tag">cocoaPods</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flutter/" rel="tag">flutter</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS-AppDelegate/" rel="tag">iOS AppDelegate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" rel="tag">强化学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" rel="tag">量化交易</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a> <a href="/tags/cocoaPods/" style="font-size: 10px;">cocoaPods</a> <a href="/tags/flutter/" style="font-size: 10px;">flutter</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOS-AppDelegate/" style="font-size: 10px;">iOS AppDelegate</a> <a href="/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" style="font-size: 15px;">强化学习</a> <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">机器学习</a> <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" style="font-size: 10px;">量化交易</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/01/11/%E5%AE%B9%E5%99%A8%E5%8C%96/">首页容器化</a>
+          </li>
+        
+          <li>
+            <a href="/2022/08/14/%E5%8A%A8%E6%80%81%E5%BA%93%E6%87%92%E5%8A%A0%E8%BD%BD/">动态库懒加载</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/17/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E9%97%AE%E9%A2%98%E4%B8%8E%E6%B2%BB%E7%90%86/">多线程问题专项治理</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/20/%E7%9B%B4%E6%92%AD%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7%E6%96%B9%E6%A1%88/">直播性能指标监控方案</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/14/%E8%A7%86%E9%A2%91%E7%9B%B8%E5%85%B3%E4%BC%98%E5%8C%96/">视频相关优化</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 xushuanghui<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

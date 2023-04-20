@@ -1,0 +1,35 @@
+
+0. 使用场景展示, 阐述旧方案的弊端
+
+1. 典型的页面结构
+	leftBar
+	rightBar
+	header
+	footer
+	content
+2. 典型的Component结构
+	name
+	id
+	value
+	prop
+3. 典型的prop
+	onload
+	willChangeFunctionName
+	onchange
+	action
+	others...
+
+4. 本地支持的js操作
+
+5. 典型的页面流程
+	配置文件(json & js)
+	初始化数据(状态信息, 选项信息等)
+	表单数据
+	渲染组件
+	设置初始化数据
+	填充表单数据
+	组件间交互
+	页面交互
+	数据提交
+	后续工作
+
