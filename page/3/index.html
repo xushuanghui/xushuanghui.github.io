@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>xushuanghui</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="xushuanghui">
+<meta property="og:url" content="http://example.com/page/3/index.html">
+<meta property="og:site_name" content="xushuanghui">
+<meta property="og:locale" content="en_US">
+<meta property="article:author" content="xushuanghui">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="xushuanghui" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">xushuanghui</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-OC接入swift" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/03/04/OC%E6%8E%A5%E5%85%A5swift/" class="article-date">
+  <time class="dt-published" datetime="2020-03-04T09:20:14.000Z" itemprop="datePublished">2020-03-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/03/04/OC%E6%8E%A5%E5%85%A5swift/">OC接入swift</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="工程配置"><a href="#工程配置" class="headerlink" title="工程配置"></a>工程配置</h1><h2 id="桥接文件"><a href="#桥接文件" class="headerlink" title="桥接文件"></a>桥接文件</h2><p>当我们在Swift项目（OC项目）中首次添加OC文件（Swift文件）时，Xcode会自动弹出桥接文件创建的提示，</p>
+<p>这里我们可以选择Xcode自动创建或者手动创建，创建完成后系统会自动生成2个桥接文件,</p>
+<p>$(SWIFT_MODULE_NAME)-Bridging-Header.h，这个头文件直接在目录中</p>
+<p>$(SWIFT_MODULE_NAME)-Swift.h在目录中不可见.</p>
+<p>如果我们需要手动创建的也是可以的，只要保证文件名与Build Setting中path一直即可，不过推荐使用系统默认的创建.</p>
+<h2 id="头文件导入"><a href="#头文件导入" class="headerlink" title="头文件导入"></a>头文件导入</h2><p>一般混编项目中常用的头文件有-Bridging-Header.h，-Swift.h，-pch等，在OC与swift混编时，如果Swift需要引用OC的类，那么需要再-Bridging-Header.h中引入OC头文件，</p>
+<p>如果OC类需要引用Swift类时，需要在OC类中import $(SWIFT_MODULE_NAME)-Swift.h</p>
+<p>导入后OC类即可使用项目中所有继承于NSObject的Swift类，这里需要注意的时，未继承NSObject的Swift类无法被OC调用.</p>
+<p>这里点进$(SWIFT_MODULE_NAME)-Swift.h看一看，除了顶部一大堆宏定义宏方法外，Xcode还帮我们把所有继承自NSObject的Swift类编译成OC的接口，所以OC才能正常调用Swift类的属性和方法.</p>
+<p>cocoaPod</p>
+<p>先说结论，现在（cocoaPod 1.5之后）集成OC和Swift库非常简单，无需考虑use_framework，static framework等等问题，仅需要把要导入的库名添加到podfile文件中即可，但是，初次导入后pod可能会遇到一些警告.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[!] The `Project [Debug]` target overrides the `SWIFT_INCLUDE_PATHS` build setting defined in `Pods/Target Support Files/Pods-Project/Pods-Project.debug.xcconfig&#x27;. This can lead to problems with the CocoaPods installation    - Use the `$(inherited)` flag, or    - Remove the build settings from the target.[!] The `Project [Release]` target overrides the `SWIFT_INCLUDE_PATHS` build setting defined in `Pods/Target Support Files/Pods-Project/Pods-Project.release.xcconfig&#x27;. This can lead to problems with the CocoaPods installation    - Use the `$(inherited)` flag, or    - Remove the build settings from the target.</span><br></pre></td></tr></table></figure>
+
+<p>可以看到，Pods-DadaStaff.debug.xcconfig文件中的SWIFT_INCLUDE_PATHS被项目tage的buildSeetingt覆盖了，如果不解决的话，会导致Swift三方库无法正常编译成module.</p>
+<p>找到target中的Swift Complier - Search Path，在Import Paths项中添加$(inherited)</p>
+<p>重新pod，消除警告后，即可使用Swift三方库.</p>
+        
+          <p class="article-more-link">
+            <a href="/2020/03/04/OC%E6%8E%A5%E5%85%A5swift/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/03/04/OC%E6%8E%A5%E5%85%A5swift/" data-id="clgovw0na000dk9d3hi4t3tq6" data-title="OC接入swift" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-遇见多线程问题记录" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/02/21/%E9%81%87%E8%A7%81%E5%A4%9A%E7%BA%BF%E7%A8%8B%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" class="article-date">
+  <time class="dt-published" datetime="2020-02-21T06:31:42.000Z" itemprop="datePublished">2020-02-21</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/02/21/%E9%81%87%E8%A7%81%E5%A4%9A%E7%BA%BF%E7%A8%8B%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/">遇见多线程问题记录</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="1-NSNotification"><a href="#1-NSNotification" class="headerlink" title="1. NSNotification"></a>1. NSNotification</h2><p>我们都知道，NSNotification 在哪个线程 post，最终就会在哪个线程执行。如果我们不是在主线程 post 的，但是却在主线程接收的，而且我们期望 selector 在主线程执行。这时候我们需要注意下，在 selector 需要 dispatch 到主线程才可以。当然你也可以使用 addObserverForName:object:queue:usingBlock: 来指定执行 block 的 queue。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">@implementation BLPostNotification</span><br><span class="line"></span><br><span class="line">- (void)postNotification &#123;</span><br><span class="line">    dispatch_queue_t queue = dispatch_queue_create(&quot;com.bool.post.notification&quot;, DISPATCH_QUEUE_SERIAL);</span><br><span class="line">    dispatch_async(queue, ^&#123;</span><br><span class="line">        // 从非主线程发送通知 （通知名字最好定义成一个常量）</span><br><span class="line">        [[NSNotificationCenter defaultCenter] postNotificationName:@&quot;downloadImage&quot; object:nil];</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation ImageViewController</span><br><span class="line"></span><br><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(show) name:@&quot;downloadImage&quot; object:nil];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)showImage &#123;</span><br><span class="line">    // 需要 dispatch 到主线程更新 UI</span><br><span class="line">    dispatch_async(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">        // update UI</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-NSTimer"><a href="#2-NSTimer" class="headerlink" title="2. NSTimer"></a>2. NSTimer</h2><p>使用 NSTimer 时，在哪个线程生成的 timer，就在哪个线程销毁，否则会有意想不到的结果。官方这样描述的：</p>
+<blockquote>
+<p>However, for a repeating timer, you must invalidate the timer object yourself by calling its invalidate method. Calling this method requests the removal of the timer from the current run loop; as a result, you should always call the invalidate method from the same thread on which the timer was installed.</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">@interface BLTimerTest ()</span><br><span class="line">@property (nonatomic, strong) dispatch_queue_t queue;</span><br><span class="line">@property (nonatomic, strong) NSTimer *timer;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation BLTimerTest</span><br><span class="line">- (instancetype)init &#123;</span><br><span class="line">    self = [super init];</span><br><span class="line">    if (self) &#123;</span><br><span class="line">        _queue = dispatch_queue_create(&quot;com.bool.timer.test&quot;, DISPATCH_QUEUE_SERIAL);</span><br><span class="line">    &#125;</span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)installTimer &#123;</span><br><span class="line">    dispatch_async(self.queue, ^&#123;</span><br><span class="line">        self.timer = [NSTimer scheduledTimerWithTimeInterval:3.0f repeats:YES block:^(NSTimer * _Nonnull timer) &#123;</span><br><span class="line">            NSLog(@&quot;test timer&quot;);</span><br><span class="line">        &#125;];</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)clearTimer &#123;</span><br><span class="line">    dispatch_async(self.queue, ^&#123;</span><br><span class="line">        if ([self.timer isValid]) &#123;</span><br><span class="line">            [self.timer invalidate];</span><br><span class="line">            self.timer = nil;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-Dispatch-Once-死锁"><a href="#3-Dispatch-Once-死锁" class="headerlink" title="3. Dispatch Once 死锁"></a>3. Dispatch Once 死锁</h2><p>在开发中，我们经常使用 dispatch_once，但是递归调用会造成死锁。例如下面这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">- (void)dispatchOnceTest &#123;</span><br><span class="line">    static dispatch_once_t onceToken;</span><br><span class="line">    dispatch_once(&amp;onceToken, ^&#123;</span><br><span class="line">        [self dispatchOnceTest];</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>至于为什么会死锁，上文介绍 Dispatch Once 的时候已经说明了，这里就不多做介绍了。提醒一下使用的时候要注意，不要造成递归调用。</p>
+<h2 id="4-Dispatch-Group"><a href="#4-Dispatch-Group" class="headerlink" title="4. Dispatch Group"></a>4. Dispatch Group</h2><p>在使用 dispatch_group 的时候，dispatch_group_enter(taskGroup) 和 dispatch_group_leave(taskGroup) 一定要成对，否则也会出现崩溃。大多数情况下我们都会注意，但是有时候可能会疏忽。例如多层 for loop 时 ：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">- (void)testDispatchGroup &#123;</span><br><span class="line">    NSString *path = @&quot;&quot;;</span><br><span class="line">    NSFileManager *fileManager = [NSFileManager defaultManager];</span><br><span class="line">    NSArray *folderList = [fileManager contentsOfDirectoryAtPath:path error:nil];</span><br><span class="line">    dispatch_group_t taskGroup = dispatch_group_create();</span><br><span class="line">    </span><br><span class="line">    for (NSString *folderName in folderList) &#123;</span><br><span class="line">        dispatch_group_enter(taskGroup);</span><br><span class="line">        NSString *folderPath = [@&quot;path&quot; stringByAppendingPathComponent:folderName];</span><br><span class="line">        NSArray *fileList = [fileManager contentsOfDirectoryAtPath:folderPath error:nil];</span><br><span class="line">        for (NSString *fileName in fileList) &#123;</span><br><span class="line">            dispatch_async(_queue, ^&#123;</span><br><span class="line">                // 异步任务</span><br><span class="line">                dispatch_group_leave(taskGroup);</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面的 dispatch_group_enter(taskGroup) 在第一层 for loop 中，而 dispatch_group_leave(taskGroup) 在第二层 for loop 中，两者的关系是一对多，很容造成崩溃。有时候嵌套层级太多，很容易忽略这个问题。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/02/21/%E9%81%87%E8%A7%81%E5%A4%9A%E7%BA%BF%E7%A8%8B%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" data-id="clgovw0nv001yk9d34asx7gwp" data-title="遇见多线程问题记录" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-内存泄漏检测工具" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/01/22/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E6%A3%80%E6%B5%8B%E5%B7%A5%E5%85%B7/" class="article-date">
+  <time class="dt-published" datetime="2020-01-22T03:33:40.000Z" itemprop="datePublished">2020-01-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/01/22/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E6%A3%80%E6%B5%8B%E5%B7%A5%E5%85%B7/">内存泄漏检测工具</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>我们在编写日常业务代码时，或多或少都会引入一些导致内存泄漏的代码，而这种行为又很难被监控，这就导致应用内存泄漏的口子越开越大，直接影响到线上应用的稳定性。虽然 Xcode 的 Instrucment 提供了 Leaks 和 Allocations 工具让我们能精准地定位内存泄漏问题，但是这种方式相对比较繁琐，需要开发人员频繁地去操作应用界面，以触发泄漏场景，所以 Leaks 和 Allocations 更加适合定期组织的大排查，作为监测手段，则显得笨重。</p>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>对于内存泄漏的监测，业内已经有了两款成熟的开源工具，分别是 PLeakSniffer 和 MLeaksFinder。PLeakSniffer 使用 Ping-Pong 方式监测对象是否存活，在进入页面时，创建控制器关联的一系列对象代理，根据这些代理在控制器销毁时能否响应 Ping 判断代理对应的对象是否泄漏。MLeaksFinder 则是在控制器销毁时，延迟 3s 后再向监测对象发送消息，根据监测对象能否响应消息判断其是否泄漏。这两个方案基本能覆盖大部分对象泄漏或者延迟释放了的场景，考虑到性能损耗以及内存占用因素，我偏向于第二种方案。</p>
+<p>下面说下在实际试用这两款工具后，我遇到的部分问题。</p>
+<p>首先是 MLeaksFinder ：</p>
+<ul>
+<li>没有处理集合对象</li>
+<li>没有处理对象持有的属性</li>
+<li>每个对象都触发 3s 延迟机制，没有缓存后统一处理</li>
+<li>检测结果输出分散</li>
+</ul>
+<p>然后是 PLeakSniffer ：</p>
+<ul>
+<li>没有处理集合对象</li>
+<li>处理对象持有属性时，系统类过滤不全面</li>
+<li>处理对象持有属性时，通过 KVC 访问属性导致一些懒加载的触发</li>
+<li>无法处理未添加到视图栈中的泄漏视图</li>
+<li>检测结果输出分散</li>
+</ul>
+<p>对于检测到泄漏对象的交互处理，两者都提供了终端 log 输出和 alert 提示功能，MLeaksFinder 甚至可以直接通过断言中断应用。这种提示在开发阶段尚可接受，但是在提测阶段，强交互会给测试人员造成困扰。至于为什么在提测阶段还要集成泄漏监测工具，主要有两个原因：</p>
+<ul>
+<li>应用功能过多的情况下，开发人员无法兼顾到老页面，一些老页面的泄漏场景可以通过测试人员在测试时触发，收集之后再统一处理</li>
+<li>在组件化开发环境下，开发人员可能并没有集成泄漏监测工具，这种情况下，需要在提测阶段统一收集没有解决的泄漏问题</li>
+</ul>
+<p>所以我目前对于监测输出的诉求有两点：</p>
+<ul>
+<li>开发时，通过终端日志提示开发者出现了内存泄漏</li>
+<li>提测时，收集内存泄漏的信息并上传至效能后台，周会时统一分配处理</li>
+</ul>
+<p>下面就针对这些调研和需求，打造一个符合自身业务场景的泄漏监测轮子。</p>
+<h2 id="监测入口"><a href="#监测入口" class="headerlink" title="监测入口"></a>监测入口</h2><p>和 MLeaksFinder 一样，我选择延迟 3s 的机制来判断对象是否泄漏，但是实现的细节略有差别。</p>
+<p>首先，监测入口变更为 <code>viewDidDisappear:</code> 方法，我们只需在控制器被父控制器中移除或者被 Dismissed 时，触发监测动作即可：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">- (void)LeaksMonitor_viewDidDisappear:(BOOL)animated &#123;</span><br><span class="line">    [self LeaksMonitor_viewDidDisappear:animated];</span><br><span class="line">    </span><br><span class="line">    if (![self isMovingFromParentViewController] &amp;&amp; ![self isBeingDismissed]) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    [[TDFLeaksMonitor shared] detectLeaksForObject:self];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        
+          <p class="article-more-link">
+            <a href="/2020/01/22/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E6%A3%80%E6%B5%8B%E5%B7%A5%E5%85%B7/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/01/22/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E6%A3%80%E6%B5%8B%E5%B7%A5%E5%85%B7/" data-id="clgovw0no001fk9d3b4fr0k1s" data-title="内存泄漏检测工具" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-Flutter-Tree" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/01/17/Flutter-Tree/" class="article-date">
+  <time class="dt-published" datetime="2020-01-17T09:47:01.000Z" itemprop="datePublished">2020-01-17</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/01/17/Flutter-Tree/">Flutter Tree</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><img src="https://i.loli.net/2020/12/17/vh2TFclGnkx1mDC.png" alt="2020-12-17-5.47.46.png"></p>
+<p>我们也可以看到上图中每个控件所形成的树结构中隐含了一些关系，例如在上图中，我们可以说 Text 组件是 Column 组件的子组件，Scaffold 是 AppBar 的父组件，这样的层级关系使得每个控件都清晰的连接到了一起，树结构由此而来（俄罗斯套娃）。</p>
+<p>在 Flutter 中，Container、Text 等组件都属于 Widget，所以我们将这种树称为 Widget 树，也可以叫做控件树，它就表示了我们在 dart 代码中所写的控件的结构。</p>
+<p><img src="https://i.loli.net/2020/12/17/aI3GmoWswkR1dHr.png" alt="2020-12-17-5.47.54.png"></p>
+<p>然而，在 Flutter 体系结构中，真正做组件渲染在屏幕上这个任务的并非在 控件层（Widget）层，而是在渲染（Rendering）层，那么我们在代码中所写组件又是怎么通过渲染层显示的呢？Flutter 中又引入了 Element 树和 RenderingObject 树两棵树。</p>
+<p>Element 是什么，我们可以把它称之为 Widget 另一种抽象。读者也可以把它看作一个更为实际控件，因为在我们的手机屏幕上显示的控件并非我们在代码中所写的 Widget，我们在代码中所使用的像 Container、Text 等这类组件和其属性只不过是我们想要构建的组件的配置信息，当我们第一次调用 <code>build()</code> 方法想要在屏幕上显示这些组件时，Flutter 会根据这些信息生成该 Widget 控件对应的 Element，同样地，Element 也会被放到相应的 Element 树当中。在 Flutter 中，一个 Widget 通过多次复用可以对应多个 Element 实例，Element 才是我们真正在屏幕上显示的元素。</p>
+<blockquote>
+<p>Element 与 Widget 另一个区别在于，Widget 天然是不可变的（immutable），它如要更新便需要重建，如果想要把可变状态与 Widget 关联起来，可以使用 StatefulWidget，StatefulWidget 通过使用StatefulWidget.createState 方法创建 State 对象，并将之扩充到 Element 以及合并到树中；</p>
+</blockquote>
+<p>这里，为了更为深刻的理解以上描述的含义，我们可以举一个更为形象的例子。Widget 作为大 Boss，他把近期的战略部署，即配置信息，写在纸上下发给经理人 Element，Element 看到详细的配置信息开始真正的开起活来了。我们还需要注意一点，大 Boss 随时会改变战略部署，然后不会在原有的纸上修改而是重新写下来，这时经理人为了减少工作量需要将新的计划与旧的计划比较来作出相应的更新措施。这也是 Flutter 框架层做的一大优化。下面又来了，Element 作为经理人也很体面，当然不会把活全干完，于是又找了一个 RenderObject 的员工来帮它做粗重的累活。</p>
+<p>RenderObject 在 Flutter 当中做组件布局渲染的工作，其为了组件间的渲染搭配及布局约束也有对应的 RenderObject 树，我们也称之为渲染树。</p>
+<p>熟悉了 Flutter 中的上述三颗树，相信读者会对组件的渲染过程有了一个清晰的认识，这对我们之后学习常用组件有很大的帮助，我们需要用不同的眼光去看待我们所建立的布局和控件，之后我们也会更加深入的去理解其中更不为人知的奥秘。</p>
+        
+          <p class="article-more-link">
+            <a href="/2020/01/17/Flutter-Tree/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/01/17/Flutter-Tree/" data-id="clgovw0n70008k9d3ei0lhf6h" data-title="Flutter Tree" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flutter/" rel="tag">flutter</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-CocoaPods组件支持Carthage打包" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/12/03/CocoaPods%E7%BB%84%E4%BB%B6%E6%94%AF%E6%8C%81Carthage%E6%89%93%E5%8C%85/" class="article-date">
+  <time class="dt-published" datetime="2019-12-03T10:27:07.000Z" itemprop="datePublished">2019-12-03</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/12/03/CocoaPods%E7%BB%84%E4%BB%B6%E6%94%AF%E6%8C%81Carthage%E6%89%93%E5%8C%85/">CocoaPods组件支持Carthage打包</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>虽说 CocoaPods 有 <a target="_blank" rel="noopener" href="https://github.com/CocoaPods/cocoapods-packager">cocoapods-packager</a> 这个插件可以生成二进制版本，但这个库的维护者似乎并不活跃，很多 issue 和 pr 过了一两年还堆积着没处理。于是我决定试试 Carthage ，不过不利用 Cartfile 生成依赖，还是用的 CocoaPods 那一套。</p>
+<p>要让组件支持 Carthage ，工程里只需要有一个 <code>shared framework target</code> 即可。针对 CocoaPods 生成的工程，我们先在 Podfile 里面设置 <code>use_frameworks!</code> ，来满足 <code>framework target</code> 。</p>
+<p>对于剩下的 <code>share</code> 部分，可以用 <a target="_blank" rel="noopener" href="https://github.com/CocoaPods/CocoaPods/pull/5254">Add share schemes for development pods</a> 这个 pr 里面的方法解决：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">install! &#x27;cocoapods&#x27;, :share_schemes_for_development_pods =&gt; false</span><br></pre></td></tr></table></figure>
+
+<p>不过上面的那种方式把所有的 <code>development pods</code> 对应的 target 都 share 了，这里我们可以这样设置特定的 <code>development pods</code> ：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">install! &#x27;cocoapods&#x27;, :share_schemes_for_development_pods =&gt; [&#x27;PodA&#x27;]</span><br></pre></td></tr></table></figure>
+
+<p>在 CocoaPods 1.4.0 版本中，<code>share_schemes_for_development_pods</code> 默认是 false 的，所以需要手动在 Podfile 里面去添加这一句。</p>
+<p>最后执行一下 <code>pod install</code> ，然后再执行 <code>carthage build --no-skip-current --platform ios</code> 就可以打出 ios 版本的 dynamic framework 了。想利用 Carthage 打出 static framework 的可以查看 <a target="_blank" rel="noopener" href="https://github.com/Carthage/Carthage/blob/master/Documentation/StaticFrameworks.md">Build static frameworks to speed up your app’s launch times</a>。</p>
+<p>再进一步，我们可以把这个默认设置写入团队专有的 CocoaPods 插件中，比如 <code>cocoapods-xxx-plugin</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Pod::HooksManager.register(&#x27;cocoapods-xxx-plugin&#x27;, :pre_install) do |context, _|</span><br><span class="line">	first_target_definition = context.podfile.target_definition_list.select&#123; |d| d.name != &#x27;Pods&#x27; &#125;.first</span><br><span class="line">	development_pod = first_target_definition.name.split(&#x27;_&#x27;).first unless first_target_definition.nil?</span><br><span class="line">	    </span><br><span class="line">	Pod::UI.section(&quot;Auto set share scheme for development pod: \&#x27;#&#123;development_pod&#125;\&#x27;&quot;) do</span><br><span class="line">		# carthage 需要 shared scheme 构建 framework</span><br><span class="line">		context.podfile.install!(&#x27;cocoapods&#x27;, :share_schemes_for_development_pods =&gt; [development_pod])</span><br><span class="line">	end unless development_pod.nil?</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+
+<p>在 Podfile 添加以下代码，让插件生效：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">plugin &#x27;cocoapods-xxx-plugin&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>好处就是以后有更多相似配置的话都可以通过更改这个插件解决，而不用每次都去 Podfile 里面改 <code>pre_install</code>。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/12/03/CocoaPods%E7%BB%84%E4%BB%B6%E6%94%AF%E6%8C%81Carthage%E6%89%93%E5%8C%85/" data-id="clgovw0n60005k9d3738ec7to" data-title="CocoaPods组件支持Carthage打包" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-AsyncDisplayKit" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/11/12/AsyncDisplayKit/" class="article-date">
+  <time class="dt-published" datetime="2019-11-12T07:45:53.000Z" itemprop="datePublished">2019-11-12</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/11/12/AsyncDisplayKit/">AsyncDisplayKit</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="AsyncDisplayKit"><a href="#AsyncDisplayKit" class="headerlink" title="AsyncDisplayKit"></a>AsyncDisplayKit</h3><p><a target="_blank" rel="noopener" href="https://github.com/facebook/AsyncDisplayKit">AsyncDisplayKit</a> 是 Facebook 推出的用于保持界面流畅性的框架，其原理大致如下：</p>
+<p>UI 线程中一旦出现繁重的任务就会导致界面卡顿，这类任务通常分为3类：排版，绘制，UI对象操作。</p>
+<p>排版通常包括计算视图大小、计算文本高度、重新计算子式图的排版等操作。<br>绘制一般有文本绘制 (例如 CoreText)、图片绘制 (例如预先解压)、元素绘制 (Quartz)等操作。<br>UI对象操作通常包括 UIView&#x2F;CALayer 等 UI 对象的创建、设置属性和销毁。</p>
+<p>其中前两类操作可以通过各种方法扔到后台线程执行，而最后一类操作只能在主线程完成，并且有时后面的操作需要依赖前面操作的结果 （例如TextView创建时可能需要提前计算出文本的大小）。ASDK 所做的，就是尽量将能放入后台的任务放入后台，不能的则尽量推迟 (例如视图的创建、属性的调整)。</p>
+<p>为此，ASDK 创建了一个名为 ASDisplayNode 的对象，并在内部封装了 UIView&#x2F;CALayer，它具有和 UIView&#x2F;CALayer 相似的属性，例如 frame、backgroundColor等。所有这些属性都可以在后台线程更改，开发者可以只通过 Node 来操作其内部的 UIView&#x2F;CALayer，这样就可以将排版和绘制放入了后台线程。但是无论怎么操作，这些属性总需要在某个时刻同步到主线程的 UIView&#x2F;CALayer 去。</p>
+<p>ASDK 仿照 QuartzCore&#x2F;UIKit 框架的模式，实现了一套类似的界面更新的机制：即在主线程的 RunLoop 中添加一个 Observer，监听了 kCFRunLoopBeforeWaiting 和 kCFRunLoopExit 事件，在收到回调时，遍历所有之前放入队列的待处理的任务，然后一一执行。<br>具体的代码可以看这里：<a target="_blank" rel="noopener" href="https://github.com/facebook/AsyncDisplayKit/blob/master/AsyncDisplayKit%2FDetails%2FTransactions%2F_ASAsyncTransactionGroup.m">_ASAsyncTransactionGroup</a>。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/11/12/AsyncDisplayKit/" data-id="clgovw0n40003k9d3eux0bn17" data-title="AsyncDisplayKit" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-机器学习-深度学习路线与资料" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/10/11/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF%E4%B8%8E%E8%B5%84%E6%96%99/" class="article-date">
+  <time class="dt-published" datetime="2019-10-11T09:18:16.000Z" itemprop="datePublished">2019-10-11</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/10/11/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF%E4%B8%8E%E8%B5%84%E6%96%99/">机器学习/深度学习路线与资料</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>###吴恩达机器学习视频及资料</p>
+<p><strong>docx</strong>：笔记的<strong>word</strong>版本</p>
+<p><strong>markdown</strong>：笔记的<strong>markdown</strong>版本</p>
+<p><strong>html</strong>：笔记的<strong>html</strong>版本</p>
+<p><strong>images</strong>：笔记的图片</p>
+<p><strong>ppt</strong>：课程的原版课件</p>
+<p><strong>srt</strong>：课程的中英文字幕（<strong>mp4</strong>文件需要在百度云下载，大家可以用记事本或者字幕编辑软件来编辑字幕，共同完善，百度云链接：<a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1h8QjqBlOm0Exh7orm9teMQ">https://pan.baidu.com/s/1h8QjqBlOm0Exh7orm9teMQ</a> 密码：d3we，下载后解压）</p>
+<p><strong>code</strong>：课程的<strong>python</strong>代码（有一部分是国外大牛写的）</p>
+<p>机器学习视频下载链接：<a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1raoOPOg">https://pan.baidu.com/s/1raoOPOg</a> 密码：48m8，包含视频和字幕，下载后解压，建议用<strong>potplayer</strong>播放，此视频与<strong>mp4</strong>一致。</p>
+<p>###吴恩达深度学习视频</p>
+<p><strong>教程地址：</strong><a target="_blank" rel="noopener" href="https://mooc.study.163.com/university/deeplearning_ai#/c">https://mooc.study.163.com/university/deeplearning_ai#/c</a></p>
+<p><strong>有同学提供了一个离线视频的下载</strong>：链接：<a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1ciq3qHo0lgoD3MLRwfeqnA">https://pan.baidu.com/s/1ciq3qHo0lgoD3MLRwfeqnA</a> 密码：0kim</p>
+<p>基础数学(高等数学，线性代数，概率论等)→机器学习(数学导向推荐李航的《统计学习方法》，技术导向推荐周志华的《机器学习》吴恩达机器学习)→吴恩达深度学习</p>
+        
+          <p class="article-more-link">
+            <a href="/2019/10/11/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF%E4%B8%8E%E8%B5%84%E6%96%99/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/10/11/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B7%AF%E7%BA%BF%E4%B8%8E%E8%B5%84%E6%96%99/" data-id="clgovw0ns001rk9d37cpocqz7" data-title="机器学习/深度学习路线与资料" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-cocoapod加载插件" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/09/23/cocoapod%E5%8A%A0%E8%BD%BD%E6%8F%92%E4%BB%B6/" class="article-date">
+  <time class="dt-published" datetime="2019-09-23T08:28:09.000Z" itemprop="datePublished">2019-09-23</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/09/23/cocoapod%E5%8A%A0%E8%BD%BD%E6%8F%92%E4%BB%B6/">cocoapods加载插件</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>CocoaPods 为开发者提供了插件注册功能，可以使用 <code>pod plugins create NAME</code> 命令创建插件，并在 Podfile 中通过 <code>plugin &#39;NAME&#39;</code> 语句引入插件。虽然在一般情况下很少使用这个功能，但在某些场景下，利用插件能比较方便快捷地解决问题。</p>
+<h2 id="实现探索"><a href="#实现探索" class="headerlink" title="实现探索"></a>实现探索</h2><p>首先，由于 <code>pod install</code> 过程会涉及到插件的加载，所以直接查看 <code>installer.rb</code> 文件:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"># Runs the registered callbacks for the plugins post install hooks.</span><br><span class="line">#</span><br><span class="line">def run_plugins_post_install_hooks</span><br><span class="line">  context = PostInstallHooksContext.generate(sandbox, aggregate_targets)</span><br><span class="line">  HooksManager.run(:post_install, context, plugins)</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line"># Runs the registered callbacks for the plugins pre install hooks.</span><br><span class="line">#</span><br><span class="line"># @return [void]</span><br><span class="line">#</span><br><span class="line">def run_plugins_pre_install_hooks</span><br><span class="line">  context = PreInstallHooksContext.generate(sandbox, podfile, lockfile)</span><br><span class="line">  HooksManager.run(:pre_install, context, plugins)</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line"># Ensures that all plugins specified in the &#123;#podfile&#125; are loaded.</span><br><span class="line">#</span><br><span class="line"># @return [void]</span><br><span class="line">#</span><br><span class="line">def ensure_plugins_are_installed!</span><br><span class="line">  require &#x27;claide/command/plugin_manager&#x27;</span><br><span class="line"></span><br><span class="line">  loaded_plugins = Command::PluginManager.specifications.map(&amp;:name)</span><br><span class="line"></span><br><span class="line">  podfile.plugins.keys.each do |plugin|</span><br><span class="line">    unless loaded_plugins.include? plugin</span><br><span class="line">      raise Informative, &quot;Your Podfile requires that the plugin `#&#123;plugin&#125;` be installed. Please install it and try installation again.&quot;</span><br><span class="line">    end</span><br><span class="line">  end</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+
+<p>其中 <code>run_plugins_pre_install_hooks</code> 和 <code>run_plugins_post_install_hooks</code> 分别执行了插件注册的 <code>pre_install</code> 和 <code>pod_install</code> 方法， <code>ensure_plugins_are_installed</code> 则确认插件是否已被安装。</p>
+<p>接下来看下 <code>Command::PluginManager</code> ，这个类在 <code>claide/command/plugin_manager</code> 文件内，属于 <code>claide</code> gem :</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"># @return [Array&lt;Gem::Specification&gt;] Loads plugins via RubyGems looking</span><br><span class="line">#         for files named after the `PLUGIN_PREFIX_plugin` and returns the</span><br><span class="line">#         specifications of the gems loaded successfully.</span><br><span class="line">#         Plugins are required safely.</span><br><span class="line">#</span><br><span class="line">def self.load_plugins(plugin_prefix)</span><br><span class="line">  loaded_plugins[plugin_prefix] ||=</span><br><span class="line">    plugin_gems_for_prefix(plugin_prefix).map do |spec, paths|</span><br><span class="line">      spec if safe_activate_and_require(spec, paths)</span><br><span class="line">    end.compact</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line"># @group Helper Methods</span><br><span class="line"></span><br><span class="line"># @return [Array&lt;[Gem::Specification, Array&lt;String&gt;]&gt;]</span><br><span class="line">#         Returns an array of tuples containing the specifications and</span><br><span class="line">#         plugin files to require for a given plugin prefix.</span><br><span class="line">#</span><br><span class="line">def self.plugin_gems_for_prefix(prefix)</span><br><span class="line">  glob = &quot;#&#123;prefix&#125;_plugin#&#123;Gem.suffix_pattern&#125;&quot;</span><br><span class="line">  Gem::Specification.latest_specs(true).map do |spec|</span><br><span class="line">    matches = spec.matches_for_glob(glob)</span><br><span class="line">    [spec, matches] unless matches.empty?</span><br><span class="line">  end.compact</span><br><span class="line">end</span><br><span class="line"></span><br><span class="line"># Activates the given spec and requires the given paths.</span><br><span class="line"># If any exception occurs it is caught and an</span><br><span class="line"># informative message is printed.</span><br><span class="line">#</span><br><span class="line"># @param  [Gem::Specification] spec</span><br><span class="line">#         The spec to be activated.</span><br><span class="line">#</span><br><span class="line"># @param  [String] paths</span><br><span class="line">#         The paths to require.</span><br><span class="line">#</span><br><span class="line"># @return [Bool] Whether activation and requiring succeeded.</span><br><span class="line">#</span><br><span class="line">def self.safe_activate_and_require(spec, paths)</span><br><span class="line">  spec.activate</span><br><span class="line">  paths.each &#123; |path| require(path) &#125;</span><br><span class="line">  true</span><br><span class="line">rescue Exception =&gt; exception # rubocop:disable RescueException</span><br><span class="line">  message = &quot;\n---------------------------------------------&quot;</span><br><span class="line">  message &lt;&lt; &quot;\nError loading the plugin `#&#123;spec.full_name&#125;`.\n&quot;</span><br><span class="line">  message &lt;&lt; &quot;\n#&#123;exception.class&#125; - #&#123;exception.message&#125;&quot;</span><br><span class="line">  message &lt;&lt; &quot;\n#&#123;exception.backtrace.join(&quot;\n&quot;)&#125;&quot;</span><br><span class="line">  message &lt;&lt; &quot;\n---------------------------------------------\n&quot;</span><br><span class="line">  warn message.ansi.yellow</span><br><span class="line">  false</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+
+<p>以上代码调用几个的 <code>Gem::Specification</code> 方法如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># 获取最新 spec 集合</span><br><span class="line"># Return the latest specs, optionally including prerelease specs if prerelease is true.</span><br><span class="line">latest_specs(prerelease = false) </span><br><span class="line"></span><br><span class="line"># 获取 gem 中匹配的文件路径</span><br><span class="line"># Return all files in this gem that match for glob.</span><br><span class="line">matches_for_glob(glob) </span><br><span class="line"></span><br><span class="line"># 激活 spec，注册并将其 lib 路径添加到 $LOAD_PATH （$LOAD_PATH 环境变量存储 require 文件时查找的路径）</span><br><span class="line"># Activate this spec, registering it as a loaded spec and adding it&#x27;s lib paths to $LOAD_PATH. Returns true if the spec was activated, false if it was previously activated. Freaks out if there are conflicts upon activation.</span><br><span class="line">activate()</span><br></pre></td></tr></table></figure>
+
+<p>可以看到在 <code>loaded_plugins[plugin_prefix]</code> 为空的情况下，程序会执行 <code>plugin_gems_for_prefix</code> 方法，<code>plugin_gems_for_prefix</code> 方法通过 <code>latest_specs</code> 获取了最新的 spec ，并通过 spec 的 <code>matches_for_glob</code> 方法对文件进行匹配，当 spec 中存在匹配 <code>&quot;#&#123;prefix&#125;_plugin#&#123;Gem.suffix_pattern&#125;&quot;</code> 格式的文件时，则视其为 CocoaPods 插件。在拿到插件及其匹配文件后，<code>safe_activate_and_require</code> 方法将文件加入 $LOAD_PATH 中并 require 之。</p>
+<p>另外 <code>CLAide::Command</code> 类会在 <code>run</code> 类方法中加载所有插件，然后根据解析后的信息，执行对应的命令:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"># @param  [Array, ARGV] argv</span><br><span class="line">#         A list of (remaining) parameters.</span><br><span class="line">#</span><br><span class="line"># @return [Command] An instance of the command class that was matched by</span><br><span class="line">#         going through the arguments in the parameters and drilling down</span><br><span class="line">#         command classes.</span><br><span class="line">#</span><br><span class="line">def self.run(argv = [])</span><br><span class="line">  plugin_prefixes.each do |plugin_prefix|</span><br><span class="line">    PluginManager.load_plugins(plugin_prefix)</span><br><span class="line">  end</span><br><span class="line"></span><br><span class="line">  argv = ARGV.coerce(argv)</span><br><span class="line">  command = parse(argv)</span><br><span class="line">  ANSI.disabled = !command.ansi_output?</span><br><span class="line">  unless command.handle_root_options(argv)</span><br><span class="line">    command.validate!</span><br><span class="line">    command.run</span><br><span class="line">  end</span><br><span class="line">rescue Object =&gt; exception</span><br><span class="line">  handle_exception(command, exception)</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+
+<p>对于通过 <code>pod plugin create</code> 命令创建的插件来说，lib 目录下都会自动生成一个 <code>cocoapods_plugin.rb</code> 文件，这个文件就是用来标识此 gem 为 CocoaPods 插件的。如果想手动创建 CocoaPods 插件，需要满足以下两个条件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># Handles plugin related logic logic for the `Command` class.</span><br><span class="line">#</span><br><span class="line"># Plugins are loaded the first time a command run and are identified by the</span><br><span class="line"># prefix specified in the command class. Plugins must adopt the following</span><br><span class="line"># conventions:</span><br><span class="line">#</span><br><span class="line"># - Support being loaded by a file located under the</span><br><span class="line"># `lib/#&#123;plugin_prefix&#125;_plugin` relative path.</span><br><span class="line"># - Be stored in a folder named after the plugin.</span><br><span class="line"></span><br><span class="line"># - 支持通过 `lib/#&#123;plugin_prefix&#125;_plugin` 路径的文件加载</span><br><span class="line">#   (也就是说，如果要对外暴露插件内部存的方法，需要在此文件中 require 之，比如自定义的 Podfile DSL 文件)</span><br><span class="line"># - 保存在以插件命名的文件夹中</span><br></pre></td></tr></table></figure>
+
+
+
+<p>在 CocoaPods 上下文中，以上的 <code>plugin_prefix</code> 如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">self.plugin_prefixes = %w(claide cocoapods)</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>如果需要外部 gem 以插件的形式提供某些功能，可以通过和 CocoaPods 一样的方式实现，即规定特定的命名规则，然后通过 <code>Gem::Specification</code> 提供的方法获取满足条件的 gem ，再 require 入口文件:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">spec = Gem::Specification.find_by_name(&#x27;naruto&#x27;)</span><br><span class="line">spec.activate</span><br><span class="line">matches = spec.matches_for_glob(&#x27;naruto&#x27;)</span><br><span class="line">matches.each do |path|</span><br><span class="line">  require(path)</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/09/23/cocoapod%E5%8A%A0%E8%BD%BD%E6%8F%92%E4%BB%B6/" data-id="clgovw0nj000yk9d3dn9ccuif" data-title="cocoapods加载插件" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cocoaPods/" rel="tag">cocoaPods</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-随机深林" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/09/18/%E9%9A%8F%E6%9C%BA%E6%B7%B1%E6%9E%97/" class="article-date">
+  <time class="dt-published" datetime="2019-09-18T03:03:50.000Z" itemprop="datePublished">2019-09-18</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/09/18/%E9%9A%8F%E6%9C%BA%E6%B7%B1%E6%9E%97/">随机深林</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>要点<ul>
+<li>说名随机森林每棵决策树的建立过程</li>
+<li>知道为什么需要随机有放回(Bootstrap)的抽样</li>
+<li>说明随机森林的超参数</li>
+</ul>
+</li>
+<li>应用<ul>
+<li>泰坦尼克号乘客生存预测</li>
+</ul>
+</li>
+</ul>
+<h2 id="1、-什么是集成学习方法"><a href="#1、-什么是集成学习方法" class="headerlink" title="1、 什么是集成学习方法"></a>1、 什么是集成学习方法</h2><p>集成学习通过建立几个模型组合的来解决单一预测问题。它的工作原理是<strong>生成多个分类器&#x2F;模型</strong>，各自独立地学习和作出预测。<strong>这些预测最后结合成组合预测，因此优于任何一个单分类的做出预测。</strong></p>
+<h2 id="2、-什么是随机森林"><a href="#2、-什么是随机森林" class="headerlink" title="2、 什么是随机森林"></a>2、 什么是随机森林</h2><p>在机器学习中，<strong>随机森林是一个包含多个决策树的分类器</strong>，并且其输出的类别是由个别树输出的类别的众数而定。</p>
+<p><img src="/%E9%9A%8F%E6%9C%BA%E6%B7%B1%E6%9E%97t/%E9%9A%8F%E6%9C%BA%E6%A3%AE%E6%9E%97.png" alt="随机森林"></p>
+<p>例如, 如果你训练了5个树, 其中有4个树的结果是True, 1个数的结果是False, 那么最终投票结果就是True</p>
+<p><img src="/%E9%9A%8F%E6%9C%BA%E6%B7%B1%E6%9E%97/%E6%8A%95%E7%A5%A8.png" alt="投票"></p>
+<h2 id="3、-随机森林原理过程"><a href="#3、-随机森林原理过程" class="headerlink" title="3、 随机森林原理过程"></a>3、 随机森林原理过程</h2><p>学习算法根据下列算法而建造每棵树：</p>
+<ul>
+<li>用N来表示训练用例（样本）的个数，M表示特征数目。<ul>
+<li>1、一次随机选出一个样本，重复N次， （有可能出现重复的样本）</li>
+<li>2、随机去选出m个特征, m &lt;&lt;M，建立决策树</li>
+</ul>
+</li>
+<li>采取bootstrap抽样1</li>
+</ul>
+<h3 id="3-1-为什么采用BootStrap抽样"><a href="#3-1-为什么采用BootStrap抽样" class="headerlink" title="3.1 为什么采用BootStrap抽样"></a>3.1 为什么采用BootStrap抽样</h3><ul>
+<li>为什么要随机抽样训练集？　　<ul>
+<li>如果不进行随机抽样，每棵树的训练集都一样，那么最终训练出的树分类结果也是完全一样的</li>
+</ul>
+</li>
+<li>为什么要有放回地抽样？<ul>
+<li>如果不是有放回的抽样，那么每棵树的训练样本都是不同的，都是没有交集的，这样每棵树都是“有偏的”，都是绝对“片面的”（当然这样说可能不对），也就是说每棵树训练出来都是有很大的差异的；而随机森林最后分类取决于多棵树（弱分类器）的投票表决。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-2-API"><a href="#3-2-API" class="headerlink" title="3.2 API"></a>3.2 API</h3><ul>
+<li><p>class sklearn.ensemble.RandomForestClassifier(n_estimators&#x3D;10, criterion&#x3D;’gini’, max_depth&#x3D;None, bootstrap&#x3D;True, random_state&#x3D;None, min_samples_split&#x3D;2)</p>
+<ul>
+<li>随机森林分类器</li>
+<li>n_estimators：integer，optional（default &#x3D; 10）森林里的树木数量120,200,300,500,800,1200</li>
+<li>criteria：string，可选（default &#x3D;“gini”）分割特征的测量方法</li>
+<li>max_depth：integer或None，可选（默认&#x3D;无）树的最大深度 5,8,15,25,30</li>
+<li>max_features&#x3D;”auto”,每个决策树的最大特征数量<ul>
+<li>If “auto”, then <code>max_features=sqrt(n_features)</code>.</li>
+<li>If “sqrt”, then <code>max_features=sqrt(n_features)</code> (same as “auto”).</li>
+<li>If “log2”, then <code>max_features=log2(n_features)</code>.</li>
+<li>If None, then <code>max_features=n_features</code>.</li>
+</ul>
+</li>
+<li>bootstrap：boolean，optional（default &#x3D; True）是否在构建树时使用放回抽样</li>
+<li>min_samples_split:节点划分最少样本数</li>
+<li>min_samples_leaf:叶子节点的最小样本数</li>
+</ul>
+</li>
+<li><p>超参数：n_estimator, max_depth, min_samples_split,min_samples_leaf</p>
+</li>
+</ul>
+<h3 id="3-3-代码"><a href="#3-3-代码" class="headerlink" title="3.3 代码"></a>3.3 代码</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 随机森林去进行预测</span></span><br><span class="line">rf = RandomForestClassifier()</span><br><span class="line"></span><br><span class="line">param = &#123;<span class="string">&quot;n_estimators&quot;</span>: [<span class="number">120</span>,<span class="number">200</span>,<span class="number">300</span>,<span class="number">500</span>,<span class="number">800</span>,<span class="number">1200</span>], <span class="string">&quot;max_depth&quot;</span>: [<span class="number">5</span>, <span class="number">8</span>, <span class="number">15</span>, <span class="number">25</span>, <span class="number">30</span>]&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 超参数调优</span></span><br><span class="line">gc = GridSearchCV(rf, param_grid=param, cv=<span class="number">2</span>)</span><br><span class="line"></span><br><span class="line">gc.fit(x_train, y_train)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;随机森林预测的准确率为：&quot;</span>, gc.score(x_test, y_test))</span><br></pre></td></tr></table></figure>
+
+<h2 id="4、总结"><a href="#4、总结" class="headerlink" title="4、总结"></a>4、总结</h2><ul>
+<li>在当前所有算法中，具有极好的准确率</li>
+<li>能够有效地运行在大数据集上，处理具有高维特征的输入样本，而且不需要降维</li>
+<li>能够评估各个特征在分类问题上的重要性</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/09/18/%E9%9A%8F%E6%9C%BA%E6%B7%B1%E6%9E%97/" data-id="clgovw0nw0021k9d3cj8lgmhj" data-title="随机深林" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-AppDelegate组件解耦" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/09/16/AppDelegate%E7%BB%84%E4%BB%B6%E8%A7%A3%E8%80%A6/" class="article-date">
+  <time class="dt-published" datetime="2019-09-16T03:29:30.000Z" itemprop="datePublished">2019-09-16</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/09/16/AppDelegate%E7%BB%84%E4%BB%B6%E8%A7%A3%E8%80%A6/">AppDelegate组件解耦</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>在没有实行组件化的项目中，经常会在 AppDelegate 看到各类初始化代码，这一部分代码一般用以配置某些 key 以及 secret ，或者开启某些服务，常见的有第三方推送、统计分析、IM服务等。当然，也有可能是开启一些自身的服务，比如 log 日志、 数据库初始化等。当一个 App 达到一定体量后， 未经整理的 AppDelegate 可能会变得臃肿。那么在实行组件化之后，该如何处理这部分代码呢？</p>
+<h2 id="不管理组件生命周期"><a href="#不管理组件生命周期" class="headerlink" title="不管理组件生命周期"></a>不管理组件生命周期</h2><p>不对组件生命周期进行管理，那么只能继续将这些初始化代码放在主工程的 AppDelegate 中，而针对上文所说的 AppDelegate 臃肿的问题，也可以通过简单的封装来优化。</p>
+<p>但是，这种做法会引发组件独立性问题。比如存在能独立运行的组件 A、B，B 依赖 A， A 生效需要在 App Launch 时调用配置代码 Code-A。如果采用上述做法，那么组件 A 所在示例工程的 AppDelegate 中，需要调用 Code-A 进行配置，而组件 B 因为依赖了 组件 A ，要使组件 B 能成功运行，也需要在 B 的示例工程添加 Code-A 进行配置。同样主工程的 AppDelegate 中也存在一份 Code-A 配置代码。可以看到，这种重复手动配置的做法是比较繁琐和难看的，这也是为什么要对组件生命周期进行管理的原因。</p>
+<h2 id="现有实现管理方案"><a href="#现有实现管理方案" class="headerlink" title="现有实现管理方案"></a>现有实现管理方案</h2><p>从组件和主工程的关系切入，既然组件需要在 App 生命周期的某些阶段处理特定的事务，那么就提供特定的回调方法供组件使用。 App 生命周期各个阶段产生的事件，可以通过让 AppDelegate 遵守 UIApplicationDelegate 协议并实现不同的代理方法进行捕获。</p>
+<p>要想把当前阶段 App 产生的事件分发给各个组件，最简单的方案就是如 <a target="_blank" rel="noopener" href="http://limboy.me/tech/2016/03/10/mgj-components.html">limboy</a> 所说，在 AppDelegate 的各个代理方法里，手动调一遍组件的对应方法，如果组件实现了对应的代理方法，就执行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions</span><br><span class="line">&#123;</span><br><span class="line">    [MGJApp startApp];</span><br><span class="line"></span><br><span class="line">    [[ModuleManager sharedInstance] loadModuleFromPlist:[[NSBundle mainBundle] pathForResource:@&quot;modules&quot; ofType:@&quot;plist&quot;]];</span><br><span class="line">    NSArray *modules = [[ModuleManager sharedInstance] allModules];</span><br><span class="line">    for (id&lt;ModuleProtocol&gt; module in modules) &#123;</span><br><span class="line">        if ([module respondsToSelector:_cmd]) &#123;</span><br><span class="line">            [module application:application didFinishLaunchingWithOptions:launchOptions];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [self trackLaunchTime];</span><br><span class="line">    return YES;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>不过这种方式缺点也很明显，组件需要依赖主工程的 AppDelegate 是否实现了 UIApplicationDelegate 的代理方法，如果没有的话，即使组件方实现了对应的代理方法，依然无法捕获到事件。</p>
+<p>再来看下 <a target="_blank" rel="noopener" href="http://www.jianshu.com/u/d8a653fc1cb1">caojun</a> 的处理方案 <a target="_blank" rel="noopener" href="https://github.com/mdsb100/YTXModule">YTXModule</a>。 这个方案主要思路是通过 runtime method swizzling，替换 AppDelegate 中实现的 UIApplicationDelegate 代理方法，然后在 swizzled method 中，执行事件分发。 YTXModule 提供了一些宏定义，精简了方法替换流程：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">@implementation UIApplication (YTXModule)</span><br><span class="line">- (void)module_setDelegate:(id&lt;UIApplicationDelegate&gt;) delegate</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    static dispatch_once_t delegateOnceToken;</span><br><span class="line">    dispatch_once(&amp;delegateOnceToken, ^&#123;</span><br><span class="line">        SWIZZLE_DELEGATE_METHOD(applicationDidFinishLaunching:);</span><br><span class="line">        ...</span><br><span class="line">    &#125;);</span><br><span class="line">    [self module_setDelegate:delegate];</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation YTXModule</span><br><span class="line">...</span><br><span class="line">+ (BOOL)ytxmodule_application:(UIApplication *)application didFinishLaunchingWithOptions:(nullable NSDictionary *)launchOptions</span><br><span class="line">&#123;   </span><br><span class="line">    DEF_APPDELEGATE_METHOD_CONTAIN_RESULT(application, launchOptions);</span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<p>这里需要注意的是，由于 method swizzling 是在不同类型载体（AppDelegate对象 &lt;-&gt; YTXModule类）间交换的方法，所以会造成在 <code>+ytxmodule_applicationDidFinishLaunching:</code> 中调用 <code>self</code> 时，获取的并不是 YTXModule类，而是 AppDelegate对象，因为方法替换实际上替换了 IMP，并没有改变实参，参照 <code>objc_msgSend(id self, SEL op, ... )</code> 的参数排列，可以明确第一个参数是消息接收者，也就是 AppDelegate对象。通过上述分析可以知道，如果直接进行方法替换，不做特殊处理，使用以下代码将会抛出 <code>unrecognized selector </code>异常 ：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">+ (BOOL)ytxmodule_application:(UIApplication *)application didFinishLaunchingWithOptions:(nullable NSDictionary *)launchOptions</span><br><span class="line">&#123;</span><br><span class="line">	// self is AppDelegate instance</span><br><span class="line">    [self ytxmodule_application:application didFinishLaunchingWithOptions:launchOptions];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>而以下代码，是可以正常运行的：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">+ (BOOL)ytxmodule_application:(UIApplication *)application didFinishLaunchingWithOptions:(nullable NSDictionary *)launchOptions</span><br><span class="line">&#123;</span><br><span class="line"> 	[YTXModule ytxmodule_application:application didFinishLaunchingWithOptions:launchOptions];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>所以 caojun 在方法替换时，给 AppDelegate 添加了相同命名的实例方法，规避了这个异常 ：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">void Swizzle(Class class, SEL originalSelector, Method swizzledMethod)</span><br><span class="line">&#123;</span><br><span class="line">    Method originalMethod = class_getInstanceMethod(class, originalSelector);</span><br><span class="line">    SEL swizzledSelector = method_getName(swizzledMethod);</span><br><span class="line"></span><br><span class="line">    BOOL didAddMethod =</span><br><span class="line">    class_addMethod(class,</span><br><span class="line">                    originalSelector,</span><br><span class="line">                    method_getImplementation(swizzledMethod),</span><br><span class="line">                    method_getTypeEncoding(swizzledMethod));</span><br><span class="line"></span><br><span class="line">    if (didAddMethod &amp;&amp; originalMethod) &#123;</span><br><span class="line">        class_replaceMethod(class,</span><br><span class="line">                            swizzledSelector,</span><br><span class="line">                            method_getImplementation(originalMethod),</span><br><span class="line">                            method_getTypeEncoding(originalMethod));</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        method_exchangeImplementations(originalMethod, swizzledMethod);</span><br><span class="line">    &#125;</span><br><span class="line">    // 这一步给 AppDelegate 添加相同命名的实例方法，并且其 IMP 是 AppDelegate 自身方法的原实现</span><br><span class="line">    class_addMethod(class,</span><br><span class="line">                    swizzledSelector,</span><br><span class="line">                    method_getImplementation(swizzledMethod),</span><br><span class="line">                    method_getTypeEncoding(swizzledMethod));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>虽说这种方案也能实现事件的分发，但是在不同类型载体间使用 method swizzling 还是应该避免的，对其他开发者不是很友好。并且这种方案也存在依赖 YTXModule 是否替换了 UIApplicationDelegate 的代理方法问题，如果没有，组件方是无法捕获事件的。</p>
+        
+          <p class="article-more-link">
+            <a href="/2019/09/16/AppDelegate%E7%BB%84%E4%BB%B6%E8%A7%A3%E8%80%A6/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/09/16/AppDelegate%E7%BB%84%E4%BB%B6%E8%A7%A3%E8%80%A6/" data-id="clgovw0mt0000k9d3cb6yf104" data-title="AppDelegate组件解耦" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS-AppDelegate/" rel="tag">iOS AppDelegate</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/page/2/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/4/">Next &raquo;</a>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xcode/" rel="tag">Xcode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cocoaPods/" rel="tag">cocoaPods</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flutter/" rel="tag">flutter</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS-AppDelegate/" rel="tag">iOS AppDelegate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" rel="tag">强化学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" rel="tag">量化交易</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a> <a href="/tags/cocoaPods/" style="font-size: 10px;">cocoaPods</a> <a href="/tags/flutter/" style="font-size: 10px;">flutter</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOS-AppDelegate/" style="font-size: 10px;">iOS AppDelegate</a> <a href="/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" style="font-size: 15px;">强化学习</a> <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">机器学习</a> <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" style="font-size: 10px;">量化交易</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/04/">April 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/04/20/init/">init</a>
+          </li>
+        
+          <li>
+            <a href="/2023/01/11/%E5%AE%B9%E5%99%A8%E5%8C%96/">首页容器化</a>
+          </li>
+        
+          <li>
+            <a href="/2022/08/14/%E5%8A%A8%E6%80%81%E5%BA%93%E6%87%92%E5%8A%A0%E8%BD%BD/">动态库懒加载</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/17/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E9%97%AE%E9%A2%98%E4%B8%8E%E6%B2%BB%E7%90%86/">多线程问题专项治理</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/20/%E7%9B%B4%E6%92%AD%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7%E6%96%B9%E6%A1%88/">直播性能指标监控方案</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 xushuanghui<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
