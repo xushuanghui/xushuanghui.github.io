@@ -1,339 +1,37 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  
-  
-  <title>buildProcess | xushuanghui</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="近些日子我们被宠坏了 – 我们只需要单击 Xcode 中的一个按钮（这个按钮看起来有点像是在播放一些音乐的动作），过几秒钟之后，我们的程序就会运行起来了，除非遇到一些错误，这非常的神奇。 在本文中，我们将从更高级别的角度来解读 Build 过程，并探索一下在 Xcode 界面中暴露出的 project setting 信息与 Build 过程有什么关系。为了更加深入的探索 Build 过程中，每一">
-<meta property="og:type" content="article">
-<meta property="og:title" content="buildProcess">
-<meta property="og:url" content="http://example.com/2018/04/01/buildProcess/index.html">
-<meta property="og:site_name" content="xushuanghui">
-<meta property="og:description" content="近些日子我们被宠坏了 – 我们只需要单击 Xcode 中的一个按钮（这个按钮看起来有点像是在播放一些音乐的动作），过几秒钟之后，我们的程序就会运行起来了，除非遇到一些错误，这非常的神奇。 在本文中，我们将从更高级别的角度来解读 Build 过程，并探索一下在 Xcode 界面中暴露出的 project setting 信息与 Build 过程有什么关系。为了更加深入的探索 Build 过程中，每一">
-<meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://objccn.io/images/issues/issue-6/build-log.png">
-<meta property="og:image" content="https://objccn.io/images/issues/issue-6/project-editor-tabs.png">
-<meta property="og:image" content="http://example.com/">
-<meta property="og:image" content="https://objccn.io/images/issues/issue-6/custom-build-rule.png">
-<meta property="article:published_time" content="2018-04-01T09:27:08.000Z">
-<meta property="article:modified_time" content="2023-04-13T10:34:27.647Z">
-<meta property="article:author" content="xushuanghui">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://objccn.io/images/issues/issue-6/build-log.png">
-  
-    <link rel="alternate" href="/atom.xml" title="xushuanghui" type="application/atom+xml">
-  
-  
-    <link rel="shortcut icon" href="/favicon.png">
-  
-  
-    
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
-
-  
-  
-<link rel="stylesheet" href="/css/style.css">
-
-  
-    
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
-
-  
-<meta name="generator" content="Hexo 6.3.0"></head>
-
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">xushuanghui</a>
-      </h1>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
-      </div>
-    </div>
-  </div>
-</header>
-
-      <div class="outer">
-        <section id="main"><article id="post-buildProcess" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2018/04/01/buildProcess/" class="article-date">
-  <time class="dt-published" datetime="2018-04-01T09:27:08.000Z" itemprop="datePublished">2018-04-01</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="p-name article-title" itemprop="headline name">
-      buildProcess
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>近些日子我们被宠坏了 – 我们只需要单击 Xcode 中的一个按钮（这个按钮看起来有点像是在播放一些音乐的动作），过几秒钟之后，我们的程序就会运行起来了，除非遇到一些错误，这非常的神奇。</p>
-<p>在本文中，我们将从更高级别的角度来解读 Build 过程，并探索一下在 Xcode 界面中暴露出的 project setting 信息与 Build 过程有什么关系。为了更加深入的探索 Build 过程中，每一步实际执行的工作，我都会在本文中引入一些别的文章。</p>
-<span id="more"></span>
-
-<h2 id="解密-Build-日志"><a href="#解密-Build-日志" class="headerlink" title="解密 Build 日志"></a>解密 Build 日志</h2><p>为了了解 Xcode build 过程的内部工作原理，我们首先把突破口瞄准完整的 log 文件上。打开 Log Navigator ，从列表中选择一个 Build ，Xcode 会将 log 文件很完美的展现出来。</p>
-<p><img src="https://objccn.io/images/issues/issue-6/build-log.png" alt="Xcode build log navigator"></p>
-<p>默认情况下，上面的 Xcode 界面中隐藏了大量的信息，我们通过选择任务，然后点击右边的展开按钮，就能看到每个任务的详细信息。另外一种可选的方案就是选中列表中的一个或者多个任务，然后选择组合键 Cmd-C，这将会把所有的纯文本信息拷贝至粘贴板。最后，我们还可以选择 Editor 菜单中的 “Copy transcript for shown results”，以此将所有的 log 信息拷贝到粘贴板中。</p>
-<p>本文给出的示例中，log 信息将近有 10,000 行（其实大多数的 log 信息是编译 OpenSSL 时生成的，并不是我们自己所写的代码生成的）。下面我们就开始吧！</p>
-<p>注意观察输出的 log 信息，首先会发现 log 信息被分为不同的几大块，它们与我们工程中的targets相互对应着：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Build target Pods-SSZipArchive</span><br><span class="line">...</span><br><span class="line">Build target Makefile-openssl</span><br><span class="line">...</span><br><span class="line">Build target Pods-AFNetworking</span><br><span class="line">...</span><br><span class="line">Build target crypto</span><br><span class="line">...</span><br><span class="line">Build target Pods</span><br><span class="line">...</span><br><span class="line">Build target ssl</span><br><span class="line">...</span><br><span class="line">Build target objcio</span><br></pre></td></tr></table></figure>
-
-<p>本文涉及到的工程有几个依赖项：其中 AFNetworking 和 SSZipArchive 包含在 Pods 中，而 OpenSSL 则以子工程的形式包含在工程中。</p>
-<p>针对工程中的每个 target，Xcode 都会执行一系列的操作，将相关的源码，根据所选定的平台，转换为机器可读的二进制文件。下面我们详细的了解一下第一个 target：SSZipArchive。</p>
-<p>在针对这个 target 输出的 log 信息中，我们可以看到每个任务被执行的详细情况。例如第一个任务是处理一个预编译头文件（为了增强 log 信息的可读性，我省略了许多细节）：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">(1) ProcessPCH /.../Pods-SSZipArchive-prefix.pch.pch Pods-SSZipArchive-prefix.pch normal armv7 objective-c com.apple.compilers.llvm.clang.1_0.compiler</span><br><span class="line">    (2) cd /.../Dev/objcio/Pods</span><br><span class="line">        setenv LANG en_US.US-ASCII</span><br><span class="line">        setenv PATH &quot;...&quot;</span><br><span class="line">    (3) /.../Xcode.app/.../clang </span><br><span class="line">            (4) -x objective-c-header </span><br><span class="line">            (5) -arch armv7 </span><br><span class="line">            ... configuration and warning flags ...</span><br><span class="line">            (6) -DDEBUG=1 -DCOCOAPODS=1 </span><br><span class="line">            ... include paths and more ...</span><br><span class="line">            (7) -c </span><br><span class="line">            (8) /.../Pods-SSZipArchive-prefix.pch </span><br><span class="line">            (9) -o /.../Pods-SSZipArchive-prefix.pch.pch</span><br></pre></td></tr></table></figure>
-
-<p>在 build 处理过程中，每个任务都会出现类似上面的这些 log 信息，我们就通过上面的 log 信息进一步了解详情。</p>
-<ol>
-<li>类似上面的每个 log 信息块都会利用一行 log 信息来描述相关的任务作为起点。</li>
-<li>接着输出带缩进的3行 log 信息，列出了该任务执行的语句。此处，工作目录发生了改变，并对 LANG 和 PATH 环境变量进行设置。</li>
-<li>这里是发生奇迹的地方。为了处理一个<code>.pch</code>文件，调用了 clang，并附带了许多可选项。下面跟着输出的 log 信息显示了完整的调用过程，以及所有的参数。我们看看其中的几个参数…</li>
-<li><code>-x</code> 标示符用来指定所使用的语言，此处是 <code>objective-c-header</code>。</li>
-<li>目标架构指定为 <code>armv7</code>。</li>
-<li>暗示 <code>#defines</code> 的内容已经被添加了。</li>
-<li><code>-c</code> 标示符用来告诉 clang 具体该如何做。<code>-c</code> 表示：运行预处理器、词法分析器、类型检查、LLVM 的生成和优化，以及 target 指定汇编代码的生成阶段，最后，运行汇编器以产出一个<code>.o</code>的目标文件。</li>
-<li>输入文件。</li>
-<li>输出文件。</li>
-</ol>
-<p>虽然有大量的 log 信息，不过我不会对每个任务做详细的介绍。我们的重点是让你全面的了解在整个 build 过程中，哪些工具会被调用，以及背后会使用到了哪些参数。</p>
-<p>针对这个 target ，虽然只有一个 <code>.pch</code> 文件，但实际上这里对 <code>objective-c-header</code> 文件的处理有两个任务。通过观察具体输出的 log 信息，我们可以知道详情：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ProcessPCH /.../Pods-SSZipArchive-prefix.pch.pch Pods-SSZipArchive-prefix.pch normal armv7 objective-c ...</span><br><span class="line">ProcessPCH /.../Pods-SSZipArchive-prefix.pch.pch Pods-SSZipArchive-prefix.pch normal armv7s objective-c ...</span><br></pre></td></tr></table></figure>
-
-<p>从上面的 log 信息中，可以明显的看出 target 针对两种架构做了 build – armv7 和 armv7s – 因此 clang 对文件做了两次处理，每次针对一种架构。</p>
-<p>在处理预编译头文件之后，可以看到针对 SSZipArchive target 有另外的几个任务类型。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">CompileC ...</span><br><span class="line">Libtool ...</span><br><span class="line">CreateUniversalBinary ...</span><br></pre></td></tr></table></figure>
-
-<p>顾名思义：<code>CompileC</code> 用来编译 <code>.m</code> 和 <code>.c</code> 文件，<code>Libtool</code> 用来从目标文件中构建 library，而 <code>CreateUniversalBinary</code> 则将上一阶段产生的两个 <code>.a</code> 文件（每个文件对应一种架构）合并为一个通用的二进制文件，这样就能同时在 armv7 和 armv7s 上面运行。</p>
-<p>接着，在工程中其它一些依赖项也会发生于此类似的步骤。AFNetworking 被编译之后，会与 SSZipArchive 进行链接，以当做 pod library。OpenSSL 编译之后，会接着处理 crypto 和 ssl target。</p>
-<p>当所有的依赖项都 build 完成之后，就轮到我们程序的 target 了。Build 该 target 时，输出的 log 信息会包含一些非常有价值，并且之前没有出现过的内容：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">PhaseScriptExecution ...</span><br><span class="line">DataModelVersionCompile ...</span><br><span class="line">Ld ...</span><br><span class="line">GenerateDSYMFile ...</span><br><span class="line">CopyStringsFile ...</span><br><span class="line">CpResource ...</span><br><span class="line">CopyPNGFile ...</span><br><span class="line">CompileAssetCatalog ...</span><br><span class="line">ProcessInfoPlistFile ...</span><br><span class="line">ProcessProductPackaging /.../some-hash.mobileprovision ...</span><br><span class="line">ProcessProductPackaging objcio/objcio.entitlements ...</span><br><span class="line">CodeSign ...</span><br></pre></td></tr></table></figure>
-
-<p>在上面的任务列表中，根据名称不能区分的唯一任务可能就是 <code>Ld</code>，<code>Ld</code> 是一个 linker 工具的名称，与 <code>libtool</code> 非常相似。实际上，<code>libtool</code>也是简单的调用 <code>ld</code> 和 <code>lipo</code>。’ld’被用来构建可执行文件，而<code>libtool</code>则用来构建 library 文件。阅读<a target="_blank" rel="noopener" href="http://www.objccn.io/issue-6-3">Daniel</a> 和 <a target="_blank" rel="noopener" href="http://www.objccn.io/issue-6-2">Chris</a>两篇文章，可以了解到更多关于编译和链接的工作原理。</p>
-<p>上面每一个步骤，实际上都会调用相关的命令行工具来做实际的工作，这跟之前我们看到的的 <code>ProcessPCH</code> 类似。至此，我将不会继续介绍这些 log 信息了，我将带领大家从另外一个不同的角度来继续探索这些任务：Xcode 是如何知道哪些任务需要被执行？</p>
-<h2 id="Build过程的控制"><a href="#Build过程的控制" class="headerlink" title="Build过程的控制"></a>Build过程的控制</h2><p>当你选择 Xcode 5 中的一个工程时，会在 project editor 顶部显示出 6 个 tabs：General, Capabilities, Info, Build Settings, Build Phases 以及 Build Rules。</p>
-<p><img src="https://objccn.io/images/issues/issue-6/project-editor-tabs.png" alt="Xcode project editor tabs"></p>
-<p>对于我们理解 build 过程来说，其中最后 3 项与 build 过程紧密相连。</p>
-<h3 id="Build-Phases"><a href="#Build-Phases" class="headerlink" title="Build Phases"></a>Build Phases</h3><p>Build Phases 代表着将代码转变为可执行文件的最高级别规则。里面描述了 build 过程中必须执行的不同类型规则。</p>
-<p><img src="/" alt="Xcode build phases"></p>
-<p><a target="_blank" rel="noopener" href="https://objccn.io/images/issues/issue-6/build-phases.png">https://objccn.io/images/issues/issue-6/build-phases.png</a></p>
-<p>首先是 target 依赖项的构建。这里会告诉 build 系统，build 当前的 target 之前，必须先对这里的依赖性进行 build。实际上这并不属于真正的 build phase，在这里，Xcode 只不过将其与 build phase 显示到一块罢了。</p>
-<p>接着在 build phase中是一个 CocoaPods 相关的脚本 <em>script execution</em> – 更多 CocoaPods 相关信息和 它的 build 过程可以查看<a target="_blank" rel="noopener" href="http://www.objc.io/issue-6-4">Michele的文章</a> – 接着在 <code>Compile Sources</code> section 中规定了所有必须参与编译的文件。需要留意的是，这里并没有指明这些文件是<em>如何</em>被编译处理的。关于处理这些文件的更多内容，我们将在研究 build rules 和 build settings 时学习到。此处列出的所有文件将根据相关的 rules 和 settings 被处理。</p>
-<p>当编译结束之后，接下来就是将编译所生成的目标文件链接到一块。注意观察，Xcode 中的 build phase 之后是：”Link Binary with Libraries.” 这里面列出了所有的静态库和动态库，这些库会参与上面编译阶段生成的目标文件进行链接。静态库和动态库的处理过程有非常大的区别，相关内容请参考 Daniel的文章 <a target="_blank" rel="noopener" href="http://www.objccn.io/issue-6-3">Mach-O 可执行文件</a>。</p>
-<p>当链接完成之后，build phase 中最后需要处理的就是将静态资源（例如图片和字体）拷贝到 app bundle 中。需要注意的是，如果图片资源是PNG格式，那么不仅仅对其进行拷贝，还会做一些优化（如果 build settings 中的 PNG 优化是打开的话）。</p>
-<p>虽然静态资源的拷贝是 build phase 中的最后一步，但 build 还没有完成。例如，还没有进行 code signing （这并不是 build phase 考虑的范畴），code signing 属于 build 步骤中的最后一步 “Packaging”。</p>
-<h3 id="定制Build-Phases"><a href="#定制Build-Phases" class="headerlink" title="定制Build Phases"></a>定制Build Phases</h3><p>至此，如果不考虑默认设置的话，你已经可以完全掌握了上面介绍的 build phases。例如，你可以在 build phases 中添加运行自定义脚本，就像<a target="_blank" rel="noopener" href="http://www.objccn.io/issue-6-4/">CocoaPods</a>使用的一样，来做额外的工作。当然也可以添加一些资源的拷贝任务，当你需要将某些确定的资源拷贝到指定的 target 目录中，这非常有用。</p>
-<p>另外定制 build phases 有一个非常好用的功能：添加带有水印（包括版本号和 commit hash）的 app icon – 只需要在 build phase 中添加一个 “Run Script”，并用下面的命令来获取版本号和 commit hash：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">version=`/usr/libexec/PlistBuddy -c &quot;Print CFBundleVersion&quot; &quot;$&#123;INFOPLIST_FILE&#125;&quot;`</span><br><span class="line">commit=`git rev-parse --short HEAD`</span><br></pre></td></tr></table></figure>
-
-<p>然后使用 ImageMagick 来修改 app icon。这里有一个<a target="_blank" rel="noopener" href="https://github.com/krzysztofzablocki/IconOverlaying">完整的示例</a>，可以参考。</p>
-<p>如果你希望自己或者别人编写的代码看起来比较简洁点，可以添加一个 “Run Script”：如果一个源文件超过指定行数，就发出警告。如下代码所示，设置的行数为 200。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">find &quot;$&#123;SRCROOT&#125;&quot; \( -name &quot;*.h&quot; -or -name &quot;*.m&quot; \) -print0 | xargs -0 wc -l | awk &#x27;$1 &gt; 200 &amp;&amp; $2 != &quot;total&quot; &#123; print $2 &quot;:1: warning: file more than 200 lines&quot; &#125;&#x27;</span><br></pre></td></tr></table></figure>
-
-<h3 id="Build-Rules"><a href="#Build-Rules" class="headerlink" title="Build Rules"></a>Build Rules</h3><p>Build rules 指定了不同的文件类型该如何编译。一般来说，开发者并不需要修改这里面的内容。如果你需要对特定类型的文件添加处理方法，那么可以在此处添加一条新的规则。</p>
-<p>一条 build rule 指定了其应用于哪种类型文件，该类型文件是如何被处理的，以及输出的内容该如何处置。比方说，我们创建了一条预处理规则，该规则将 Objective-C 的实现文件当做输入，解析文件中的注释内容，最后再输出一个 <code>.m</code> 文件，文件中包含了生成的代码。由于我们不能将 <code>.m</code> 文件既当做输入又当做输出，所以我使用了 <code>.mal</code> 后缀，定制的 build rule 如下所示：</p>
-<p><img src="https://objccn.io/images/issues/issue-6/custom-build-rule.png" alt="Custom build rule"></p>
-<p>上面的规则应用于所有后缀为 <code>*.mal</code> 的文件，这些文件会被自定义的脚本处理（调用我们的预处理器，并附带上输入和输出参数）。最后，该规则告诉 build system 在哪里可以找到此规则的输出文件。</p>
-<p>在脚本中，我使用了少量的变量来指定正确的路径和文件名。在苹果的 <a target="_blank" rel="noopener" href="https://developer.apple.com/library/mac/documentation/DeveloperTools/Reference/XcodeBuildSettingRef/1-Build_Setting_Reference/build_setting_ref.html#//apple_ref/doc/uid/TP40003931-CH3-SW105">Build Setting Reference</a> 文档中可以找到所有可用的变量。build 过程中，要想观察所有已存在的环境变量，你可以在 build phase 中添加一个 “Run Script”，并勾选上 “Show environment variables in build log”。</p>
-<h3 id="Build-Settings"><a href="#Build-Settings" class="headerlink" title="Build Settings"></a>Build Settings</h3><p>至此，我们已经了解到在 build phases 中是如何定义 build 处理的过程，以及 build rules 是如何指定哪些文件类型在编译阶段需要被预处理。在 build settings 中，我们可以配置每个任务（之前在 build log 输出中看到的任务）的详细内容。</p>
-<p>你会发现 build 过程的每一个阶段，都有许多选项：从编译、链接一直到 code signing 和 packaging。注意，settings 是如何被分割为不同的部分 – 其实这大部分会与 build phases 有关联，有时候也会指定编译的文件类型。</p>
-<p>这些选项基本都有很好的文档介绍，你可以在右边面板中的 quick help inspector 或者 <a target="_blank" rel="noopener" href="https://developer.apple.com/library/mac/documentation/DeveloperTools/Reference/XcodeBuildSettingRef/1-Build_Setting_Reference/build_setting_ref.html#//apple_ref/doc/uid/TP40003931-CH3-SW105">Build Setting Reference</a>中查看到。</p>
-<h2 id="工程文件"><a href="#工程文件" class="headerlink" title="工程文件"></a>工程文件</h2><p>上面我们介绍的所有内容都被保存在工程文件（<code>.pbxproj</code>）中，除了其它一些工程相关信息（例如 file groups），我们很少会深入该文件内部，除非在代码 merge 时发生冲突，或许会进去看看。</p>
-<p>建议你用文本编辑器打开一个工程文件，从头到尾看一遍里面的内容。它的可读性非常高，里面的许多内容一看就知道什么意思了，不会存在太大的问题。通过阅读并完全理解工程文件，这对于合并工程文件的冲突非常有帮助。</p>
-<p>首先，我们来看看文件中叫做 <code>rootObject</code> 的条目。在我的工程中，如下所示：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rootObject = 1793817C17A9421F0078255E /* Project object */;</span><br></pre></td></tr></table></figure>
-
-<p>根据这个 ID（<code>1793817C17A9421F0078255E</code>），我们可以找到 main 工程的定义：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/* Begin PBXProject section */</span><br><span class="line">    1793817C17A9421F0078255E /* Project object */ = &#123;</span><br><span class="line">        isa = PBXProject;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-
-<p>在这部分中有一些 keys，顺从这些 key，我们可以了解到更多关于这个工程文件的组成。例如，<code>mainGroup</code> 指向了 root file group。如果你按照这个思路，你可以快速了解到在 <code>.pbxproj</code> 文件中工程的结构。下面我要来介绍一些与 build 过程相关的内容。其中 <code>target</code> key 指向了 build target 的定义：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">targets = (</span><br><span class="line">    1793818317A9421F0078255E /* objcio */,</span><br><span class="line">    170E83CE17ABF256006E716E /* objcio Tests */,</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
-
-<p>根据第一个内容，我们找到一个 target 的定义：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">1793818317A9421F0078255E /* objcio */ = &#123;</span><br><span class="line">    isa = PBXNativeTarget;</span><br><span class="line">    buildConfigurationList = 179381B617A9421F0078255E /* Build configuration list for PBXNativeTarget &quot;objcio&quot; */;</span><br><span class="line">    buildPhases = (</span><br><span class="line">        F3EB8576A1C24900A8F9CBB6 /* Check Pods Manifest.lock */,</span><br><span class="line">        1793818017A9421F0078255E /* Sources */,</span><br><span class="line">        1793818117A9421F0078255E /* Frameworks */,</span><br><span class="line">        1793818217A9421F0078255E /* Resources */,</span><br><span class="line">        FF25BB7F4B7D4F87AC7A4265 /* Copy Pods Resources */,</span><br><span class="line">    );</span><br><span class="line">    buildRules = (</span><br><span class="line">    );</span><br><span class="line">    dependencies = (</span><br><span class="line">        1769BED917CA8239008B6F5D /* PBXTargetDependency */,</span><br><span class="line">        1769BED717CA8236008B6F5D /* PBXTargetDependency */,</span><br><span class="line">    );</span><br><span class="line">    name = objcio;</span><br><span class="line">    productName = objcio;</span><br><span class="line">    productReference = 1793818417A9421F0078255E /* objcio.app */;</span><br><span class="line">    productType = &quot;com.apple.product-type.application&quot;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>其中 <code>buildConfigurationList</code> 指向了可用的配置项，一般是 <code>Debug</code> 和 <code>Release</code>。根据 debug 对应的 id，我们可以找到 build setting tab 中所有选项存储的位置：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">179381B717A9421F0078255E /* Debug */ = &#123;</span><br><span class="line">    isa = XCBuildConfiguration;</span><br><span class="line">    baseConfigurationReference = 05D234D6F5E146E9937E8997 /* Pods.xcconfig */;</span><br><span class="line">    buildSettings = &#123;</span><br><span class="line">        ALWAYS_SEARCH_USER_PATHS = YES;</span><br><span class="line">        ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;</span><br><span class="line">        CODE_SIGN_ENTITLEMENTS = objcio/objcio.entitlements;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-
-<p><code>buildPhases</code> 属性则简单的列出了在 Xcode 中定义的所有 build phases。这非常容易识别出来（Xcode 中的参数使用了它们原本真正的名字，并以 C 风格进行注释）。<code>buildRules</code> 属性是空的：因为在该工程中，我没有自定义 build rules。<code>dependencies</code> 列出了在 Xcode build phase tab 中列出的 target 依赖项。</p>
-<p>没那么吓人，不是吗？工程中剩下的内容就留给你去当做练习来了解吧。只需要顺着对象的 ID 走，即可，一旦你找到了敲门，理解了Xcode中工程设置的不同 section ，那么对于 merge 工程文件的冲突时，将变得非常简单。甚至可以在 GitHub 中就能阅读工程文件，而不用将工程文件 clone 到本地，并用 Xcode 打开。</p>
-<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>当今的软件是都用其它复杂的一些软件和资源开发出来的，例如 library 和 build 工具等。反过来，这些工具是构建于底层架构的，这犹如剥洋葱一样，一层包着一层。虽然这样一层一层的，给人感觉太复杂，但是你完全可以去深入了解它们，这非常有助于你对软件的深入理解，实际上当你了解之后，这并没有想象中的那么神奇，只不过它是一层一层堆砌起来的，每一层都是基于下一层构建起来的。</p>
-<p>本文所探索 build system 的内部机制犹如剥掉洋葱的一层。其实当我们点击 Xcode 中的运行按钮时，我们并没必要理解这个动作涉及到的所有内容。我们只是深入理解某一层，然后找到一个有组织的、并且可控的调用其它工具的顺序，如果我们愿意的话，可以做进一步的探索。我建议你阅读本期中的其它文章，以进一步了解这个洋葱的下一层内容！</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2018/04/01/buildProcess/" data-id="clgqem7vo0017h9d3gfkgaqzu" data-title="buildProcess" class="article-share-link">Share</a>
-      
-      
-      
-    </footer>
-  </div>
-  
-    
-<nav id="article-nav">
-  
-    <a href="/2018/08/05/%E5%8A%A8%E6%80%81%E5%BA%93%E4%B8%8E%E9%9D%99%E6%80%81%E5%BA%93/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          动态库与静态库
-        
-      </div>
-    </a>
-  
-  
-    <a href="/2017/09/23/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">Hello Worlds</div>
-    </a>
-  
-</nav>
-
-  
-</article>
+{% extends '_layout.swig' %}
+{% import '_macro/post.swig' as post_template %}
+{% import '_macro/sidebar.swig' as sidebar_template %}
 
 
-</section>
-        
-          <aside id="sidebar">
-  
-    
+{% block title %}{{ page.title }} | {{ config.title }}{% endblock %}
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xcode/" rel="tag">Xcode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cocoaPods/" rel="tag">cocoaPods</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flutter/" rel="tag">flutter</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS-AppDelegate/" rel="tag">iOS AppDelegate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" rel="tag">强化学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" rel="tag">量化交易</a></li></ul>
+{% block page_class %}page-post-detail{% endblock %}
+
+
+{% block content %}
+
+  <div id="posts" class="posts-expand">
+    {{ post_template.render(page) }}
+
+    <div class="post-spread">
+      {% if theme.jiathis %}
+        {% include '_partials/share/jiathis.swig' %}
+      {% elseif theme.baidushare %}
+        {% include '_partials/share/baidushare.swig' %}
+      {% elseif theme.add_this_id %}
+        {% include '_partials/share/add-this.swig' %}
+      {% elseif theme.duoshuo_shortname and theme.duoshuo_share %}
+        {% include '_partials/share/duoshuo_share.swig' %}
+      {% endif %}
     </div>
   </div>
 
+{% endblock %}
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a> <a href="/tags/cocoaPods/" style="font-size: 10px;">cocoaPods</a> <a href="/tags/flutter/" style="font-size: 10px;">flutter</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOS-AppDelegate/" style="font-size: 10px;">iOS AppDelegate</a> <a href="/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" style="font-size: 15px;">强化学习</a> <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">机器学习</a> <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" style="font-size: 10px;">量化交易</a>
-    </div>
-  </div>
+{% block sidebar %}
+  {{ sidebar_template.render(true) }}
+{% endblock %}
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2023/01/11/%E5%AE%B9%E5%99%A8%E5%8C%96/">首页容器化</a>
-          </li>
-        
-          <li>
-            <a href="/2022/08/14/%E5%8A%A8%E6%80%81%E5%BA%93%E6%87%92%E5%8A%A0%E8%BD%BD/">动态库懒加载</a>
-          </li>
-        
-          <li>
-            <a href="/2022/03/17/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E9%97%AE%E9%A2%98%E4%B8%8E%E6%B2%BB%E7%90%86/">多线程问题专项治理</a>
-          </li>
-        
-          <li>
-            <a href="/2021/07/20/%E7%9B%B4%E6%92%AD%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7%E6%96%B9%E6%A1%88/">直播性能指标监控方案</a>
-          </li>
-        
-          <li>
-            <a href="/2021/05/14/%E8%A7%86%E9%A2%91%E7%9B%B8%E5%85%B3%E4%BC%98%E5%8C%96/">视频相关优化</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      
-      &copy; 2023 xushuanghui<br>
-      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
-    
-
-
-<script src="/js/jquery-3.4.1.min.js"></script>
-
-
-
-  
-<script src="/fancybox/jquery.fancybox.min.js"></script>
-
-
-
-
-<script src="/js/script.js"></script>
-
-
-
-
-
-  </div>
-</body>
-</html>
+{% block script_extra %}
+  {% include '_scripts/pages/post-details.swig' %}
+{% endblock %}

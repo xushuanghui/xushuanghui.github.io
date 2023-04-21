@@ -1,284 +1,37 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  
-  
-  <title>检测私有API | xushuanghui</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="preg cd到工程根目录  1cd 工程根目录   遍历查找关键字  12grep 关键字 -r .以上面的邮件举例的话：”grep com.apple.springboard.complete -r .“  此命令会查找根目录以及多级目录以下的所有文件，包括.framework和.a库，找到匹配结果的话，会打印出来。 -r参数表示会遍历多级目录下的文件。 注意:-r和.之间有个空格 strin">
-<meta property="og:type" content="article">
-<meta property="og:title" content="检测私有API">
-<meta property="og:url" content="http://example.com/2020/10/21/%E6%A3%80%E6%B5%8B%E7%A7%81%E6%9C%89API/index.html">
-<meta property="og:site_name" content="xushuanghui">
-<meta property="og:description" content="preg cd到工程根目录  1cd 工程根目录   遍历查找关键字  12grep 关键字 -r .以上面的邮件举例的话：”grep com.apple.springboard.complete -r .“  此命令会查找根目录以及多级目录以下的所有文件，包括.framework和.a库，找到匹配结果的话，会打印出来。 -r参数表示会遍历多级目录下的文件。 注意:-r和.之间有个空格 strin">
-<meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2020-10-21T07:17:06.000Z">
-<meta property="article:modified_time" content="2023-04-13T10:34:27.662Z">
-<meta property="article:author" content="xushuanghui">
-<meta property="article:tag" content="iOS">
-<meta name="twitter:card" content="summary">
-  
-    <link rel="alternate" href="/atom.xml" title="xushuanghui" type="application/atom+xml">
-  
-  
-    <link rel="shortcut icon" href="/favicon.png">
-  
-  
-    
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
-
-  
-  
-<link rel="stylesheet" href="/css/style.css">
-
-  
-    
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
-
-  
-<meta name="generator" content="Hexo 6.3.0"></head>
-
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">xushuanghui</a>
-      </h1>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
-      </div>
-    </div>
-  </div>
-</header>
-
-      <div class="outer">
-        <section id="main"><article id="post-检测私有API" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/10/21/%E6%A3%80%E6%B5%8B%E7%A7%81%E6%9C%89API/" class="article-date">
-  <time class="dt-published" datetime="2020-10-21T07:17:06.000Z" itemprop="datePublished">2020-10-21</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="p-name article-title" itemprop="headline name">
-      检测私有API
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h1 id="preg"><a href="#preg" class="headerlink" title="preg"></a>preg</h1><ol>
-<li>cd到工程根目录</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> 工程根目录</span><br></pre></td></tr></table></figure>
-
-<ol>
-<li>遍历查找关键字</li>
-</ol>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">grep 关键字 -r .</span><br><span class="line">以上面的邮件举例的话：”grep com<span class="selector-class">.apple</span><span class="selector-class">.springboard</span><span class="selector-class">.complete</span> -r .“</span><br></pre></td></tr></table></figure>
-
-<p>此命令会查找根目录以及多级目录以下的所有文件，包括.framework和.a库，找到匹配结果的话，会打印出来。<br> -r参数表示会遍历多级目录下的文件。<br> 注意:-r和.之间有个空格</p>
-<h1 id="strings"><a href="#strings" class="headerlink" title="strings"></a>strings</h1><p>首先需要找到app对应的一个Unix可执行文件，可以从两个途径获取这个文件。</p>
-<h4 id="工程中获取"><a href="#工程中获取" class="headerlink" title="工程中获取"></a>工程中获取</h4><ol>
-<li>在Xcode文件树中搜索“.app”</li>
-<li>找到对应文件，右键“Show in Finder”</li>
-<li>选中.app文件，右键“显示包内容”</li>
-<li>下拉可找到一个跟app名字一致的Unix执行文件</li>
-</ol>
-<h4 id="ipa文件中获取"><a href="#ipa文件中获取" class="headerlink" title="ipa文件中获取"></a>ipa文件中获取</h4><ol>
-<li>将.ipa改变成.zip后缀</li>
-<li>解压文件，进入文件夹，进入Payload子文件，找到.app文件</li>
-<li>选中.app文件，右键“显示包内容”</li>
-<li>下拉可找到一个跟app名字一致的Unix执行文件</li>
-</ol>
-<h4 id="查找指令"><a href="#查找指令" class="headerlink" title="查找指令"></a>查找指令</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">strings - -a -arch armv7 Unix可执行文件 | grep 关键字</span><br></pre></td></tr></table></figure>
-
-<p>-a、-arch、armv7这几个参数作用未知，此处只是做一个简单记录，以后有空再做学习。</p>
-<h1 id="otool"><a href="#otool" class="headerlink" title="otool"></a>otool</h1><p>跟strings一样，需要先找到Unix可执行文件，然后运行指令。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">otool -L Unix可执行文件</span><br></pre></td></tr></table></figure>
-
-<p>会打印出工程中用到的系统库，我尝试的结果是只有系统库，可以在打印结果中检查是否引入了私有库。</p>
-<h1 id="nm"><a href="#nm" class="headerlink" title="nm"></a>nm</h1><p>跟strings一样，需要先找到Unix可执行文件，然后运行指令。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nm Unix可执行文件 | grep 关键字</span><br></pre></td></tr></table></figure>
-
-<p>会打印关键字对应的方法调用的位置等，未仔细研究，暂且做记录。</p>
-<h1 id="检查私有API的开源库"><a href="#检查私有API的开源库" class="headerlink" title="检查私有API的开源库"></a>检查私有API的开源库</h1><p>查资料过程中，发现一个开源库iOS-private-api-checker，可以用来检查app是否使用了私有API，并定位调用位置。</p>
-<p>进入开源库的GitHub界面，显示“Deprecated”状态，最终测试结果，不能检测出私有API的问题，不知道是否我的配置有问题。</p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>在查找“定位调用私有API位置的方法”的过程，发现大多数文章的作者通过grep的方式就可以定位到问题所在。我之所以查找了其他工具的使用方法，是因为我用grep的方式没有查找到问题，最终花了很多时间来查找问题，结果是让人很无奈。<br> 原因竟然是提交审核的包跟我查找问题的包不是同一份代码，最后用提交审核对应的工程马上就定位到问题了，工作中很多时候，一个异常查找很久没有定位到问题的时候，需要跳出来，考虑一下是否是源头出了问题。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2020/10/21/%E6%A3%80%E6%B5%8B%E7%A7%81%E6%9C%89API/" data-id="clgqem7vx0023h9d306jhgzsi" data-title="检测私有API" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li></ul>
-
-    </footer>
-  </div>
-  
-    
-<nav id="article-nav">
-  
-    <a href="/2020/12/28/%E5%BC%B1%E7%BD%91%E4%BC%98%E5%8C%96/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          弱网优化
-        
-      </div>
-    </a>
-  
-  
-    <a href="/2020/08/24/swift-protocol%E5%8D%8F%E8%AE%AE/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">swift protocol小结</div>
-    </a>
-  
-</nav>
-
-  
-</article>
+{% extends '_layout.swig' %}
+{% import '_macro/post.swig' as post_template %}
+{% import '_macro/sidebar.swig' as sidebar_template %}
 
 
-</section>
-        
-          <aside id="sidebar">
-  
-    
+{% block title %}{{ page.title }} | {{ config.title }}{% endblock %}
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xcode/" rel="tag">Xcode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cocoaPods/" rel="tag">cocoaPods</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flutter/" rel="tag">flutter</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS-AppDelegate/" rel="tag">iOS AppDelegate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" rel="tag">强化学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" rel="tag">量化交易</a></li></ul>
+{% block page_class %}page-post-detail{% endblock %}
+
+
+{% block content %}
+
+  <div id="posts" class="posts-expand">
+    {{ post_template.render(page) }}
+
+    <div class="post-spread">
+      {% if theme.jiathis %}
+        {% include '_partials/share/jiathis.swig' %}
+      {% elseif theme.baidushare %}
+        {% include '_partials/share/baidushare.swig' %}
+      {% elseif theme.add_this_id %}
+        {% include '_partials/share/add-this.swig' %}
+      {% elseif theme.duoshuo_shortname and theme.duoshuo_share %}
+        {% include '_partials/share/duoshuo_share.swig' %}
+      {% endif %}
     </div>
   </div>
 
+{% endblock %}
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a> <a href="/tags/cocoaPods/" style="font-size: 10px;">cocoaPods</a> <a href="/tags/flutter/" style="font-size: 10px;">flutter</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOS-AppDelegate/" style="font-size: 10px;">iOS AppDelegate</a> <a href="/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" style="font-size: 15px;">强化学习</a> <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">机器学习</a> <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" style="font-size: 10px;">量化交易</a>
-    </div>
-  </div>
+{% block sidebar %}
+  {{ sidebar_template.render(true) }}
+{% endblock %}
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2023/01/11/%E5%AE%B9%E5%99%A8%E5%8C%96/">首页容器化</a>
-          </li>
-        
-          <li>
-            <a href="/2022/08/14/%E5%8A%A8%E6%80%81%E5%BA%93%E6%87%92%E5%8A%A0%E8%BD%BD/">动态库懒加载</a>
-          </li>
-        
-          <li>
-            <a href="/2022/03/17/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E9%97%AE%E9%A2%98%E4%B8%8E%E6%B2%BB%E7%90%86/">多线程问题专项治理</a>
-          </li>
-        
-          <li>
-            <a href="/2021/07/20/%E7%9B%B4%E6%92%AD%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7%E6%96%B9%E6%A1%88/">直播性能指标监控方案</a>
-          </li>
-        
-          <li>
-            <a href="/2021/05/14/%E8%A7%86%E9%A2%91%E7%9B%B8%E5%85%B3%E4%BC%98%E5%8C%96/">视频相关优化</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      
-      &copy; 2023 xushuanghui<br>
-      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
-    
-
-
-<script src="/js/jquery-3.4.1.min.js"></script>
-
-
-
-  
-<script src="/fancybox/jquery.fancybox.min.js"></script>
-
-
-
-
-<script src="/js/script.js"></script>
-
-
-
-
-
-  </div>
-</body>
-</html>
+{% block script_extra %}
+  {% include '_scripts/pages/post-details.swig' %}
+{% endblock %}

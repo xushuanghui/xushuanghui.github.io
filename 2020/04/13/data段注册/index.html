@@ -1,320 +1,37 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  
-  
-  <title>data段注册 | xushuanghui</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="1. attributeattribute((used, section(“____DATA,____launch”))) Clang 提供了很多的编译函数，它们可以完成不同的功能，其中一项就是 section() 函数，section() 函数提供了二进制段的读写能力，它可以将一些编译期就可以确定的常量写入数据段。在具体的实现中，主要分为编译期和运行时两部分。在编译期，编译器会将标记了 attr">
-<meta property="og:type" content="article">
-<meta property="og:title" content="data段注册">
-<meta property="og:url" content="http://example.com/2020/04/13/data%E6%AE%B5%E6%B3%A8%E5%86%8C/index.html">
-<meta property="og:site_name" content="xushuanghui">
-<meta property="og:description" content="1. attributeattribute((used, section(“____DATA,____launch”))) Clang 提供了很多的编译函数，它们可以完成不同的功能，其中一项就是 section() 函数，section() 函数提供了二进制段的读写能力，它可以将一些编译期就可以确定的常量写入数据段。在具体的实现中，主要分为编译期和运行时两部分。在编译期，编译器会将标记了 attr">
-<meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://github.com/guohongwei719/GHWAppLaunchManager/raw/master/resources/4.png">
-<meta property="article:published_time" content="2020-04-13T10:06:09.000Z">
-<meta property="article:modified_time" content="2023-04-14T03:03:14.113Z">
-<meta property="article:author" content="xushuanghui">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://github.com/guohongwei719/GHWAppLaunchManager/raw/master/resources/4.png">
-  
-    <link rel="alternate" href="/atom.xml" title="xushuanghui" type="application/atom+xml">
-  
-  
-    <link rel="shortcut icon" href="/favicon.png">
-  
-  
-    
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
-
-  
-  
-<link rel="stylesheet" href="/css/style.css">
-
-  
-    
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
-
-  
-<meta name="generator" content="Hexo 6.3.0"></head>
-
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">xushuanghui</a>
-      </h1>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
-      </div>
-    </div>
-  </div>
-</header>
-
-      <div class="outer">
-        <section id="main"><article id="post-data段注册" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2020/04/13/data%E6%AE%B5%E6%B3%A8%E5%86%8C/" class="article-date">
-  <time class="dt-published" datetime="2020-04-13T10:06:09.000Z" itemprop="datePublished">2020-04-13</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="p-name article-title" itemprop="headline name">
-      data段注册
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h4 id="1-attribute"><a href="#1-attribute" class="headerlink" title="1. attribute"></a>1. <strong>attribute</strong></h4><p><strong><strong>attribute</strong></strong>((used, section(“____DATA,____launch”)))</p>
-<p>Clang 提供了很多的编译函数，它们可以完成不同的功能，其中一项就是 section() 函数，section() 函数提供了二进制段的读写能力，它可以将一些编译期就可以确定的常量写入数据段。在具体的实现中，主要分为编译期和运行时两部分。在编译期，编译器会将标记了 attribute((section())) 的数据写到指定的数据段中，例如写一个{key(key代表不同的启动阶段), *pointer} 对到数据段。到运行时，在合适的时间节点，在根据 key 读取出函数指针，完成函数的调用。</p>
-<p>Clang Attributes 是 Clang 提供的一种源码注解，方便开发者向编译器表达某种要求，参与控制如 Static Analyzer、Name Mangling、Code Generation 等过程，一般以 <strong>attribute</strong>(xxx) 的形式出现在代码中；为方便使用，一些常用属性也被 Cocoa 定义成宏，比如在系统头文件中经常出现的 NS_CLASS_AVAILABLE_IOS(9_0) 就是 <strong>attribute</strong>(availability(…)) 这个属性的简单写法。编译器提供了我们一种 <strong>attribute</strong>((section(“xxx段，xxx节”)的方式让我们将一个指定的数据储存到我们需要的节当中。</p>
-<p><strong>used</strong></p>
-<p>used的作用是告诉编译器，我声明的这个符号是需要保留的。被used修饰以后，意味着即使函数没有被引用，在Release下也不会被优化。如果不加这个修饰，那么Release环境链接器会去掉没有被引用的段。</p>
-<p><strong>section</strong></p>
-<p>通常情况下，编译器会将对象放置于DATA段的data或者bss节中。但是，有时我们需要将数据放置于特殊的节中，此时section可以达到目的。</p>
-<p><strong>constructor</strong></p>
-<p>constructor：顾名思义，加上这个属性的函数会在可执行文件（或 shared library）load时被调用，可以理解为在 main() 函数调用前执行。</p>
-<p>constructor 和 +load 都是在 main 函数执行前调用，但 +load 比 constructor 更加早一点，因为 dyld（动态链接器，程序的最初起点）在加载 image（可以理解成 Mach-O 文件）时会先通知 objc runtime 去加载其中所有的类，每加载一个类时，它的 +load 随之调用，全部加载完成后，dyld 才会调用这个 image 中所有的 constructor 方法。所以 constructor 是一个干坏事的绝佳时机：</p>
-<span id="more"></span>
-
-<p>更多相关知识可以参考</p>
-<p><a target="_blank" rel="noopener" href="http://liumh.com/2018/08/18/ios-attribute-section/">http://liumh.com/2018/08/18/ios-attribute-section/</a><br><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/965f6f903114">https://www.jianshu.com/p/965f6f903114</a><br><a target="_blank" rel="noopener" href="https://nshipster.com/__attribute__/">https://nshipster.com/<strong>attribute</strong>&#x2F;</a></p>
-<h4 id="2-编译期写入数据"><a href="#2-编译期写入数据" class="headerlink" title="2. 编译期写入数据"></a>2. 编译期写入数据</h4><p>首先我们定义函数存储的结构体，如下，function 是函数指针，指向我们要写入的函数，stage 为启动项执行的阶段，priority 为执行优先级，优先级高的启动项优先执行。结构体中还可以增加其他字段，比如类名方法名之类，调试的时候可以查看有哪些组件和方法有写入。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">struct GHW_Function &#123;</span><br><span class="line">    char *stage;</span><br><span class="line">    long priority;</span><br><span class="line">    void (*function)(void);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>定义函数 _GHWStage_A ，里面是需要在 Stage_A 阶段要执行的任务。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">static void _GHWStage_A () &#123;</span><br><span class="line">    printf(&quot;ModuleA:Stage_A&quot;);</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>将包含函数指针的结构体写入到我们指定的数据区指定的段 __DATA, 指定的节 __launch，方法如下</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">__attribute__((used, section(&quot;__DATA,__launch&quot;))) \</span><br><span class="line">static const struct GHW_Function __FStage_A = (struct GHW_Function)&#123;(char *)(&amp;(&quot;Stage_A&quot;)),  _priority_  , (void *)(&amp;_GHWStage_A)&#125;; \</span><br></pre></td></tr></table></figure>
-
-<p>上面步骤看起来很烦，而且代码晦涩难懂，所以要使用宏来定义一下，如下</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">#define GHW_FUNCTION_EXPORT(key) \</span><br><span class="line">static void _GHW##key(void); \</span><br><span class="line">__attribute__((used, section(&quot;__DATA,__launch&quot;))) \</span><br><span class="line">static const struct GHW_Function __F##key = (struct GHW_Function)&#123;(char *)(&amp;#key), _priority_,  (void *)(&amp;_GHW##key)&#125;; \</span><br><span class="line">static void _GHW##key \</span><br></pre></td></tr></table></figure>
-
-<p>然后我们将函数写入数据区方式变得很简单了，还是上面的代码，写入指定的段和节，方法如下</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">GHW_FUNCTION_EXPORT(Stage_A, kGHWLauncherPriorityHigh)() &#123;</span><br><span class="line">    printf(&quot;ModuleA:Stage_A\n&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>现在可以非常方便简单了。</p>
-<p>将工程打包，然后用 MachOView 打开 Mach-O 文件，可以看出数据写入到相关数据区了，如下</p>
-<p><a target="_blank" rel="noopener" href="https://github.com/guohongwei719/GHWAppLaunchManager/blob/master/resources/4.png"><img src="https://github.com/guohongwei719/GHWAppLaunchManager/raw/master/resources/4.png" alt="img"></a></p>
-<h4 id="3-运行时读出数据"><a href="#3-运行时读出数据" class="headerlink" title="3. 运行时读出数据"></a>3. 运行时读出数据</h4><p>启动项也需要根据所完成的任务被分类，有些启动项是需要刚启动就执行的操作，如 Crash 监控、统计上报等，否则会导致信息收集的缺失；有些启动项需要在较早的时间节点完成，例如一些提供用户信息的 SDK、定位功能的初始化、网络初始化等；有些启动项则可以被延迟执行，如一些自定义配置，一些业务服务的调用、支付 SDK、地图 SDK 等。我们所做的分阶段启动，首先就是把启动流程合理地划分为若干个启动阶段，然后依据每个启动项所做的事情的优先级把它们分配到相应的启动阶段，优先级高的放在靠前的阶段，优先级低的放在靠后的阶段。</p>
-<p>如果要覆盖到 main 之前的阶段，之前我们是使用 load 方法，现在使用 <strong>attribute</strong> 的 constructor 属性也可以实现这个效果，而且更方便，优势如下</p>
-<ul>
-<li>所有 Class 都已经加载完成</li>
-<li>不用像 load 还得挂在在一个 Class 中</li>
-</ul>
-<p>相关代码如下</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">__attribute__((constructor))</span><br><span class="line">void premain() &#123;</span><br><span class="line">    [[GHWLaunchManager sharedInstance] executeArrayForKey:kGHWLauncherStagePreMain];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>表示在 main 之前去获取数据区 pre_main 节的函数指针执行。<br>app willFinish 和 didFinish 阶段也可以执行相关代码，如下</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">- (BOOL)application:(UIApplication *)application willFinishLaunchingWithOptions:(NSDictionary *)launchOptions &#123;</span><br><span class="line">    [[GHWLaunchManager sharedInstance] executeArrayForKey:kGHWLauncherStageA];</span><br><span class="line">    return YES;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions &#123;</span><br><span class="line">    [[GHWLaunchManager sharedInstance] executeArrayForKey:kGHWLauncherStageB];</span><br><span class="line">    return YES;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>读出数据有两种方式：</p>
-<ul>
-<li>可以使用 _dyld_register_func_for_add_image 函数，这个函数是用来注册回调，在 dyld 加载镜像时，会执行注册过的回调函数，获取到每个镜像的 mach_header 然后读出数据；</li>
-<li>镜像加载完后遍历每个镜像；</li>
-</ul>
-<p>本方案里面采用的第二种方式。</p>
-<h4 id="4-读出数据要注意的地方（use-frameworks-）"><a href="#4-读出数据要注意的地方（use-frameworks-）" class="headerlink" title="4. 读出数据要注意的地方（use_frameworks!）"></a>4. 读出数据要注意的地方（use_frameworks!）</h4><p>实际在读的时候要根据我们 podfile 里面集成方式而有所区别，如果 Podfile 里面有 use_frameworks! 则是动态库集成方式，如果注释掉的话就是静态库的集成方式，静态库集成方式比较好办，因为只有一个主二进制文件，写入的数据区也是写到这个里面，只需要从这一个二进制文件里面读取就可以了。但是如果是动态库集成的各个组件，那么打成包以后各个组件最后跟主二进制文件是分开的，各个组件写入的数据区跟主二进制不是在一起的，而是写入到自己二进制文件里面相应的数据区，因此我们在读的时候需要遍历所有动态库。我们 App 启动时会加载所有动态库，一共有 569个，其中 83 个是 Podfile 里面集成的，其他都是系统库。这些库的路径也有区别，Podfile 集成进去的库路径类似下面这样</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">/private/var/containers/Bundle/Application/70C36D61-CD7A-49F7-A690-0C8B3D36C36A/HelloTrip.app/Frameworks/AFNetworking.framework/AFNetworking</span><br><span class="line">/private/var/containers/Bundle/Application/70C36D61-CD7A-49F7-A690-0C8B3D36C36A/HelloTrip.app/Frameworks/APAddressBook.framework/APAddressBook</span><br><span class="line">/private/var/containers/Bundle/Application/70C36D61-CD7A-49F7-A690-0C8B3D36C36A/HelloTrip.app/Frameworks/AliyunOSSiOS.framework/AliyunOSSiOS</span><br></pre></td></tr></table></figure>
-
-<p>系统库类似下面这样</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">/System/Library/Frameworks/AddressBookUI.framework/AddressBookUI</span><br><span class="line">/System/Library/Frameworks/AVFoundation.framework/AVFoundation</span><br><span class="line">/System/Library/Frameworks/AssetsLibrary.framework/AssetsLibrary</span><br><span class="line">/usr/lib/libresolv.9.dylib</span><br></pre></td></tr></table></figure>
-
-<p>因此根据路径里面是否包含 &#x2F;HelloTrip.app&#x2F; 来判断是否 Podfile 集成的库，是的话就去找对应的数据区。</p>
-<p>经过多次测试，我们 App 在没有过滤路径情况下遍历动态库上的耗时如下</p>
-<p>0.002198934555053711<br>0.002250075340270996<br>0.003002047538757324<br>0.006783008575439453<br>0.002267003059387207<br>0.003368020057678223<br>0.003902077674865723</p>
-<p>有过滤路径情况下遍历时间如下：</p>
-<p>0.0004119873046875<br>0.0007159709930419922<br>0.0004429817199707031<br>0.0004270076751708984<br>0.0004940032958984375<br>0.0004789829254150391<br>0.0004340410232543945<br>0.0004389286041259766</p>
-<p>可见过滤情况下遍历一次所有动态库不到一毫秒，完全可以接受。因此如果 Podfile 中开启了 use_frameworks! ，使用动态库集成方式，那么读取 section 数据具体代码如下</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">static NSMutableArray&lt;GHWModuleMetaDataModel *&gt; * modulesInDyld() &#123;</span><br><span class="line">    NSString *appName = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kCFBundleExecutableKey];</span><br><span class="line">    NSString *fullAppName = [NSString stringWithFormat:@&quot;/%@.app/&quot;, appName];</span><br><span class="line">    char *fullAppNameC = (char *)[fullAppName UTF8String];</span><br><span class="line">    NSMutableArray&lt;GHWModuleMetaDataModel *&gt; * result = [[NSMutableArray alloc] init];</span><br><span class="line">    int num = _dyld_image_count();</span><br><span class="line">    for (int i = 0; i &lt; num; i++) &#123;</span><br><span class="line">        const char *name = _dyld_get_image_name(i);</span><br><span class="line">        if (strstr(name, fullAppNameC) == NULL) &#123;</span><br><span class="line">            continue;</span><br><span class="line">        &#125;</span><br><span class="line">        const struct mach_header *header = _dyld_get_image_header(i);</span><br><span class="line">        //        printf(&quot;%d name: %s\n&quot;, i, name);</span><br><span class="line">        </span><br><span class="line">        Dl_info info;</span><br><span class="line">        dladdr(header, &amp;info);</span><br><span class="line">        const GHWExportValue dliFbase = (GHWExportValue)info.dli_fbase;</span><br><span class="line">        const GHWExportSection *section = GHWGetSectByNameFromHeader(header, &quot;__DATA&quot;, &quot;__launch&quot;);</span><br><span class="line">        if (section == NULL) continue;</span><br><span class="line">        int addrOffset = sizeof(struct GHW_Function);</span><br><span class="line">        for (GHWExportValue addr = section-&gt;offset;</span><br><span class="line">             addr &lt; section-&gt;offset + section-&gt;size;</span><br><span class="line">             addr += addrOffset) &#123;</span><br><span class="line">            </span><br><span class="line">            struct GHW_Function entry = *(struct GHW_Function *)(dliFbase + addr);</span><br><span class="line">            GHWModuleMetaDataModel * metaData = [[GHWModuleMetaDataModel alloc] init];</span><br><span class="line">            metaData.priority = entry.priority;</span><br><span class="line">            metaData.imp = entry.function;</span><br><span class="line">            metaData.stage = [NSString stringWithCString:entry.stage encoding:NSUTF8StringEncoding];</span><br><span class="line">            [result addObject:metaData];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>第一次读取我们自定义的 __launch 节的数据，将启动项相关 C 结构体数据转为对应 OC 的数据模型，放到一个数组里面。然后将数组转化为一个字典，key 为启动相关阶段，obj 为该阶段所有启动项数组。后面再执行的时候直接去字典里面根据对应阶段获取所有启动项数组。代码如下</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">- (void)executeArrayForKey:(NSString *)key &#123;</span><br><span class="line">    NSMutableArray *arrayModule;</span><br><span class="line">    if (![self.moduleDic count]) &#123;</span><br><span class="line">        arrayModule = modulesInDyld();</span><br><span class="line">        if (!arrayModule.count) &#123;</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        [arrayModule sortUsingComparator:^NSComparisonResult(GHWModuleMetaDataModel * _Nonnull obj1, GHWModuleMetaDataModel * _Nonnull obj2) &#123;</span><br><span class="line">            return obj1.priority &lt; obj2.priority;</span><br><span class="line">        &#125;];</span><br><span class="line">        for (NSInteger i = 0; i &lt; [arrayModule count]; i++) &#123;</span><br><span class="line">            GHWModuleMetaDataModel *model = arrayModule[i];</span><br><span class="line">            if (self.moduleDic[model.stage]) &#123;</span><br><span class="line">                NSMutableArray *stageArray = self.moduleDic[model.stage];</span><br><span class="line">                [stageArray addObject:model];</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                NSMutableArray *stageArray = [NSMutableArray array];</span><br><span class="line">                [stageArray addObject:model];</span><br><span class="line">                self.moduleDic[model.stage] = stageArray;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    arrayModule = self.moduleDic[key];</span><br><span class="line"></span><br><span class="line">    for (NSInteger i = 0; i &lt; [arrayModule count]; i++) &#123;</span><br><span class="line">        GHWModuleMetaDataModel *model = arrayModule[i];</span><br><span class="line">        IMP imp = model.imp;</span><br><span class="line">        void (*func)(void) = (void *)imp;</span><br><span class="line">        func();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="五-总结"><a href="#五-总结" class="headerlink" title="五. 总结"></a>五. 总结</h3><p>在启动流程中，在启动阶段 Stage_A 触发所有注册到 Stage_A 时间节点的启动项，通过对这种方式，几乎没有任何额外的辅助代码，我们用一种很简洁的方式完成了启动项的自注册。</p>
-<p>后续需要确定启动项的添加 &amp; 维护规范，启动项分类原则，优先级和启动阶段，目的是管控性能问题增量，保证优化成果。</p>
-<p>本方案核心思想有两点：</p>
-<ul>
-<li>使用 <strong>attribute</strong> 实现编译期自动注册；</li>
-<li>组件自注册，去中心化。</li>
-</ul>
-<p>后者依赖前者的基础基础才能得以实现，可以简单理解为一种快速写入和读取配置表的类似技术。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2020/04/13/data%E6%AE%B5%E6%B3%A8%E5%86%8C/" data-id="clgqem7vq001eh9d3cbi2flqq" data-title="data段注册" class="article-share-link">Share</a>
-      
-      
-      
-    </footer>
-  </div>
-  
-    
-<nav id="article-nav">
-  
-    <a href="/2020/04/20/swif%E4%B8%8Eoc%E5%8C%BA%E5%88%AB%E6%80%BB%E7%BB%93/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          swif与oc区别总结
-        
-      </div>
-    </a>
-  
-  
-    <a href="/2020/03/21/app%E5%90%AF%E5%8A%A8%E6%97%B6%E9%97%B4%E4%BC%98%E5%8C%96/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">app启动时间优化</div>
-    </a>
-  
-</nav>
-
-  
-</article>
+{% extends '_layout.swig' %}
+{% import '_macro/post.swig' as post_template %}
+{% import '_macro/sidebar.swig' as sidebar_template %}
 
 
-</section>
-        
-          <aside id="sidebar">
-  
-    
+{% block title %}{{ page.title }} | {{ config.title }}{% endblock %}
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xcode/" rel="tag">Xcode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cocoaPods/" rel="tag">cocoaPods</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flutter/" rel="tag">flutter</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS-AppDelegate/" rel="tag">iOS AppDelegate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" rel="tag">强化学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" rel="tag">量化交易</a></li></ul>
+{% block page_class %}page-post-detail{% endblock %}
+
+
+{% block content %}
+
+  <div id="posts" class="posts-expand">
+    {{ post_template.render(page) }}
+
+    <div class="post-spread">
+      {% if theme.jiathis %}
+        {% include '_partials/share/jiathis.swig' %}
+      {% elseif theme.baidushare %}
+        {% include '_partials/share/baidushare.swig' %}
+      {% elseif theme.add_this_id %}
+        {% include '_partials/share/add-this.swig' %}
+      {% elseif theme.duoshuo_shortname and theme.duoshuo_share %}
+        {% include '_partials/share/duoshuo_share.swig' %}
+      {% endif %}
     </div>
   </div>
 
+{% endblock %}
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a> <a href="/tags/cocoaPods/" style="font-size: 10px;">cocoaPods</a> <a href="/tags/flutter/" style="font-size: 10px;">flutter</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOS-AppDelegate/" style="font-size: 10px;">iOS AppDelegate</a> <a href="/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" style="font-size: 15px;">强化学习</a> <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">机器学习</a> <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" style="font-size: 10px;">量化交易</a>
-    </div>
-  </div>
+{% block sidebar %}
+  {{ sidebar_template.render(true) }}
+{% endblock %}
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2023/01/11/%E5%AE%B9%E5%99%A8%E5%8C%96/">首页容器化</a>
-          </li>
-        
-          <li>
-            <a href="/2022/08/14/%E5%8A%A8%E6%80%81%E5%BA%93%E6%87%92%E5%8A%A0%E8%BD%BD/">动态库懒加载</a>
-          </li>
-        
-          <li>
-            <a href="/2022/03/17/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E9%97%AE%E9%A2%98%E4%B8%8E%E6%B2%BB%E7%90%86/">多线程问题专项治理</a>
-          </li>
-        
-          <li>
-            <a href="/2021/07/20/%E7%9B%B4%E6%92%AD%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7%E6%96%B9%E6%A1%88/">直播性能指标监控方案</a>
-          </li>
-        
-          <li>
-            <a href="/2021/05/14/%E8%A7%86%E9%A2%91%E7%9B%B8%E5%85%B3%E4%BC%98%E5%8C%96/">视频相关优化</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      
-      &copy; 2023 xushuanghui<br>
-      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
-    
-
-
-<script src="/js/jquery-3.4.1.min.js"></script>
-
-
-
-  
-<script src="/fancybox/jquery.fancybox.min.js"></script>
-
-
-
-
-<script src="/js/script.js"></script>
-
-
-
-
-
-  </div>
-</body>
-</html>
+{% block script_extra %}
+  {% include '_scripts/pages/post-details.swig' %}
+{% endblock %}

@@ -1,322 +1,37 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  
-  
-  <title>多线程问题专项治理 | xushuanghui</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="1、目的多线程专项治理目的就是降低crash，手机发烫，耗电等问题。 2、问题分析2.1 滥用使用全局队列，并且使用了队列的默认优先级123dispatch_async(dispatch_get_global_queue(0, 0), ^&amp;#123;       &#x2F;&#x2F;TODO &amp;#125;);  导致大量的全局队列默认优先级，导致了一人干活，全家围观，还增加了造成线程死锁风险，从而引发crash">
-<meta property="og:type" content="article">
-<meta property="og:title" content="多线程问题专项治理">
-<meta property="og:url" content="http://example.com/2022/03/17/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E9%97%AE%E9%A2%98%E4%B8%8E%E6%B2%BB%E7%90%86/index.html">
-<meta property="og:site_name" content="xushuanghui">
-<meta property="og:description" content="1、目的多线程专项治理目的就是降低crash，手机发烫，耗电等问题。 2、问题分析2.1 滥用使用全局队列，并且使用了队列的默认优先级123dispatch_async(dispatch_get_global_queue(0, 0), ^&amp;#123;       &#x2F;&#x2F;TODO &amp;#125;);  导致大量的全局队列默认优先级，导致了一人干活，全家围观，还增加了造成线程死锁风险，从而引发crash">
-<meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2022-03-17T08:57:00.000Z">
-<meta property="article:modified_time" content="2023-04-13T10:34:27.659Z">
-<meta property="article:author" content="xushuanghui">
-<meta name="twitter:card" content="summary">
-  
-    <link rel="alternate" href="/atom.xml" title="xushuanghui" type="application/atom+xml">
-  
-  
-    <link rel="shortcut icon" href="/favicon.png">
-  
-  
-    
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
-
-  
-  
-<link rel="stylesheet" href="/css/style.css">
-
-  
-    
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
-
-  
-<meta name="generator" content="Hexo 6.3.0"></head>
-
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">xushuanghui</a>
-      </h1>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
-      </div>
-    </div>
-  </div>
-</header>
-
-      <div class="outer">
-        <section id="main"><article id="post-多线程问题与治理" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2022/03/17/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E9%97%AE%E9%A2%98%E4%B8%8E%E6%B2%BB%E7%90%86/" class="article-date">
-  <time class="dt-published" datetime="2022-03-17T08:57:00.000Z" itemprop="datePublished">2022-03-17</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="p-name article-title" itemprop="headline name">
-      多线程问题专项治理
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h2 id="1、目的"><a href="#1、目的" class="headerlink" title="1、目的"></a>1、目的</h2><p>多线程专项治理目的就是降低crash，手机发烫，耗电等问题。</p>
-<h2 id="2、问题分析"><a href="#2、问题分析" class="headerlink" title="2、问题分析"></a>2、问题分析</h2><h4 id="2-1-滥用使用全局队列，并且使用了队列的默认优先级"><a href="#2-1-滥用使用全局队列，并且使用了队列的默认优先级" class="headerlink" title="2.1 滥用使用全局队列，并且使用了队列的默认优先级"></a>2.1 滥用使用全局队列，并且使用了队列的默认优先级</h4><figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">dispatch_async</span>(dispatch_get_global_queue(<span class="number">0</span>, <span class="number">0</span>), ^&#123;</span><br><span class="line">       <span class="comment">//TODO </span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p>导致大量的全局队列默认优先级，导致了一人干活，全家围观，还增加了造成线程死锁风险，从而引发crash</p>
-<h4 id="2-2-大量不必要的线程切换"><a href="#2-2-大量不必要的线程切换" class="headerlink" title="2.2 大量不必要的线程切换"></a>2.2 大量不必要的线程切换</h4><h4 id="2-3-在高并发场景，没有控制并发量，而使用了全局队列创建了大量线程"><a href="#2-3-在高并发场景，没有控制并发量，而使用了全局队列创建了大量线程" class="headerlink" title="2.3  在高并发场景，没有控制并发量，而使用了全局队列创建了大量线程"></a>2.3  在高并发场景，没有控制并发量，而使用了全局队列创建了大量线程</h4><span id="more"></span>
-
-<p><em>实时获取位置信息 异步</em></p>
-<p>多个业务请求需要依赖getAddress异步返回的数据，所以会导致，多个getAddress并发，然而方法内部并未控制并发，而且还采用了全局队列默认优先级，当业并发大的时候，这里会偶现死锁。</p>
-<p>&#x2F;&#x2F;实时获取位置信息 异步</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">- (void)getAddress</span><br><span class="line">&#123;</span><br><span class="line">  dispatch_async(dispatch_get_global_queue(0, 0), ^&#123;</span><br><span class="line">    __block CLLocation *location;</span><br><span class="line">    __block NSDictionary *regeoInfo;</span><br><span class="line">       //业务处理</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="2-4-业务使用线程的不合理"><a href="#2-4-业务使用线程的不合理" class="headerlink" title="2.4 业务使用线程的不合理"></a>2.4 业务使用线程的不合理</h4><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">dispatch_async</span>(dispatch_get_global_queue(<span class="number">0</span>, <span class="number">0</span>), ^&#123;</span><br><span class="line">    <span class="built_in">NSMutableArray</span>&lt;<span class="built_in">NSDictionary</span> *&gt; *imageArray = [<span class="built_in">NSMutableArray</span> array];</span><br><span class="line">   <span class="keyword">for</span> (<span class="built_in">NSDictionary</span> *photoDict <span class="keyword">in</span> readyUploadImageArray) &#123;</span><br><span class="line">     <span class="comment">// 上传照片</span></span><br><span class="line">   &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<p>业务使用线程不合理，业务要求是所有需要上传的图片，并发上传。实际上全局队列默认优先级分配一个线程后，多个任务挤在一个线程，并未达到业务预期的目的。</p>
-<h3 id="2-5-线程死锁引起的crash"><a href="#2-5-线程死锁引起的crash" class="headerlink" title="2.5 线程死锁引起的crash"></a>2.5 线程死锁引起的crash</h3><p>当大面积出现<strong>psynch_cvwait，semwait_signal，psynch_mutexwait，psynch_mutex_trylock，dispatch_sync_f_slow等信息时，可以初步判定为线程死锁。比如：</strong></p>
-<p><strong>当然优先级反转也会导致死锁，具体来说，如果一个低优先级的线程获得锁并访问共享资源，这时一个高优先级的线程也尝试获得这个锁，它会处于 spin lock 的忙等状态从而占用大量 CPU。此时低优先级线程无法与高优先级线程争夺 CPU 时间，从而导致任务迟迟完不成、无法释放 lock。导致陷入死锁 。</strong></p>
-<h3 id="2-6-子线程刷新UI引起的crash"><a href="#2-6-子线程刷新UI引起的crash" class="headerlink" title="2.6 子线程刷新UI引起的crash"></a>2.6 子线程刷新UI引起的crash</h3><p>子线程刷新UI的问题，有比较具体的提示信息，还是比较容易发现的。</p>
-<h3 id="2-7-线程安全引发的crash"><a href="#2-7-线程安全引发的crash" class="headerlink" title="2.7 线程安全引发的crash"></a>2.7 线程安全引发的crash</h3><p>由于多线程读写问题的crash比较隐秘，发现难，定位难，所以，当出现<strong>pthread_kill，_objc_release，malloc: error for object 0x7912d6d0: pointer being freed was not allocated等信息时，可以初步判定为多线程读写问题</strong></p>
-<h2 id="3、方案"><a href="#3、方案" class="headerlink" title="3、方案"></a>3、方案</h2><p>主要从队列的管理和分配，高并发业务的梳理和重构，线程使用的合理性评估与改造，线程相关crash的排查和修复，长效机制的建立几个方面。</p>
-<h3 id="3-1-采取新的队列管理和优先级分配制度"><a href="#3-1-采取新的队列管理和优先级分配制度" class="headerlink" title="3.1 采取新的队列管理和优先级分配制度"></a>3.1 采取新的队列管理和优先级分配制度</h3><p>根据业务特点，我们决定为不同的优先级，创建与CPU核数相等的串行队列，通过优先级的合理使用和串行队列的调度，充分利用时间片和多核的效率</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line">NS_ASSUME_NONNULL_BEGIN</span><br><span class="line"> @interface HSAQueuePool : NSObject</span><br><span class="line">//与用户交互的任务，这些任务通常跟UI级别的刷新相关，比如动画，cell高度，frame等UI的计算</span><br><span class="line">extern dispatch_queue_t HSAQueueForQoSUserInteractive(void);</span><br><span class="line">//由用户发起的并且需要立即得到结果的任务，比如读取数据（配置，用户信息等）来加载UI，会在几秒或者更短的时间内完成</span><br><span class="line">extern dispatch_queue_t HSAQueueForQoSUserInitiated(void);</span><br><span class="line">//一些耗时的任务，比如复杂的组合的网络请求，图片下载，上传</span><br><span class="line">extern dispatch_queue_t HSAQueueForQoSUtility(void);</span><br><span class="line">//对用户不可见，可以长时间在后台运行，比如，拉取配置，地理位置上报，日志上报等</span><br><span class="line">extern dispatch_queue_t HSAQueueForQoSBackground(void);</span><br><span class="line">//默认，不推荐作为首选使用</span><br><span class="line">extern dispatch_queue_t HSAQueueForQoSDefault(void);</span><br><span class="line"> @end</span><br><span class="line">NS_ASSUME_NONNULL_END</span><br></pre></td></tr></table></figure>
-
-<p>业务使用改动小，只需在原有基础上根据业务特点，补充合理的优先级即可。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">dispatch_async(HLLQueueForQoSUserInitiated(), ^&#123;</span><br><span class="line">    //垃圾机型，读取data，可能会导致卡顿,所以加了个线程。</span><br><span class="line">    NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlString]];</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-<h3 id="3-2-梳理线程并发较大的业务进行重构"><a href="#3-2-梳理线程并发较大的业务进行重构" class="headerlink" title="3.2 梳理线程并发较大的业务进行重构"></a>3.2 梳理线程并发较大的业务进行重构</h3><p>当大量的业务并发，调用getAddress时，getAddress方法内部采用全局队列(默认的优先级)生成大量线程去处理数据，从而造成死锁或者线程资源耗尽，crash。</p>
-<ol>
-<li>梳理业务，适当降低并发甚至规避并发。</li>
-<li>当业务并发调用getAddress时，如果有该业务数据缓存，则直接返回。</li>
-</ol>
-<h3 id="3-3-线程使用的合理性评估与改造，减低线程使用，线程切换"><a href="#3-3-线程使用的合理性评估与改造，减低线程使用，线程切换" class="headerlink" title="3.3 线程使用的合理性评估与改造，减低线程使用，线程切换"></a>3.3 线程使用的合理性评估与改造，减低线程使用，线程切换</h3><ol>
-<li>不可预估完成时间的任务，比如图片上传下载，普通接口请求</li>
-<li>计算量比较大的，比如加解密，数据计算和处理</li>
-<li>有可能卡顿主线程的任务，比如UI的计算与渲染</li>
-<li>如无必要，不要随意开启线程。</li>
-</ol>
-<h3 id="3-4-死锁问题的重点攻坚"><a href="#3-4-死锁问题的重点攻坚" class="headerlink" title="3.4 死锁问题的重点攻坚"></a>3.4 死锁问题的重点攻坚</h3><p><strong>线程的生命周期</strong>：<strong>新建</strong>、<strong>就绪</strong>、<strong>运行</strong>、<strong>阻塞</strong>、<strong>死亡</strong></p>
-<p><strong>由于死锁问题比较隐蔽，通常很难发现从而去排查，我们只能通过在bugly和内部的crash系统上，分析堆栈信息</strong></p>
-<p>当发现线程大面积的堆栈出现了<strong>psynch_cvwait，semwait_signal，psynch_mutexwait，psynch_mutex_trylock，dispatch_sync_f_slow</strong>等信息时，就可以大胆怀疑线程非正常原因阻塞，而导致的死锁</p>
-<p>排查：</p>
-<p>1.锁用的是否合理</p>
-<p>2.线程的数量是否远超平时的线程数量</p>
-<p>3.是否使用了NSRecursiveLock，此递归锁不支持多线程递归，因为会造成优先级反转</p>
-<p>4.排查业务，线程长时间的阻塞，导致任务无法正常执行，也会造成死锁</p>
-<p>5.<strong>SCNetworkReachabilityGetFlags</strong>，此方法只能在子线程调用，否则会造成主线程同步阻塞</p>
-<ul>
-<li><h3 id="3-5-子线程刷新UI的重点排查与治理"><a href="#3-5-子线程刷新UI的重点排查与治理" class="headerlink" title="3.5 子线程刷新UI的重点排查与治理"></a>3.5 子线程刷新UI的重点排查与治理</h3><p>为什么子线程刷UI，只是偶现crash呢？因为在苹果现有框架下，刷新UI是一种线程不安全的操作，所以必须放在主线程。放在子线程，恰好竞争同一资源时，才会crash。</p>
-<p><strong>统一检查处理</strong>：</p>
-<ol>
-<li>h5交互的回调</li>
-<li>二方库，三方库的代理和回调</li>
-<li>通知</li>
-<li>kvo相关</li>
-<li>接口回调</li>
-</ol>
-<p>因为通知和kvo的触发和处理都在同一线程，如果子线程触发，那么就有可能子线程刷新UI</p>
-<h3 id="3-6-线程安全问题的实质，就是多线程写的问题"><a href="#3-6-线程安全问题的实质，就是多线程写的问题" class="headerlink" title="3.6 线程安全问题的实质，就是多线程写的问题"></a>3.6 线程安全问题的实质，就是多线程写的问题</h3><p><strong>所以在涉及到多线程读写问题时，对所有的写进行串行或者加锁操作</strong></p>
-<p>锁和串行队列的区别，锁中间的执行操作相当于是串行队列。锁的特点是，锁定范围越小越好，但是锁会造成死锁。gcd串行队列，则不会有死锁的问题</p>
-<h2 id="4、建立线程数量监控预警体系"><a href="#4、建立线程数量监控预警体系" class="headerlink" title="4、建立线程数量监控预警体系"></a>4、建立线程数量监控预警体系</h2><p>pthread库中提供了一个用于监控线程创建、运行、结束、销毁的内省函数。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">typedef void (*pthread_introspection_hook_t)(unsigned int event, pthread_t thread, void *addr, size_t size); </span><br></pre></td></tr></table></figure>
-
-<p>在启动时，可以选择启动监控，开始监控线程数量。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">enum &#123;</span><br><span class="line">    PTHREAD_INTROSPECTION_THREAD_CREATE = 1, //创建线程</span><br><span class="line"></span><br><span class="line">    PTHREAD_INTROSPECTION_THREAD_START, // 线程开始运行</span><br><span class="line"></span><br><span class="line">    PTHREAD_INTROSPECTION_THREAD_TERMINATE,  //线程运行终止</span><br><span class="line"></span><br><span class="line">    PTHREAD_INTROSPECTION_THREAD_DESTROY, //销毁线程</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>通过线程状态改变，来记录线程数量。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">void pthread_introspection_hook_t(unsigned int event</span><br><span class="line">pthread_t thread, void *addr, size_t size)</span><br><span class="line">&#123;</span><br><span class="line">    //创建线程，则线程数量和线程增长数都加1</span><br><span class="line">    if (event == PTHREAD_INTROSPECTION_THREAD_CREATE) &#123;&#125;</span><br><span class="line">    //销毁线程，则线程数量和线程增长数都减1</span><br><span class="line">    else if (event == PTHREAD_INTROSPECTION_THREAD_DESTROY)&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>在iOS开发中，我们常将耗时任务提交给GCD的并发队列，但是并发队列并不会去管理最大并发数，无限制提交任务给并发队列，会给性能带来问题。</p>
-</li>
-<li><p>YYKit组件中的YYDispatchQueuePool 也能控制并发队列的并发数；其思路是为不同优先级创建和 CPU 数量相同的 serial queue，每次从 pool 中获取 queue 时，会轮询返回其中一个 queue。</p>
-</li>
-<li><p>DispatchQueue是使用信号量让并发队列中的任务并发数得到抑制；YYDispatchQueuePool是让一定数量的串行队列代替并发队列，避开了并发队列不好控制并发数的问题。</p>
-</li>
-</ul>
-<p>​    <strong>降低crash和性能损耗，从复盘数据来看，crash修复情况和性能优化均符合预期</strong></p>
-<ul>
-<li>涉及到的crash数量大约在500左右，粗略计算降低了crash率万分之8</li>
-<li>线程的平均数量从之前的51.3，降低到现在的41.6，线程损耗大约是原来的81%，性能节省了大约18.7%</li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2022/03/17/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E9%97%AE%E9%A2%98%E4%B8%8E%E6%B2%BB%E7%90%86/" data-id="clgqem7vv001yh9d3e1g12odm" data-title="多线程问题专项治理" class="article-share-link">Share</a>
-      
-      
-      
-    </footer>
-  </div>
-  
-    
-<nav id="article-nav">
-  
-    <a href="/2022/08/14/%E5%8A%A8%E6%80%81%E5%BA%93%E6%87%92%E5%8A%A0%E8%BD%BD/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          动态库懒加载
-        
-      </div>
-    </a>
-  
-  
-    <a href="/2021/07/20/%E7%9B%B4%E6%92%AD%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7%E6%96%B9%E6%A1%88/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">直播性能指标监控方案</div>
-    </a>
-  
-</nav>
-
-  
-</article>
+{% extends '_layout.swig' %}
+{% import '_macro/post.swig' as post_template %}
+{% import '_macro/sidebar.swig' as sidebar_template %}
 
 
-</section>
-        
-          <aside id="sidebar">
-  
-    
+{% block title %}{{ page.title }} | {{ config.title }}{% endblock %}
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xcode/" rel="tag">Xcode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cocoaPods/" rel="tag">cocoaPods</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flutter/" rel="tag">flutter</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS-AppDelegate/" rel="tag">iOS AppDelegate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" rel="tag">强化学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" rel="tag">量化交易</a></li></ul>
+{% block page_class %}page-post-detail{% endblock %}
+
+
+{% block content %}
+
+  <div id="posts" class="posts-expand">
+    {{ post_template.render(page) }}
+
+    <div class="post-spread">
+      {% if theme.jiathis %}
+        {% include '_partials/share/jiathis.swig' %}
+      {% elseif theme.baidushare %}
+        {% include '_partials/share/baidushare.swig' %}
+      {% elseif theme.add_this_id %}
+        {% include '_partials/share/add-this.swig' %}
+      {% elseif theme.duoshuo_shortname and theme.duoshuo_share %}
+        {% include '_partials/share/duoshuo_share.swig' %}
+      {% endif %}
     </div>
   </div>
 
+{% endblock %}
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a> <a href="/tags/cocoaPods/" style="font-size: 10px;">cocoaPods</a> <a href="/tags/flutter/" style="font-size: 10px;">flutter</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOS-AppDelegate/" style="font-size: 10px;">iOS AppDelegate</a> <a href="/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" style="font-size: 15px;">强化学习</a> <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">机器学习</a> <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" style="font-size: 10px;">量化交易</a>
-    </div>
-  </div>
+{% block sidebar %}
+  {{ sidebar_template.render(true) }}
+{% endblock %}
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2023/01/11/%E5%AE%B9%E5%99%A8%E5%8C%96/">首页容器化</a>
-          </li>
-        
-          <li>
-            <a href="/2022/08/14/%E5%8A%A8%E6%80%81%E5%BA%93%E6%87%92%E5%8A%A0%E8%BD%BD/">动态库懒加载</a>
-          </li>
-        
-          <li>
-            <a href="/2022/03/17/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E9%97%AE%E9%A2%98%E4%B8%8E%E6%B2%BB%E7%90%86/">多线程问题专项治理</a>
-          </li>
-        
-          <li>
-            <a href="/2021/07/20/%E7%9B%B4%E6%92%AD%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7%E6%96%B9%E6%A1%88/">直播性能指标监控方案</a>
-          </li>
-        
-          <li>
-            <a href="/2021/05/14/%E8%A7%86%E9%A2%91%E7%9B%B8%E5%85%B3%E4%BC%98%E5%8C%96/">视频相关优化</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      
-      &copy; 2023 xushuanghui<br>
-      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
-    
-
-
-<script src="/js/jquery-3.4.1.min.js"></script>
-
-
-
-  
-<script src="/fancybox/jquery.fancybox.min.js"></script>
-
-
-
-
-<script src="/js/script.js"></script>
-
-
-
-
-
-  </div>
-</body>
-</html>
+{% block script_extra %}
+  {% include '_scripts/pages/post-details.swig' %}
+{% endblock %}
