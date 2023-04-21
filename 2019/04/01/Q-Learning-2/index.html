@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Q-Learning-2 | xushuanghui</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="算法更新 整个算法乍看起来很复杂, 不过我们拆分一下, 就变简单了. 也就是个 Q learning 主框架上加了些装饰. 这些装饰包括:  记忆库 (用于重复学习) 神经网络计算 Q 值 暂时冻结 q_target 参数 (切断相关性)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Q-Learning-2">
+<meta property="og:url" content="http://example.com/2019/04/01/Q-Learning-2/index.html">
+<meta property="og:site_name" content="xushuanghui">
+<meta property="og:description" content="算法更新 整个算法乍看起来很复杂, 不过我们拆分一下, 就变简单了. 也就是个 Q learning 主框架上加了些装饰. 这些装饰包括:  记忆库 (用于重复学习) 神经网络计算 Q 值 暂时冻结 q_target 参数 (切断相关性)">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://morvanzhou.github.io/static/results/reinforcement-learning/4-1-1.jpg">
+<meta property="article:published_time" content="2019-04-01T08:46:27.000Z">
+<meta property="article:modified_time" content="2020-12-16T03:15:42.402Z">
+<meta property="article:author" content="xushuanghui">
+<meta property="article:tag" content="强化学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://morvanzhou.github.io/static/results/reinforcement-learning/4-1-1.jpg">
+  
+    <link rel="alternate" href="/atom.xml" title="xushuanghui" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">xushuanghui</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Q-Learning-2" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/04/01/Q-Learning-2/" class="article-date">
+  <time class="dt-published" datetime="2019-04-01T08:46:27.000Z" itemprop="datePublished">2019-04-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Q-Learning-2
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="算法更新"><a href="#算法更新" class="headerlink" title="算法更新"></a>算法更新</h2><p><a target="_blank" rel="noopener" href="https://morvanzhou.github.io/static/results/reinforcement-learning/4-1-1.jpg"><img src="https://morvanzhou.github.io/static/results/reinforcement-learning/4-1-1.jpg" alt="DQN 算法更新 (Tensorflow)"></a></p>
+<p>整个算法乍看起来很复杂, 不过我们拆分一下, 就变简单了. 也就是个 Q learning 主框架上加了些装饰.</p>
+<p>这些装饰包括:</p>
+<ul>
+<li>记忆库 (用于重复学习)</li>
+<li>神经网络计算 Q 值</li>
+<li>暂时冻结 <code>q_target</code> 参数 (切断相关性)<span id="more"></span></li>
+</ul>
+<p>##代码模式</p>
+<p>首先我们先 import 两个模块, <code>maze_env</code> 是我们的环境模块,<code>maze_env</code> 模块我们可以不深入研究, 如果你对编辑环境感兴趣, 可以去看看如何使用 python 自带的简单 GUI 模块 <code>tkinter</code> 来编写虚拟环境.  <code>maze_env</code> 就是用 <code>tkinter</code> 编写的. 而 <code>RL_brain</code> 这个模块是 RL 的大脑部分, 我们下节会讲.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">from maze_env import Maze</span><br><span class="line">from RL_brain import QLearningTable</span><br></pre></td></tr></table></figure>
+
+<p>下面的代码, 我们可以根据上面的图片中的算法对应起来, 这就是整个 Qlearning 最重要的迭代更新部分啦.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">def update():</span><br><span class="line">    # 学习 100 回合</span><br><span class="line">    for episode in range(100):</span><br><span class="line">        # 初始化 state 的观测值</span><br><span class="line">        observation = env.reset()</span><br><span class="line"></span><br><span class="line">        while True:</span><br><span class="line">            # 更新可视化环境</span><br><span class="line">            env.render()</span><br><span class="line"></span><br><span class="line">            # RL 大脑根据 state 的观测值挑选 action</span><br><span class="line">            action = RL.choose_action(str(observation))</span><br><span class="line"></span><br><span class="line">            # 探索者在环境中实施这个 action, 并得到环境返回的下一个 state 观测值, reward 和 done (是否是掉下地狱或者升上天堂)</span><br><span class="line">            observation_, reward, done = env.step(action)</span><br><span class="line"></span><br><span class="line">            # RL 从这个序列 (state, action, reward, state_) 中学习</span><br><span class="line">            RL.learn(str(observation), action, reward, str(observation_))</span><br><span class="line"></span><br><span class="line">            # 将下一个 state 的值传到下一次循环</span><br><span class="line">            observation = observation_</span><br><span class="line"></span><br><span class="line">            # 如果掉下地狱或者升上天堂, 这回合就结束了</span><br><span class="line">            if done:</span><br><span class="line">                break</span><br><span class="line"></span><br><span class="line">    # 结束游戏并关闭窗口</span><br><span class="line">    print(&#x27;game over&#x27;)</span><br><span class="line">    env.destroy()</span><br><span class="line"></span><br><span class="line">if __name__ == &quot;__main__&quot;:</span><br><span class="line">    # 定义环境 env 和 RL 方式</span><br><span class="line">    env = Maze()</span><br><span class="line">    RL = QLearningTable(actions=list(range(env.n_actions)))</span><br><span class="line"></span><br><span class="line">    # 开始可视化环境 env</span><br><span class="line">    env.after(100, update)</span><br><span class="line">    env.mainloop()</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="代码主结构"><a href="#代码主结构" class="headerlink" title="代码主结构"></a>代码主结构</h2><p>与上回不一样的地方是, 我们将要以一个 class 形式定义 Q learning, 并把这种 tabular q learning 方法叫做 <code>QLearningTable</code>.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">class QLearningTable:</span><br><span class="line">    # 初始化</span><br><span class="line">    def __init__(self, actions, learning_rate=0.01, reward_decay=0.9, e_greedy=0.9):</span><br><span class="line"></span><br><span class="line">    # 选行为</span><br><span class="line">    def choose_action(self, observation):</span><br><span class="line"></span><br><span class="line">    # 学习更新参数</span><br><span class="line">    def learn(self, s, a, r, s_):</span><br><span class="line"></span><br><span class="line">    # 检测 state 是否存在</span><br><span class="line">    def check_state_exist(self, state):</span><br></pre></td></tr></table></figure>
+
+<h2 id="预设值"><a href="#预设值" class="headerlink" title="预设值"></a>预设值</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">import numpy as np</span><br><span class="line">import pandas as pd</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class QLearningTable:</span><br><span class="line">    def __init__(self, actions, learning_rate=0.01, reward_decay=0.9, e_greedy=0.9):</span><br><span class="line">        self.actions = actions  # a list</span><br><span class="line">        self.lr = learning_rate # 学习率</span><br><span class="line">        self.gamma = reward_decay   # 奖励衰减</span><br><span class="line">        self.epsilon = e_greedy     # 贪婪度</span><br><span class="line">        self.q_table = pd.DataFrame(columns=self.actions, dtype=np.float64)   # 初始 q_table</span><br></pre></td></tr></table></figure>
+
+<h2 id="决定行为"><a href="#决定行为" class="headerlink" title="决定行为"></a>决定行为</h2><p>这里是定义如何根据所在的 state, 或者是在这个 state 上的 观测值 (observation) 来决策.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">def choose_action(self, observation):</span><br><span class="line">    self.check_state_exist(observation) # 检测本 state 是否在 q_table 中存在(见后面标题内容)</span><br><span class="line"></span><br><span class="line">    # 选择 action</span><br><span class="line">    if np.random.uniform() &lt; self.epsilon:  # 选择 Q value 最高的 action</span><br><span class="line">        state_action = self.q_table.loc[observation, :]</span><br><span class="line"></span><br><span class="line">        # 同一个 state, 可能会有多个相同的 Q action value, 所以我们乱序一下</span><br><span class="line">        action = np.random.choice(state_action[state_action == np.max(state_action)].index)</span><br><span class="line"></span><br><span class="line">    else:   # 随机选择 action</span><br><span class="line">        action = np.random.choice(self.actions)</span><br><span class="line"></span><br><span class="line">    return action</span><br></pre></td></tr></table></figure>
+
+<h2 id="学习"><a href="#学习" class="headerlink" title="学习"></a>学习</h2><p>我们根据是否是 <code>terminal</code> state (回合终止符) 来判断应该如何更行 <code>q_table</code>. 更新的方式是不是很熟悉呢:</p>
+<p><code>update = self.lr * (q_target - q_predict)</code></p>
+<p>这可以理解成神经网络中的更新方式, 学习率 * (真实值 - 预测值). 将判断误差传递回去, 有着和神经网络更新的异曲同工之处.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">def learn(self, s, a, r, s_):</span><br><span class="line">    self.check_state_exist(s_)  # 检测 q_table 中是否存在 s_ (见后面标题内容)</span><br><span class="line">    q_predict = self.q_table.loc[s, a]</span><br><span class="line">    if s_ != &#x27;terminal&#x27;:</span><br><span class="line">        q_target = r + self.gamma * self.q_table.loc[s_, :].max()  # 下个 state 不是 终止符</span><br><span class="line">    else:</span><br><span class="line">        q_target = r  # 下个 state 是终止符</span><br><span class="line">    self.q_table.loc[s, a] += self.lr * (q_target - q_predict)  # 更新对应的 state-action 值</span><br></pre></td></tr></table></figure>
+
+<h2 id="检测-state-是否存在"><a href="#检测-state-是否存在" class="headerlink" title="检测 state 是否存在"></a>检测 state 是否存在</h2><p>这个功能就是检测 <code>q_table</code> 中有没有当前 state 的步骤了, 如果还没有当前 state, 那我我们就插入一组全 0 数据, 当做这个 state 的所有 action 初始 values.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">def check_state_exist(self, state):</span><br><span class="line">    if state not in self.q_table.index:</span><br><span class="line">        # append new state to q table</span><br><span class="line">        self.q_table = self.q_table.append(</span><br><span class="line">            pd.Series(</span><br><span class="line">                [0]*len(self.actions),</span><br><span class="line">                index=self.q_table.columns,</span><br><span class="line">                name=state,</span><br><span class="line">            )</span><br><span class="line">        )</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/04/01/Q-Learning-2/" data-id="clgqem7vi000oh9d3gee3gwkr" data-title="Q-Learning-2" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" rel="tag">强化学习</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/04/01/Sarsa%E7%AE%97%E6%B3%95/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Sarsa算法
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/03/29/Q-Learning/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Q-Learning-1</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xcode/" rel="tag">Xcode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cocoaPods/" rel="tag">cocoaPods</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flutter/" rel="tag">flutter</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS-AppDelegate/" rel="tag">iOS AppDelegate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" rel="tag">强化学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" rel="tag">量化交易</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a> <a href="/tags/cocoaPods/" style="font-size: 10px;">cocoaPods</a> <a href="/tags/flutter/" style="font-size: 10px;">flutter</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOS-AppDelegate/" style="font-size: 10px;">iOS AppDelegate</a> <a href="/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" style="font-size: 15px;">强化学习</a> <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">机器学习</a> <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" style="font-size: 10px;">量化交易</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/01/11/%E5%AE%B9%E5%99%A8%E5%8C%96/">首页容器化</a>
+          </li>
+        
+          <li>
+            <a href="/2022/08/14/%E5%8A%A8%E6%80%81%E5%BA%93%E6%87%92%E5%8A%A0%E8%BD%BD/">动态库懒加载</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/17/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E9%97%AE%E9%A2%98%E4%B8%8E%E6%B2%BB%E7%90%86/">多线程问题专项治理</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/20/%E7%9B%B4%E6%92%AD%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7%E6%96%B9%E6%A1%88/">直播性能指标监控方案</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/14/%E8%A7%86%E9%A2%91%E7%9B%B8%E5%85%B3%E4%BC%98%E5%8C%96/">视频相关优化</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 xushuanghui<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

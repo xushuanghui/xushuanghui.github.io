@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>xushuanghui</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="待学习1、从0-1完整的开发大型商业项目 、 搭建App目录结构，从下到上，使用Pods管理第三方框架，将第三方框架进行二次封装，供给顶层使用，尽可能减少各模块之间的耦合度，只为更清晰。 1、flutter boost 共享同一个引擎的方案老的方案： 我们把共享的 Flutter View 当成一个画布，然后用一个 Native 的容器作为逻辑的页面。每次在打开一个容器的时候我们通过通信机制通知">
+<meta property="og:type" content="website">
+<meta property="og:title" content="xushuanghui">
+<meta property="og:url" content="http://example.com/%E5%BE%85%E5%AD%A6%E4%B9%A0%E3%80%81%E5%BE%85%E5%8A%9E.html">
+<meta property="og:site_name" content="xushuanghui">
+<meta property="og:description" content="待学习1、从0-1完整的开发大型商业项目 、 搭建App目录结构，从下到上，使用Pods管理第三方框架，将第三方框架进行二次封装，供给顶层使用，尽可能减少各模块之间的耦合度，只为更清晰。 1、flutter boost 共享同一个引擎的方案老的方案： 我们把共享的 Flutter View 当成一个画布，然后用一个 Native 的容器作为逻辑的页面。每次在打开一个容器的时候我们通过通信机制通知">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/Users/xushuanghui/Library/Application%20Support/typora-user-images/image-20230420114924788.png">
+<meta property="article:published_time" content="2023-04-21T09:51:02.166Z">
+<meta property="article:modified_time" content="2023-04-21T09:51:02.159Z">
+<meta property="article:author" content="xushuanghui">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/Users/xushuanghui/Library/Application%20Support/typora-user-images/image-20230420114924788.png">
+  
+    <link rel="alternate" href="/atom.xml" title="xushuanghui" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">xushuanghui</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="page-" class="h-entry article article-type-page" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/%E5%BE%85%E5%AD%A6%E4%B9%A0%E3%80%81%E5%BE%85%E5%8A%9E.html" class="article-date">
+  <time class="dt-published" datetime="2023-04-21T09:51:02.166Z" itemprop="datePublished">2023-04-21</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="待学习"><a href="#待学习" class="headerlink" title="待学习"></a>待学习</h1><p><strong>1、从0-1完整的开发大型商业项目</strong></p>
+<p><img src="/Users/xushuanghui/Library/Application Support/typora-user-images/image-20230420114924788.png" alt="image-20230420114924788" style="zoom:50%;" />、</p>
+<p>搭建App目录结构，从下到上，使用Pods管理第三方框架，将第三方框架进行二次封装，供给顶层使用，尽可能减少各模块之间的耦合度，只为更清晰。</p>
+<h3 id="1、flutter-boost-共享同一个引擎的方案"><a href="#1、flutter-boost-共享同一个引擎的方案" class="headerlink" title="1、flutter boost 共享同一个引擎的方案"></a>1、flutter boost 共享同一个引擎的方案</h3><p>老的方案：</p>
+<p>我们把共享的 Flutter View 当成一个画布，然后用一个 Native 的容器作为逻辑的页面。每次在打开一个容器的时候我们通过通信机制通知 Flutter View 绘制成当前的逻辑页面，然后将 Flutter View 放到当前容器里面。</p>
+<p>新的方案：</p>
+<p>主要思路是由 Native 容器 Container 通过消息驱动 Flutter 页面容器 Container，从而达到 Native Container 与 Flutter Container 的同步目的。我们希望做到 Flutter 渲染的内容是由 Naitve 容器去驱动的。</p>
+<p>简单的理解，我们想做到把 Flutter 容器做成浏览器的感觉。填写一个页面地址，然后由容器去管理页面的绘制。在 Native 侧我们只需要关心如果初始化容器，然后设置容器对应的页面标志即可。</p>
+<p>通过扁平化 key-value 映射的形式去维护当前所有的页面，每个页面拥有一个唯一的 id</p>
+<p>Native 容器通过消息机制通知 Flutter Coordinator 新的容器被创建</p>
+<h3 id="2、flutter优化方案"><a href="#2、flutter优化方案" class="headerlink" title="2、flutter优化方案"></a>2、flutter优化方案</h3><h4 id="Flutter-Inspector检查工具"><a href="#Flutter-Inspector检查工具" class="headerlink" title="Flutter Inspector检查工具"></a>Flutter Inspector检查工具</h4><p>1、通过“Select Widget Mode”我们可以快速查看陌生页面的布局实现方式。</p>
+<p>2、点击 “Highlight Repaints” 图标，它会 为所有 RenderBox 绘制一层外框，并在它们重绘时会改变颜色</p>
+<h4 id="3、Performance-Overlay-性能图层-找卡顿等"><a href="#3、Performance-Overlay-性能图层-找卡顿等" class="headerlink" title="3、Performance Overlay(性能图层)找卡顿等"></a>3、Performance Overlay(性能图层)找卡顿等</h4><p> Flutter布局优化</p>
+<p>1、尽量小的widget。方便代码复用，减少widget重建</p>
+<p>2、尽量避免在 build() 中执行耗时操作</p>
+<p>3、多用<strong>const</strong>构造器不用重建</p>
+<p>4、<strong>建议使用 ListView 和 GridView 的 builder 方法</strong>它们只会绘制可见的列表内容。</p>
+<p>5、“Highlight Oversizeded Images”，它会识别出那些解码大小超过展示大小的图片，指定 cacheWidth 和 cacheHeight 为展示大小。</p>
+<p>尽量不要为 Widget 设置半透明效果，而是考虑用图片的形式代替，这样被遮挡的 Widget 部分区域就不需要绘制了；</p>
+<p>控制 build 方法耗时，将 Widget 拆小，避免直接返回一个巨大的 Widget，这样 Widget 会享有更细粒度的重建和复用；</p>
+<p>对列表采用懒加载而不是直接一次性创建所有的子 Widget，这样视图的初始化时间就减少了</p>
+<h3 id="3、oc与swift相互调用-–桥接"><a href="#3、oc与swift相互调用-–桥接" class="headerlink" title="3、oc与swift相互调用 –桥接"></a>3、oc与swift相互调用 –桥接</h3><p>oc调用swift:productName-swift.h。@objc</p>
+<p>swift调用oc:在product-bridgeing.h</p>
+<p>ProjectName-Bridging-Header.h</p>
+<h3 id="Alamofire"><a href="#Alamofire" class="headerlink" title="Alamofire"></a>Alamofire</h3><h3 id="flutter-webview"><a href="#flutter-webview" class="headerlink" title="flutter webview"></a>flutter webview</h3><h3 id="coregraphics"><a href="#coregraphics" class="headerlink" title="coregraphics"></a>coregraphics</h3><p><strong>iOS平台研发和优化经验</strong></p>
+<h3 id="技术沙龙"><a href="#技术沙龙" class="headerlink" title="技术沙龙"></a>技术沙龙</h3><p>2、webview离线化方案</p>
+<p>html,js,css,资源文件下载到本地，加载本地文件，减少网络请求</p>
+<p>Nsurlprotocol拦截、hook私有apI注册scheme，所有请求会走caninitrequest方法，return ture or false，做本地操作。</p>
+<p>body问题丢失，httprequeststream去获取。</p>
+<p>下载时机、json配置文件url为key、对应离线开关配置。</p>
+<p><strong>3、直播性能监控</strong></p>
+<p>4、WKWebview预加载、播放器预热</p>
+<p>动态UI更新方案</p>
+<p> ai模拟训练师</p>
+<p>业务：40</p>
+<p>稳定性：20</p>
+<p>性能优化：20</p>
+<p>团队分享：20</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/%E5%BE%85%E5%AD%A6%E4%B9%A0%E3%80%81%E5%BE%85%E5%8A%9E.html" data-id="clgqem7vk000uh9d3datc29zr" data-title="" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xcode/" rel="tag">Xcode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cocoaPods/" rel="tag">cocoaPods</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flutter/" rel="tag">flutter</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS-AppDelegate/" rel="tag">iOS AppDelegate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" rel="tag">强化学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" rel="tag">量化交易</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a> <a href="/tags/cocoaPods/" style="font-size: 10px;">cocoaPods</a> <a href="/tags/flutter/" style="font-size: 10px;">flutter</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOS-AppDelegate/" style="font-size: 10px;">iOS AppDelegate</a> <a href="/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" style="font-size: 15px;">强化学习</a> <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">机器学习</a> <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" style="font-size: 10px;">量化交易</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/01/11/%E5%AE%B9%E5%99%A8%E5%8C%96/">首页容器化</a>
+          </li>
+        
+          <li>
+            <a href="/2022/08/14/%E5%8A%A8%E6%80%81%E5%BA%93%E6%87%92%E5%8A%A0%E8%BD%BD/">动态库懒加载</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/17/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E9%97%AE%E9%A2%98%E4%B8%8E%E6%B2%BB%E7%90%86/">多线程问题专项治理</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/20/%E7%9B%B4%E6%92%AD%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7%E6%96%B9%E6%A1%88/">直播性能指标监控方案</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/14/%E8%A7%86%E9%A2%91%E7%9B%B8%E5%85%B3%E4%BC%98%E5%8C%96/">视频相关优化</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 xushuanghui<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

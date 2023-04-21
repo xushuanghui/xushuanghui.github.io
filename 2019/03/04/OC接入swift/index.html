@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>OC接入swift | xushuanghui</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="一、设置桥接文件不管是objective-c调用swift，还是swift调用objective-c，都需要创建桥接文件，通过桥接文件实现两者的相互调用。当我们引入oc或者swift进入另一个语言的项目的时候系统会提示是否自动创建桥接文件，此时可直接创建。但除此之外我们也可以选择手动创建。此时需要我们在新建文件里选择Header File，点击确认创建桥接文件，桥接文件名字一般为：ProjectN">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OC接入swift">
+<meta property="og:url" content="http://example.com/2019/03/04/OC%E6%8E%A5%E5%85%A5swift/index.html">
+<meta property="og:site_name" content="xushuanghui">
+<meta property="og:description" content="一、设置桥接文件不管是objective-c调用swift，还是swift调用objective-c，都需要创建桥接文件，通过桥接文件实现两者的相互调用。当我们引入oc或者swift进入另一个语言的项目的时候系统会提示是否自动创建桥接文件，此时可直接创建。但除此之外我们也可以选择手动创建。此时需要我们在新建文件里选择Header File，点击确认创建桥接文件，桥接文件名字一般为：ProjectN">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-03-04T09:20:14.000Z">
+<meta property="article:modified_time" content="2023-04-21T10:20:29.894Z">
+<meta property="article:author" content="xushuanghui">
+<meta property="article:tag" content="iOS">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="xushuanghui" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">xushuanghui</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-OC接入swift" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/03/04/OC%E6%8E%A5%E5%85%A5swift/" class="article-date">
+  <time class="dt-published" datetime="2019-03-04T09:20:14.000Z" itemprop="datePublished">2019-03-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      OC接入swift
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="一、设置桥接文件"><a href="#一、设置桥接文件" class="headerlink" title="一、设置桥接文件"></a>一、设置桥接文件</h2><p>不管是objective-c调用swift，还是swift调用objective-c，都需要创建桥接文件，通过桥接文件实现两者的相互调用。<br>当我们引入oc或者swift进入另一个语言的项目的时候系统会提示是否自动创建桥接文件，此时可直接创建。<br>但除此之外我们也可以选择手动创建。此时需要我们在新建文件里选择<code>Header File</code>，点击确认创建桥接文件，桥接文件名字一般为：<code>ProjectName-Bridging-Header.h</code>。然后在<code>Build settings</code>里搜索bridging，找到<code>Objective-C Bridging Header</code>的选项，将该文件的路径填写进去，或者直接拉入。这里的路径最好选择相对路径的形式（<code>ProjectName/BridgingFileName.h</code>）。<br>ProjectName为你项目的项目名，BridgingFileName为桥接文件的名字。</p>
+<h2 id="二、桥接方法"><a href="#二、桥接方法" class="headerlink" title="二、桥接方法"></a>二、桥接方法</h2><h3 id="oc项目调用swift文件"><a href="#oc项目调用swift文件" class="headerlink" title="oc项目调用swift文件"></a>oc项目调用swift文件</h3><p>oc项目针对swift文件会自动创建<code>ProjectName-Swift.h</code>文件，该文件不需要我们去做更改，所以当我们设置完桥接文件之后，只需要在要调用的文件处import该头文件即可，即：<code>import &lt;ProjectName-Swift.h&gt;</code>，其中ProjectName为该项目的工程名。引入该头文件后，即可调用Swift对应的类和方法。</p>
+<p>注意点：<strong>引入的swift文件需要调用的类和方法需要进行修饰，然后oc项目才能调用</strong>。可使用@objcMembers直接修饰类，或者也可以使用@objc分别修饰想要调用给oc的方法和属性，然后oc项目就可调用swift的相关方法了。</p>
+<h3 id="swift项目调用oc文件"><a href="#swift项目调用oc文件" class="headerlink" title="swift项目调用oc文件"></a>swift项目调用oc文件</h3><p>swift项目调用oc文件更为简单，只需要将oc类的头文件导入桥接文件即可，需要调用哪个oc文件就import哪个头文件（#import “ClassName.h”）进去。<br>swift项目调用oc的类和方法不需要引入头文件，所以设置完之后可以直接在swift中直接调用oc方法。</p>
+<span id="more"></span>
+
+<h2 id="OC调用Swift"><a href="#OC调用Swift" class="headerlink" title="OC调用Swift"></a>OC调用Swift</h2><p>简单说下OC调用Swift需要注意的点：</p>
+<p>1.import $(SWIFT_MODULE_NAME)-Swift.h</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;OCAndSwift-Swift.h&quot;</span><br></pre></td></tr></table></figure>
+
+<p>2.调用Swift类时，Swift类必须继承自NSObject</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">class SwiftClass: NSObject &#123; var claseName = &quot;SwiftClass&quot;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>3.调用Swift类的方法，属性时，Swift类的方法属性都必须加上@objc关键字</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@objc var retrainConfirmBlock: (() -&gt; Void)?@objc convenience init()</span><br></pre></td></tr></table></figure>
+
+<p>4.如果使用KVC，KVO等监听，需要对监听的属性加上dynamic关键字，因为Swift并不是动态派发的语言，dynamic关键字会让编译器进行动态分发而不是静态分发.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@objc dynamic var orderNumber: NSNumber?</span><br></pre></td></tr></table></figure>
+
+<h2 id="Swift调用OC"><a href="#Swift调用OC" class="headerlink" title="Swift调用OC"></a>Swift调用OC</h2><p>Swift调用OC需要注意的点：</p>
+<p>1.$(SWIFT_MODULE_NAME)-Bridging-Header.h引入OC类头文件.</p>
+<p>2.OC类的相关属性及方法在Swift类中都可以直接调用，只需要注意Swift语法即可.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">UIView.animate(withDuration: TimeInterval(time), delay: 0, options: UIView.AnimationOptions.curveLinear, animations: &#123;// animate &#125;) &#123;(finish) in//finish&#125;</span><br></pre></td></tr></table></figure>
+
+<p>3.OC类的多数基本类型如NSArray，NSDictionay，NSError等对象(Object) 都可以通过 as? 和Swift中的基础类型Array，Dictionary，Error等值类型互换.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let contentAry = info[&quot;content&quot;] as? [String]titleLabel.text = title as? String ?? &quot;&quot;if let failedWith = error as? Error &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>4.OC宏的使用，Swift使用OC的宏，只能直接使用非常简单的值类型宏，对于复杂的宏方法则需要自己重写一个全局方法替代，全局静态常量可以直接使用.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#define kExpireTime 60  // √</span><br><span class="line">#define sharedAppDelegate ((AppDelegate *)([UIApplication sharedApplication].delegate)) // X</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Swift特性"><a href="#Swift特性" class="headerlink" title="Swift特性"></a>Swift特性</h2><h3 id="Optional"><a href="#Optional" class="headerlink" title="Optional"></a>Optional</h3><p>1.简单介绍一下Optional-可选类型，Optional实际上是一个枚举类型：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public enum Optional&lt;Wrapped&gt; : ExpressibleByNilLiteral &#123;case nonecase some(Wrapped)...&#125;</span><br></pre></td></tr></table></figure>
+
+<p>表示一个数据可能有值也可能为空即nil，类型可以用Optional或者T?（常用）表示.</p>
+<p>2.如果一个可选类型有值，那么这个值也是被包装起来的，例如optional(“test”)，如果需要取出值就需要解包</p>
+<p>解包方式有 if let 以及！，！表示强解，一般在确定值不为空的时候使用，否则会造成崩溃.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">if let text = OptionalText &#123;print(text)&#125;</span><br><span class="line">let text = OptionalText!</span><br></pre></td></tr></table></figure>
+
+<p>3.在与OC混编过程中，因为OC没有可选类型的概念，需要注意可选类型带来的问题.例如</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@objc init(offset: CGFloat? = nil,  text: String? = &quot;&quot;) &#123;</span><br><span class="line">super.init(frame: .zero)self.type = typeself.offset = offset&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个方法如果想给OC调用则会报错</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Method cannot be marked @objc because the type of the parameter 1 cannot be represented in Objective-C</span><br></pre></td></tr></table></figure>
+
+<p>提示第一个参数无法用OC表示，因为在OC中CGFloat是值类型，不能为nil，而对于OC中的对象类型NSString （String自动转换）则可以接受.</p>
+<p>另外，Swift使用OC定义类型时也要注意是否为可空类型</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@property (nonatomic, strong) NSNumber *number1;</span><br><span class="line">@property (nonatomic, strong, nullable) NSNumber *number2;</span><br></pre></td></tr></table></figure>
+
+<p>带nullable关键字的属性可以被Swift转为可选类型，但是不带nullable的属性则默认被！强解，这里需要注意使用OC网络数据等，如果不做判断可以会导致崩溃.</p>
+<h2 id="泛型"><a href="#泛型" class="headerlink" title="泛型"></a>泛型</h2><p>泛型是Swift中的一大利器，许多swift的标准库都是通过泛型代码构建的，例如数组和字典都是泛型集，在系统库或者一些知名三方库中，随处可见的Element，<T>，Where等等占位符或关键字，都是使用泛型在构建代码，引用一段Swift文档对于泛型的描述.</p>
+<blockquote>
+<p><em>Generic code</em> enables you to write flexible, reusable functions and types that can work with any type, subject to requirements that you define. You can write code that avoids duplication and expresses its intent in a clear, abstracted manner.</p>
+<p>Generics are one of the most powerful features of Swift, and much of the Swift standard library is built with generic code. In fact, you’ve been using generics throughout the <em>Language Guide</em>, even if you didn’t realize it. For example, Swift’s <code>Array</code> and <code>Dictionary</code> types are both generic collections. You can create an array that holds <code>Int</code> values, or an array that holds <code>String</code> values, or indeed an array for any other type that can be created in Swift. Similarly, you can create a dictionary to store values of any specified type, and there are no limitations on what that type can be.</p>
+</blockquote>
+<p>概括泛型的关键字：自定义，任意类型，灵活，重用，清晰，抽象.篇幅关系，Swift泛型的应用以后再详细总结.</p>
+<p>在Xcode7之后，为了“迎合”Swift，苹果对OC也做了许多提升，其中包括Nullability，轻量级泛型和__kindof等等，nullable上文我们提到过，可以在Swift使用OC属性时自动编译为Optional类型，那么在在泛型的混编上应该注意什么呢？</p>
+<h4 id="1-OC种泛型的使用"><a href="#1-OC种泛型的使用" class="headerlink" title="1.OC种泛型的使用"></a>1.OC种泛型的使用</h4><p>在OC当中对泛型比较常用的方式，例如对数组元素类型的定义</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NSArray&lt;NSString *&gt; *messageArray</span><br></pre></td></tr></table></figure>
+
+<p>一方面可以限制集合类型，一方面可以直接使用点语法，并且在添加，遍历时会有类型提示.</p>
+<h4 id="2-OC泛型的定义"><a href="#2-OC泛型的定义" class="headerlink" title="2.OC泛型的定义"></a>2.OC泛型的定义</h4><p>OC中2种自定义泛型定义：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">__covariant:协变, 子类转父类 __contravariant:逆变 父类转子类</span><br></pre></td></tr></table></figure>
+
+<p>那么什么是协变，逆变呢，我们用一个例子来说明</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@interface Generic&lt;ObjectType&gt; : NSObject@end@interface ViewController ()@property (nonatomic, strong) Generic * generic;@property (nonatomic, strong) Generic&lt;NSString*&gt; * stringGeneric;@property (nonatomic, strong) Generic&lt;NSMutableString*&gt; * mutableGeneric;@end@implementation ViewController- (void)viewDidLoad &#123;    [super viewDidLoad];    self.generic = self.stringGeneric;    self.generic = self.mutableGeneric;    self.stringGeneric = self.generic;    self.stringGeneric = self.mutableGeneric; // Incompatible pointer types assigning to &#x27;Generic&lt;NSString*&gt; *&#x27; from &#x27;Generic&lt;NSMutableString*&gt; *&#x27;    self.mutableGeneric = self.generic;    self.mutableGeneric = self.stringGeneric; // Incompatible pointer types assigning to &#x27;Generic&lt;NSMutableString*&gt; *&#x27; from &#x27;Generic&lt;NSString*&gt; *&#x27;&#125;@end</span><br></pre></td></tr></table></figure>
+
+<p>从代码警告我们可以看出：</p>
+<ol>
+<li>不指定泛型类型的对象generic可以和任意泛型类型对象转换.</li>
+<li>指定了泛型类型的对象generic不能和不同泛型类型对象转换(只是警告).</li>
+</ol>
+<p>如果你需要主动控制转换关系则需要添加 __covariant 或 __contravariant，效果如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">@interface Generic&lt;__covariant ObjectType&gt; : NSObjectself.stringGeneric = self.mutableGeneric; // 子类转父类self.mutableGeneric = self.stringGeneric; // Incompatible pointer types assigning to &#x27;Generic&lt;NSMutableString*&gt; *&#x27; from &#x27;Generic&lt;NSString*&gt; *&#x27;</span><br><span class="line">@interface Generic&lt;__contravariant ObjectType&gt; : NSObjectself.stringGeneric = self.mutableGeneric; // Incompatible pointer types assigning to &#x27;Generic&lt;NSString*&gt; *&#x27; from &#x27;Generic&lt;NSMutableString*&gt; *&#x27;self.mutableGeneric = self.stringGeneric; // 父类转子类</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-OC泛型在Swift中的使用"><a href="#3-OC泛型在Swift中的使用" class="headerlink" title="3.OC泛型在Swift中的使用"></a>3.OC泛型在Swift中的使用</h4><p>1.OC中定义的泛型，在Swift中使用时，必须指定泛型类型</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let g = Generic&lt;AnyObject&gt;()</span><br></pre></td></tr></table></figure>
+
+<p>2.使用泛型类型的子类时，如果想要使用父类的方法或属性，建议先使用as转换类型，获取到方法列表或属性列表后，再把as去掉，因为子类无法直接获取到父类的方法属性列表，有点坑.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let gChild = GenericChild&lt;AnyObject&gt;()(gChild as GenericChild&lt;AnyObject&gt;).genericFunc()gChild.genericFunc()</span><br></pre></td></tr></table></figure>
+
+<p>3.swift并不吃OC泛型的协变，逆变这一套，它只有一个基本原则：类型固定.只要你在初始化时说明了对象的泛型类型，那么他不管怎么转换类型，指针赋值，始终只能转换为他自己的类型.</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> gString <span class="operator">=</span> <span class="type">Generic</span>&lt;<span class="type">NSString</span>&gt;()</span><br><span class="line"><span class="keyword">var</span> gMutableString <span class="operator">=</span> <span class="type">Generic</span>&lt;<span class="type">NSMutableString</span>&gt;()</span><br><span class="line">gMutableString <span class="operator">=</span> gString <span class="keyword">as!</span> <span class="type">Generic</span>&lt;<span class="type">NSMutableString</span>&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-Swift泛型在OC中的使用"><a href="#4-Swift泛型在OC中的使用" class="headerlink" title="4.Swift泛型在OC中的使用"></a>4.Swift泛型在OC中的使用</h4><p>不行（可以查看一下$(SWIFT_MODULE_NAME)-Swift.h中是没有将Swift泛型类编译成OC类的哦）.</p>
+<h3 id="closure"><a href="#closure" class="headerlink" title="closure"></a>closure</h3><p>1.OC中的blcok与Swift中closure都是经常使用的代码类型，Swift调用OC block会自动转化为closure类型.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">void (^completionBlock)(NSData *, NSError *) = ^(NSData *data,NSError *error) &#123;/* ... */&#125;</span><br><span class="line">let completionBlock: (NSData, NSError) -&gt; Void = &#123;data, errorin /* ... */&#125;</span><br></pre></td></tr></table></figure>
+
+<p>2.Swift中closure和function是同一种类型，所以可以将Swift的方法名作为block参数传递给OC.</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> completionBlock: (<span class="type">NSData</span>, <span class="type">NSError</span>) -&gt; <span class="type">Void</span> <span class="operator">=</span> &#123;data, error    <span class="keyword">in</span> <span class="comment">/* ... */</span>&#125;</span><br><span class="line"><span class="keyword">func</span> <span class="title function_">completionBlockFunc</span>(<span class="keyword">_</span> <span class="params">data</span>:<span class="type">NSData</span>, <span class="keyword">_</span> <span class="params">error</span>:<span class="type">NSError</span>) -&gt; <span class="type">Void</span> &#123;        <span class="comment">/* ... */</span>    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>3.block默认截获变量，如果需要截获引用，则需要加上__block关键字，closure默认截获变量的指针，也就是说closure默认就添加了__block关键字，但是在变量没有改变的情况下，closure会做优化只持有变量的值而不是指针.</p>
+<blockquote>
+<p>As an optimization, Swift may instead capture and store a copy of a value if that value is not mutated by or outside a closure.</p>
+</blockquote>
+<p>4.循环引用及Weak-Strong Dance</p>
+<p>OC中未避免循环引用，会对持有对象做weak处理，Swift中修饰对象为弱引用有2种方式.</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 对此对象进行弱引用，此对象引用计数不会增加，修饰的对象为可选类型weak var object// 对此对象进行弱引用，此对象引用计数不会增加，修饰的对象不能为nilunowned </span></span><br><span class="line"><span class="keyword">var</span> objectself.closure <span class="operator">=</span> &#123;    [<span class="keyword">unowned</span> <span class="keyword">self</span>] <span class="keyword">in</span>    </span><br><span class="line"><span class="comment">// self 不能为空，否则会造成崩溃   </span></span><br><span class="line"><span class="keyword">self</span>.viewDidLoad() </span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">self</span>.closure <span class="operator">=</span> &#123;     [<span class="keyword">weak</span> <span class="keyword">self</span>] <span class="keyword">in</span>     <span class="comment">// self 是可选类型，此处可以解包self  </span></span><br><span class="line"><span class="keyword">self</span><span class="operator">?</span>.viewDidLoad()&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Enum"><a href="#Enum" class="headerlink" title="Enum"></a>Enum</h3><p>OC中NS_ENUM枚举定义和Swift中的Enum默认是相互转化的，但是秉着简洁清晰的代码原则，Swift把OC中枚举类型名称给yan割了，例如</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">typedef NS_ENUM(NSInteger, UITableViewCellStyle) &#123; UITableViewCellStyleDefault, UITableViewCellStyleValue1, UITableViewCellStyleValue2, UITableViewCellStyleSubtitle&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>等价于</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">enum UITableViewCellStyle: Int &#123;    case Default    case Value1    case Value2    case Subtitle&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Swift用点语法来使用枚举：（许多系统的枚举类也被改了，如果不知道怎么写，可以把OC的系统枚举写上，会有错误提示帮你更正）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let cellStyle: UITableViewCellStyle = .Default</span><br></pre></td></tr></table></figure>
+
+<p>Swift中的枚举比起OC来强大了很多，OC中的枚举只能定义类型，但是Swift中的枚举可以添加方法和属性，类似于Struct，可以实现很多自定义的功能.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">enum NDDErrCode: Int, CustomStringConvertible &#123;    case success = 0    case fail    case noData    case noMoreData    var description: String &#123;        switch self &#123;        case .success:            return &quot;成功&quot;        case .fail:            return &quot;失败&quot;        case .noData:            return &quot;没有数据&quot;        case .noMoreData:            return &quot;没有更多数据&quot;        &#125;    &#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="其他问题"><a href="#其他问题" class="headerlink" title="其他问题"></a>其他问题</h1><h4 id="Protocol"><a href="#Protocol" class="headerlink" title="Protocol"></a>Protocol</h4><p>OC中Protocol更倾向于代理功能，由Protocol协议，代理对象delegate以及委托者组成，主要用于事件回调，页面传值等功能；</p>
+<p>Swift中的Protocol更多的是面向协议编程，指抽象出不同类的相同行为（方法），特点（属性）等等，实现模块化解耦.还可以通过extension，实现协议的默认方法（OC不行），也无需生命代理对象等.</p>
+<p>Swift调用OC的Protocol和调用方法一样，OC调用Swift协议时，需要注意创建Protocol时，@objc，optional等关键字和协议类型（any，class，anyObject）等协议遵循限制.</p>
+<h4 id="RAC-and-RxSwift"><a href="#RAC-and-RxSwift" class="headerlink" title="RAC and RxSwift"></a>RAC and RxSwift</h4><p>Swift可以使用RAC（不建议，毕竟有正宫娘娘RxSwift），除了语法外，需要注意RAC大部分类也是OC泛型，需要类型转换以获取父子类方法及属性列表.</p>
+<p>OC无法使用RxSwift.</p>
+<h4 id="单例"><a href="#单例" class="headerlink" title="单例"></a>单例</h4><p>OC单例</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">+ (instancetype)sharedInstance &#123;    static Singleton *shared = nil;    static dispatch_once_t onceToken;    dispatch_once(&amp;onceToken, ^&#123;        shared = [[Singleton alloc] init];    &#125;);    return _shared;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Swift单例</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">static let sharedInstance = Singleton()</span><br></pre></td></tr></table></figure>
+
+<h4 id="json转模型"><a href="#json转模型" class="headerlink" title="json转模型"></a>json转模型</h4><p>OC中常用json转对象工具MJExtension，Swift中常用工具较多，如HandyJson，ObjectMapper等等，另外Swift4引入的Codable协议也是非常方便的.</p>
+<h4 id="OC变参方法"><a href="#OC变参方法" class="headerlink" title="OC变参方法"></a>OC变参方法</h4><p>OC的变参方法无法直接在Swift中被调用，需要对变参方法进行修改，使用va_list对变参进行拼接.</p>
+<p>原方法</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">+ (void)stringParams:(NSString *)params,...;</span><br></pre></td></tr></table></figure>
+
+<p>重写方法</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">+ (void) stringParams:(NSString *)params args:(va_list)args &#123;    va_list args_copy;    __va_copy(args_copy,args);    NSMutableString* format = [NSMutableString stringWithString:@&quot;&quot;];    while (va_arg(args, NSString*))    &#123;        [format appendString:@&quot;%@,&quot;];    &#125;    va_end(args);    if(format.length&gt;0)        [format deleteCharactersInRange:NSMakeRange(format.length-1,1)];    NSString* newFormat = [NSString stringWithFormat:@&quot;%@&quot;,format];    NSString * result = [[NSString alloc]initWithFormat:newFormat arguments:args_copy];    va_end(args_copy);    NSLog(@&quot;%@&quot;, result);&#125;</span><br></pre></td></tr></table></figure>
+
+<p>swift调用</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let args: [CVarArg] = [&quot;i&#x27;m&quot;, &quot; funny&quot;]        withVaList(args) &#123;                (pointer: CVaListPointer) in            return ViewController.stringParams(&quot;%@,%@&quot;, args: pointer)                &#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/03/04/OC%E6%8E%A5%E5%85%A5swift/" data-id="clgqem7vh000mh9d3aipeeahs" data-title="OC接入swift" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/03/16/Runloop/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Runloop
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/01/30/%E4%BA%8B%E4%BB%B6%E4%BC%A0%E9%80%92%E4%B8%8E%E5%93%8D%E5%BA%94%E8%80%85%E9%93%BE/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">事件传递与响应者链</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xcode/" rel="tag">Xcode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cocoaPods/" rel="tag">cocoaPods</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flutter/" rel="tag">flutter</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS-AppDelegate/" rel="tag">iOS AppDelegate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" rel="tag">强化学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" rel="tag">量化交易</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a> <a href="/tags/cocoaPods/" style="font-size: 10px;">cocoaPods</a> <a href="/tags/flutter/" style="font-size: 10px;">flutter</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOS-AppDelegate/" style="font-size: 10px;">iOS AppDelegate</a> <a href="/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" style="font-size: 15px;">强化学习</a> <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">机器学习</a> <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" style="font-size: 10px;">量化交易</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/01/11/%E5%AE%B9%E5%99%A8%E5%8C%96/">首页容器化</a>
+          </li>
+        
+          <li>
+            <a href="/2022/08/14/%E5%8A%A8%E6%80%81%E5%BA%93%E6%87%92%E5%8A%A0%E8%BD%BD/">动态库懒加载</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/17/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E9%97%AE%E9%A2%98%E4%B8%8E%E6%B2%BB%E7%90%86/">多线程问题专项治理</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/20/%E7%9B%B4%E6%92%AD%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7%E6%96%B9%E6%A1%88/">直播性能指标监控方案</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/14/%E8%A7%86%E9%A2%91%E7%9B%B8%E5%85%B3%E4%BC%98%E5%8C%96/">视频相关优化</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 xushuanghui<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

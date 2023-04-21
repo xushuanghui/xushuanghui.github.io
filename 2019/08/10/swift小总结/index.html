@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>swift小总结 | xushuanghui</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="1、混编方式1、SWIFT_OBJC_BRIDGING_HEADER方式适用简单项目  简单的项目可以直接使用projectName--Bridging-Header.h文件的方式，将需要暴露给swift的oc类包含进去。  Swift 访问 Objective-C 只需要在桥接文件中（Bridging-Header.h）中导入需要暴露给 Swift 模块的 Objective-C 类，即可在 S">
+<meta property="og:type" content="article">
+<meta property="og:title" content="swift小总结">
+<meta property="og:url" content="http://example.com/2019/08/10/swift%E5%B0%8F%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="xushuanghui">
+<meta property="og:description" content="1、混编方式1、SWIFT_OBJC_BRIDGING_HEADER方式适用简单项目  简单的项目可以直接使用projectName--Bridging-Header.h文件的方式，将需要暴露给swift的oc类包含进去。  Swift 访问 Objective-C 只需要在桥接文件中（Bridging-Header.h）中导入需要暴露给 Swift 模块的 Objective-C 类，即可在 S">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2019-08-10T06:24:40.000Z">
+<meta property="article:modified_time" content="2023-04-17T08:11:51.990Z">
+<meta property="article:author" content="xushuanghui">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="xushuanghui" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">xushuanghui</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-swift小总结" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/08/10/swift%E5%B0%8F%E6%80%BB%E7%BB%93/" class="article-date">
+  <time class="dt-published" datetime="2019-08-10T06:24:40.000Z" itemprop="datePublished">2019-08-10</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      swift小总结
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="1、混编方式"><a href="#1、混编方式" class="headerlink" title="1、混编方式"></a>1、<a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/swift/imported_c_and_objective-c_apis/importing_swift_into_objective-c">混编方式</a></h3><p>1、SWIFT_OBJC_BRIDGING_HEADER方式适用简单项目</p>
+<ul>
+<li><p>简单的项目可以直接使用<code>projectName--Bridging-Header.h</code>文件的方式，将需要暴露给swift的oc类包含进去。</p>
+</li>
+<li><p>Swift 访问 Objective-C</p>
+<p>只需要在桥接文件中（Bridging-Header.h）中导入需要暴露给 Swift 模块的 Objective-C 类，即可在 Swift 中访问相应 Objective-C 的类和方法</p>
+</li>
+<li><p>Objective-C 访问 Swift</p>
+<p>在 Objective-C 类中导入 <code>ProductName-Swift.h</code>，即可访问 Swift 中暴露给 Objective-C 的类和方法</p>
+</li>
+</ul>
+<p>2、含三方库，业务分库的较复杂的项目</p>
+<ul>
+<li><p>Swift 访问 Objective-C</p>
+<p>用 Swift Module 系统，需要用到的 Objective-C 类用 import xxx 进行引用，即可在 Swift 中访问相应的 Objective-C 的类和方法</p>
+</li>
+<li><p>Objective-C 访问 Swift</p>
+<p>在 Objective-C 类中导入 <code>ProductName-Swift.h</code>，即可访问 Swift 中暴露给 Objective-C 的类和方法</p>
+<span id="more"></span>
+
+<p>补充</p>
+<ul>
+<li><p>纯swift构成的pod，使用时直接<code>@import module</code>就行</p>
+</li>
+<li><p>oc和swift混合构成的pod</p>
+<ul>
+<li>pod中oc类中使用swift类，需要通过<code>SWIFT_OBJC_INTERFACE_HEADER_NAME</code>头文件中先导入需要暴露(<em><code>public</code></em>)给oc使用的swift类, 然后oc中引用<code>#import &quot;YourPodModule-Swift.h&quot;</code>, <code>#import &quot;YourPodModule-Swift.h&quot;</code>无法直接在主工程引入</li>
+<li><em><code>podfile</code>*中配置*<code>use_modular_headers!</code></em>, 主工程通过<code>@import module</code>导入含swift的pod即可访问暴露给外部的swift类。iOS头文件引入变迁<code>#include-&gt;#import-&gt;pch-&gt;@import</code>, <code>@import</code>接解决了编译时间和引用泛滥的问题，建议项目中大量使用。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>3、继承</p>
+<ul>
+<li><pre><code>1、使是继承自NSObject的类，也需要显式添加@objc才能访问。在此之前是默认添加的。
+
+2、swift的类如果想通过动态性动态生成，比如`Class cls = NSClassFromString(clsName);`
+@objc(HSAShortVideoDetailViewController)
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">4、[@objc的一些规则](https://github.com/apple/swift-evolution/blob/master/proposals/0160-objc-inference.md)</span><br><span class="line"></span><br><span class="line">- ```</span><br><span class="line">  @objc protocol p &#123;</span><br><span class="line">      func name()</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  extension p &#123;</span><br><span class="line">      func bar() &#123;</span><br><span class="line">        print(&quot;bar&quot;)</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  class C: NSObject, p &#123;</span><br><span class="line">      </span><br><span class="line">     func name() &#123;</span><br><span class="line">         print(&quot;name\n&quot;)</span><br><span class="line">      &#125;</span><br><span class="line">      </span><br><span class="line">     @objc func aaa() &#123;</span><br><span class="line">          print(&quot;aaa&quot;)</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  let c = C()</span><br><span class="line">  </span><br><span class="line">  print(c.responds(to: Selector(&quot;name&quot;)))  // true</span><br><span class="line">  print(c.responds(to: Selector(&quot;bar&quot;)))   // false</span><br><span class="line">  print(c.responds(to: Selector(&quot;aaa&quot;)))   // true</span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">  ## @objc 并不改变访问级别，默认是Internal; 下面的例子中编译时不允许访问，运行时可访问</span><br><span class="line">  # pod中定义的swift class</span><br><span class="line">  class HSACleanScreenView: UIView &#123;</span><br><span class="line">      @objc func queryBlessInfo() &#123;&#125;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  # 主工程</span><br><span class="line">  if ([_cleanSreenView respondsToSelector:@selector(queryBlessInfo)]) &#123;</span><br><span class="line">      [_cleanSreenView performSelector:@selector(queryBlessInfo)];</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+</code></pre>
+</li>
+</ul>
+<p>5、<a target="_blank" rel="noopener" href="https://www.jessesquires.com/blog/2016/06/04/avoiding-objc-in-swift/">避免@objc的滥用</a></p>
+<ul>
+<li><p>swift中调用oc，c类型的函数需要传递block作为参数时。 作为参数时，的修饰生命周期： <code>@escaping &amp; @nonescaping</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">// HVSLiveCleanScreenView</span><br><span class="line">let block: @convention(block) ()-&gt;() = &#123;</span><br><span class="line">         self.toSendWishMainPageAction(sender: sender)</span><br><span class="line">     &#125;</span><br><span class="line"> NotificationCenter.default.post(name: NSNotification.Name(rawValue: &quot;HSACallLoginNotification&quot;), object: [&quot;callback&quot; : block])</span><br><span class="line"> </span><br><span class="line"> // 类型转换</span><br><span class="line"> private func getAuthorizationData() -&gt; [String: Any] &#123;</span><br><span class="line">     var data: [String: AnyObject] = [String: AnyObject]()</span><br><span class="line">     data[&quot;callback&quot;] = &#123;</span><br><span class="line">         print(&quot;Its NOT crashing&quot;)</span><br><span class="line">     &#125; as (@convention(block) ()-&gt;Void) as AnyObject</span><br><span class="line">     return data</span><br><span class="line"> &#125;</span><br><span class="line"> </span><br><span class="line"> // swift调用带c函数作为参数的</span><br><span class="line"> CGFloat myCFunction(CGFloat (callback)(CGFloat x, CGFloat y)) &#123;</span><br><span class="line">     return callback(1.1, 2.2);</span><br><span class="line"> &#125;</span><br><span class="line"> let swiftCallback : @convention(c) (CGFloat, CGFloat) -&gt; CGFloat = &#123; (x, y) -&gt; CGFloat in</span><br><span class="line">     return x + y</span><br><span class="line"> &#125; </span><br><span class="line"> myCFunction( swiftCallback )</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>6、oc头文件中包含swift类时使用前行声明</p>
+<ul>
+<li><pre><code>// MyObjcClass.h
+ @class MySwiftClass;
+ @protocol MySwiftProtocol;
+
+ @interface MyObjcClass : NSObject
+ - (MySwiftClass *)returnSwiftClassInstance;
+ - (id &lt;MySwiftProtocol&gt;)returnInstanceAdoptingSwiftProtocol;
+ // ...
+ @end
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">7、 oc调用swift闭包</span><br><span class="line"></span><br><span class="line">- ```</span><br><span class="line">   @objc public var tapBlock: (() -&gt; ())?</span><br><span class="line">   </span><br><span class="line">   typealias BlockType = (String, String) -&gt; ()</span><br><span class="line">   @objc public var tapBlock: BlockType?</span><br></pre></td></tr></table></figure>
+</code></pre>
+</li>
+</ul>
+<p>8、NS_STRING_ENUM</p>
+<p>尽量利用swift的优秀特性，比如一些有意义的key，直接用string，容易出错还无法进行类型检查</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">#objectiv-c</span><br><span class="line"></span><br><span class="line">## .h文件</span><br><span class="line">typedef NSString * THJStringDicKey NS_STRING_ENUM;</span><br><span class="line">FOUNDATION_EXTERN THJStringDicKey const THJStringDicKeyTitle;</span><br><span class="line">FOUNDATION_EXTERN THJStringDicKey const THJStringDicKeyBody;</span><br><span class="line">FOUNDATION_EXTERN THJStringDicKey const THJStringDicKeyHeader;</span><br><span class="line">## .m文件</span><br><span class="line">THJStringDicKey const THJStringDicKeyTitle  = @&quot;title&quot;;</span><br><span class="line">THJStringDicKey const THJStringDicKeyBody   = @&quot;body&quot;;</span><br><span class="line">THJStringDicKey const THJStringDicKeyHeader = @&quot;header&quot;;</span><br><span class="line"></span><br><span class="line">#swift</span><br><span class="line">let dic:  [THJStringDicKey:String] = [.title:&quot;title&quot;]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.codenong.com/jsa3e58ba1e6e8/">关于<code>@convention</code> swiftGG</a></li>
+</ul>
+<h3 id="枚举"><a href="#枚举" class="headerlink" title="枚举"></a>枚举</h3><ul>
+<li><p>oc中使用swift枚举</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">@objc public enum WishShareType: Int &#123;</span><br><span class="line">    case video</span><br><span class="line">    case live</span><br><span class="line">    </span><br><span class="line">    func name() -&gt; String &#123;</span><br><span class="line">        switch self &#123;</span><br><span class="line">        case .video:</span><br><span class="line">            return &quot;video&quot;</span><br><span class="line">        case .live:</span><br><span class="line">            return &quot;live&quot;</span><br><span class="line">        default:</span><br><span class="line">            return &quot;video&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// swift中WishShareTypeLive这样来使用</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>swift中使用oc枚举</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">typedef NS_ENUM(NSInteger, HSAShortVideoLeftMenuTapActionType) &#123;</span><br><span class="line">    HSAShortVideoLeftMenuActionHotMenu,   // 热门菜品</span><br><span class="line">    HSAShortVideoLeftMenuActionCoupon,    // 优惠券</span><br><span class="line">&#125;;</span><br><span class="line">  </span><br><span class="line">let type: HSAShortVideoLeftMenuTapActionType = .actionCoupon</span><br><span class="line">let type = HSAShortVideoLeftMenuTapActionType.actionCoupon</span><br></pre></td></tr></table></figure>
+
+<p>注意：swfit使用<code>Enum.init(rawValue:)</code>生成oc类型的枚举，如果传入的值不在定义范围不会返回悔nil，执行时可能会出现无法预测的异常</p>
+</li>
+</ul>
+<h3 id="协议"><a href="#协议" class="headerlink" title="协议"></a><a target="_blank" rel="noopener" href="https://www.jessesquires.com/blog/2017/06/05/protocol-composition-in-swift-and-objc/">协议</a></h3><ul>
+<li><p>oc使用swift协议</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@objc protocol AlertViewProtocol &#123;</span><br><span class="line">  func submit(_ row: Int) //必须实现的协议</span><br><span class="line">  @objc optional func cancel() //不必实现的协议</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>swift使用oc的协议</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@objc public var delegate: HVSLiveChatRoomViewDelegate?</span><br><span class="line">if delegate?.responds(to: #selector(HVSLiveChatRoomViewDelegate.showWishMainPage(_:))) ?? false &#123;</span><br><span class="line">          delegate!.showWishMainPage!(sendWishVc)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="target-action"><a href="#target-action" class="headerlink" title="target-action"></a>target-action</h3><ul>
+<li><p>swift2.2版本之前可以通过<code>Selector(&quot;functionToExecute:&quot;)</code>的方式来生成，但该方式无法在编译器发现方法是否被实现，会导致<a target="_blank" rel="noopener" href="https://learnappmaking.com/unrecognized-selector-sent-to-instance-swift-development/">unrecognized selector sent to instance </a>错误。swift2.2后使用<code>#selector(functionToExecute(_:))</code>或<code>Selector(Target.functionToExecute)</code>, 之前的<code>Selector(&quot;&quot;)</code>方式被废弃</p>
+</li>
+<li><p><code>__FUNCTION__</code> &#x3D;&gt;<code>#function</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">print(&quot;%@&quot;, #function) // swift2.2之后替换为`#function`</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="关于responds"><a href="#关于responds" class="headerlink" title="关于responds"></a>关于<code>responds</code></h3><ul>
+<li><pre><code>## oc中使用
+
+## swift中判断
+func responds(to aSelector: Selector!) -&gt; Bool
+
+## 动态判断，不确定类型的前提下，如遵循协议的swift对象是否实现了协议内的方法
+if delegate?.responds(to: #selector(HVSLiveChatRoomViewDelegate.showWishMainPage(_:))) ?? false &#123;
+     delegate!.showWishMainPage!(sendWishVc)
+&#125; 
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">### 循环引用</span><br><span class="line"></span><br><span class="line">- block循环引用处理</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+wishVc.animationBlock = &#123; [weak self], [weak obj] animView in
+     animView.show(superView: self!, belowView: self!.wishButton, replace: self?.runingWishAimationView)
+ &#125;
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- weakproxy</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+// NSTimer 还可以通过weakProxy来解循环引用
+timer = Timer.init(timeInterval: 1.0, target: FRWWeakProxy.init(target: self), selector: #selector(downTime), userInfo: nil, repeats: true)
+     RunLoop.main.add(timer, forMode: .common)
+     
+// wkWebView引起的循环引用因为协议的原因无法通过weakProxy来作转换
+ open func add(_ scriptMessageHandler: WKScriptMessageHandler, name: String)
+ 
+ let userContentController = WKUserContentController.init()
+ userContentController.addUserScript(userScript)
+ userContentController.add(self, name: _CardAppNative)
+ 
+ // 解决办法
+ 1、 目前通过主动调用clean来主动解开循环
+ func clean() &#123;
+     webView.configuration.userContentController.removeScriptMessageHandler(forName: _CardAppNative)
+ &#125;
+ 
+ 2、 如果是控制器可以通过*`viewWillDisappear:`*来控制解开循环的时机，或则通过自定义`WKScriptMessageHandler`来解决
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">### 第三方库</span><br><span class="line"></span><br><span class="line">- masonry</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+  giftContentView.mas_makeConstraints &#123; (make) in
+      //  Fatal error: Unexpectedly found nil while implicitly unwrapping an Optional value
+      //  make?.left.mas_offset()(contentBeginX)
+      make?.left.offset()(contentBeginX)
+      make?.right.equalTo()(self.contentView)?.offset()(-contentEndX)
+      make?.top.mas_equalTo()(12)
+      make?.height.mas_equalTo()(contentHeight)
+  &#125;
+  
+  oc中可以直接使用`mas_offset()`方式设置，但是swift中这里会导致crash，主要原因是因为swift不支持宏
+  导致`#define mas_offset(...)          valueOffset(MASBoxValue((__VA_ARGS__)))`失效，实际返回nil;
+  使用时尽量不适用带`mas_`的方法进行设置
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">- Reactive-C</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+// 同样因为宏在swfit中无法使用，`RAC(TARGET, ...)`等宏无法使用，需要直接调用对应代码
+model.rac_values(forKeyPath: &quot;buttonStatus&quot;, observer: self).take(untilReplacement: self.rac_signal(for: #selector(self.prepareForReuse))).subscribeNext &#123; [weak self] (obj) in
+    self?.changeActionButtonStyle()
+&#125;
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">### 通知</span><br><span class="line"></span><br><span class="line">- 对于oc中通知的key的使用：宏定义和全部变量定义</span><br><span class="line"></span><br><span class="line">- 通知使用oc中早先定义的key时``</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+## 宏定义
+#define kHSANotificateToPlayInlineWishAnimationKey @&quot;notificateToPlayInlineWishAnimation&quot;
+NSNotification.Name(rawValue: kHSANotificateToPlayInlineWishAnimationKey)
+
+## 全局变量
+</code></pre>
+</li>
+</ul>
+<h2 id="2、其他问题"><a href="#2、其他问题" class="headerlink" title="2、其他问题"></a>2、其他问题</h2><h3 id="2-1-Framework-targets-不支持-Bridging-Header"><a href="#2-1-Framework-targets-不支持-Bridging-Header" class="headerlink" title="2.1 Framework targets 不支持 Bridging-Header"></a>2.1 Framework targets 不支持 Bridging-Header</h3><p>  通常来讲混编的时候需要在工程中创建 Swift 文件时候，Xcode 会问询是否创建 Bridging-Header 文件，点击是，系统会帮你创建一个 Bridging-Header，你可以将需要引用的 Objective-C 模块的头文件放在里面，然后你可以在 Swift 模块用 Objective-C 的类。但是编译器是不允许在 Framework 中创建 Bridging-header，因此在二&#x2F;三方库中，我们不能使用桥接文件的方式进行混编 Objective-C 代码的引用，需要用 Swift Module 进行模块间的引用。</p>
+<h3 id="2-2-模块引用"><a href="#2-2-模块引用" class="headerlink" title="2.2 模块引用"></a>2.2 模块引用</h3><p>  引用其他 Objective-C 二方库需要增加命名空间（Namespace），否则会报错找不到文件 Swift 的命名空间是以模块划分的，一个模块表示一个命名空间。开发时，默认添加到主 target 的内容是同处于同一个命名空间的；如果用 Cocoapods 导入的第三方库，是以一个单独的 target 存在，不会存在命名冲突。但如果以源码的方式导入工程，很可能发生命名冲突，所以为了安全起见，第三方库都会使用命名空间这种方式来防止冲突。</p>
+<h3 id="2-3-C-混编"><a href="#2-3-C-混编" class="headerlink" title="2.3 C++ 混编"></a>2.3 C++ 混编</h3><p>  Objective-C 是 C++ 的超集，就如同 Objective-C 是 C 的超集，在OS X 上同时被 GCC 和 Clang 支持编译，.mm 是 Objective-C++ 的默认后缀名，Xcode 的编译器可以识别。在.mm 文件中，Objective-C 代码和 C++ 代码都可以正常编译运行。在消息业务模块中中引用了 WCDB 这个 Objective-C++ 的库，因此在引用的时候要将引用到的 WCDB.h 头文件中的类文件的 .h 改成 .mm。</p>
+<h3 id="2-4-链接错误"><a href="#2-4-链接错误" class="headerlink" title="2.4 链接错误"></a>2.4 链接错误</h3><p>  我们将上述工作做完后引入到宿主工程中，进行编译的时候会出现链接错误，不要担心，那是因为宿主工程中缺少 Swift 的某些系统库，在宿主工程中建立一个 Swift 文件方可解决。</p>
+<h3 id="2-5-Swift-调用-Objective-C"><a href="#2-5-Swift-调用-Objective-C" class="headerlink" title="2.5 Swift 调用 Objective-C"></a>2.5 Swift 调用 Objective-C</h3><p>  将 Swift 模块文件中，用import xxx 的形式进行模块的引用，包括 Objective-C 的二&#x2F;三方库</p>
+<h3 id="2-6-Objective-C-调用-Swift"><a href="#2-6-Objective-C-调用-Swift" class="headerlink" title="2.6 Objective-C 调用 Swift"></a>2.6 Objective-C 调用 Swift</h3><ul>
+<li>Swift 类中将需要暴露给 Objective-C 模块引用的类，用 public 申明</li>
+<li>Swift 类中需要暴露给 Objective-C 的方法要用关键字 @objc</li>
+<li>在 Objective-C 类中引用 ProductName-Swift.h 头文件即可引用暴露给 Objective-C 的 Swift 的类和方法</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/08/10/swift%E5%B0%8F%E6%80%BB%E7%BB%93/" data-id="clgqem7vs001nh9d3b4di2hki" data-title="swift小总结" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/08/30/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          量化交易
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/05/16/NSBlockOperation/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">NSBlockOperation</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xcode/" rel="tag">Xcode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cocoaPods/" rel="tag">cocoaPods</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flutter/" rel="tag">flutter</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS-AppDelegate/" rel="tag">iOS AppDelegate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" rel="tag">强化学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" rel="tag">量化交易</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a> <a href="/tags/cocoaPods/" style="font-size: 10px;">cocoaPods</a> <a href="/tags/flutter/" style="font-size: 10px;">flutter</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOS-AppDelegate/" style="font-size: 10px;">iOS AppDelegate</a> <a href="/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" style="font-size: 15px;">强化学习</a> <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">机器学习</a> <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" style="font-size: 10px;">量化交易</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/01/11/%E5%AE%B9%E5%99%A8%E5%8C%96/">首页容器化</a>
+          </li>
+        
+          <li>
+            <a href="/2022/08/14/%E5%8A%A8%E6%80%81%E5%BA%93%E6%87%92%E5%8A%A0%E8%BD%BD/">动态库懒加载</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/17/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E9%97%AE%E9%A2%98%E4%B8%8E%E6%B2%BB%E7%90%86/">多线程问题专项治理</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/20/%E7%9B%B4%E6%92%AD%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7%E6%96%B9%E6%A1%88/">直播性能指标监控方案</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/14/%E8%A7%86%E9%A2%91%E7%9B%B8%E5%85%B3%E4%BC%98%E5%8C%96/">视频相关优化</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 xushuanghui<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
