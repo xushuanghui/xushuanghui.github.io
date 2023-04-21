@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>AppDelegate组件解耦 | xushuanghui</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="在没有实行组件化的项目中，经常会在 AppDelegate 看到各类初始化代码，这一部分代码一般用以配置某些 key 以及 secret ，或者开启某些服务，常见的有第三方推送、统计分析、IM服务等。当然，也有可能是开启一些自身的服务，比如 log 日志、 数据库初始化等。当一个 App 达到一定体量后， 未经整理的 AppDelegate 可能会变得臃肿。那么在实行组件化之后，该如何处理这部分代">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AppDelegate组件解耦">
+<meta property="og:url" content="http://example.com/2019/09/16/AppDelegate%E7%BB%84%E4%BB%B6%E8%A7%A3%E8%80%A6/index.html">
+<meta property="og:site_name" content="xushuanghui">
+<meta property="og:description" content="在没有实行组件化的项目中，经常会在 AppDelegate 看到各类初始化代码，这一部分代码一般用以配置某些 key 以及 secret ，或者开启某些服务，常见的有第三方推送、统计分析、IM服务等。当然，也有可能是开启一些自身的服务，比如 log 日志、 数据库初始化等。当一个 App 达到一定体量后， 未经整理的 AppDelegate 可能会变得臃肿。那么在实行组件化之后，该如何处理这部分代">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://dmanager.github.io/assets/images/2017-10-25-zu-jian-sheng-ming-zhou-qi/1509178037666.jpg">
+<meta property="og:image" content="https://dmanager.github.io/assets/images/2017-10-25-zu-jian-sheng-ming-zhou-qi/1509083789825.jpg">
+<meta property="article:published_time" content="2019-09-16T03:29:30.000Z">
+<meta property="article:modified_time" content="2020-12-21T03:56:57.365Z">
+<meta property="article:author" content="xushuanghui">
+<meta property="article:tag" content="iOS AppDelegate">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://dmanager.github.io/assets/images/2017-10-25-zu-jian-sheng-ming-zhou-qi/1509178037666.jpg">
+  
+    <link rel="alternate" href="/atom.xml" title="xushuanghui" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">xushuanghui</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-AppDelegate组件解耦" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/09/16/AppDelegate%E7%BB%84%E4%BB%B6%E8%A7%A3%E8%80%A6/" class="article-date">
+  <time class="dt-published" datetime="2019-09-16T03:29:30.000Z" itemprop="datePublished">2019-09-16</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      AppDelegate组件解耦
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>在没有实行组件化的项目中，经常会在 AppDelegate 看到各类初始化代码，这一部分代码一般用以配置某些 key 以及 secret ，或者开启某些服务，常见的有第三方推送、统计分析、IM服务等。当然，也有可能是开启一些自身的服务，比如 log 日志、 数据库初始化等。当一个 App 达到一定体量后， 未经整理的 AppDelegate 可能会变得臃肿。那么在实行组件化之后，该如何处理这部分代码呢？</p>
+<h2 id="不管理组件生命周期"><a href="#不管理组件生命周期" class="headerlink" title="不管理组件生命周期"></a>不管理组件生命周期</h2><p>不对组件生命周期进行管理，那么只能继续将这些初始化代码放在主工程的 AppDelegate 中，而针对上文所说的 AppDelegate 臃肿的问题，也可以通过简单的封装来优化。</p>
+<p>但是，这种做法会引发组件独立性问题。比如存在能独立运行的组件 A、B，B 依赖 A， A 生效需要在 App Launch 时调用配置代码 Code-A。如果采用上述做法，那么组件 A 所在示例工程的 AppDelegate 中，需要调用 Code-A 进行配置，而组件 B 因为依赖了 组件 A ，要使组件 B 能成功运行，也需要在 B 的示例工程添加 Code-A 进行配置。同样主工程的 AppDelegate 中也存在一份 Code-A 配置代码。可以看到，这种重复手动配置的做法是比较繁琐和难看的，这也是为什么要对组件生命周期进行管理的原因。</p>
+<h2 id="现有实现管理方案"><a href="#现有实现管理方案" class="headerlink" title="现有实现管理方案"></a>现有实现管理方案</h2><p>从组件和主工程的关系切入，既然组件需要在 App 生命周期的某些阶段处理特定的事务，那么就提供特定的回调方法供组件使用。 App 生命周期各个阶段产生的事件，可以通过让 AppDelegate 遵守 UIApplicationDelegate 协议并实现不同的代理方法进行捕获。</p>
+<p>要想把当前阶段 App 产生的事件分发给各个组件，最简单的方案就是如 <a target="_blank" rel="noopener" href="http://limboy.me/tech/2016/03/10/mgj-components.html">limboy</a> 所说，在 AppDelegate 的各个代理方法里，手动调一遍组件的对应方法，如果组件实现了对应的代理方法，就执行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions</span><br><span class="line">&#123;</span><br><span class="line">    [MGJApp startApp];</span><br><span class="line"></span><br><span class="line">    [[ModuleManager sharedInstance] loadModuleFromPlist:[[NSBundle mainBundle] pathForResource:@&quot;modules&quot; ofType:@&quot;plist&quot;]];</span><br><span class="line">    NSArray *modules = [[ModuleManager sharedInstance] allModules];</span><br><span class="line">    for (id&lt;ModuleProtocol&gt; module in modules) &#123;</span><br><span class="line">        if ([module respondsToSelector:_cmd]) &#123;</span><br><span class="line">            [module application:application didFinishLaunchingWithOptions:launchOptions];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    [self trackLaunchTime];</span><br><span class="line">    return YES;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>不过这种方式缺点也很明显，组件需要依赖主工程的 AppDelegate 是否实现了 UIApplicationDelegate 的代理方法，如果没有的话，即使组件方实现了对应的代理方法，依然无法捕获到事件。</p>
+<p>再来看下 <a target="_blank" rel="noopener" href="http://www.jianshu.com/u/d8a653fc1cb1">caojun</a> 的处理方案 <a target="_blank" rel="noopener" href="https://github.com/mdsb100/YTXModule">YTXModule</a>。 这个方案主要思路是通过 runtime method swizzling，替换 AppDelegate 中实现的 UIApplicationDelegate 代理方法，然后在 swizzled method 中，执行事件分发。 YTXModule 提供了一些宏定义，精简了方法替换流程：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">@implementation UIApplication (YTXModule)</span><br><span class="line">- (void)module_setDelegate:(id&lt;UIApplicationDelegate&gt;) delegate</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    static dispatch_once_t delegateOnceToken;</span><br><span class="line">    dispatch_once(&amp;delegateOnceToken, ^&#123;</span><br><span class="line">        SWIZZLE_DELEGATE_METHOD(applicationDidFinishLaunching:);</span><br><span class="line">        ...</span><br><span class="line">    &#125;);</span><br><span class="line">    [self module_setDelegate:delegate];</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation YTXModule</span><br><span class="line">...</span><br><span class="line">+ (BOOL)ytxmodule_application:(UIApplication *)application didFinishLaunchingWithOptions:(nullable NSDictionary *)launchOptions</span><br><span class="line">&#123;   </span><br><span class="line">    DEF_APPDELEGATE_METHOD_CONTAIN_RESULT(application, launchOptions);</span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<p>这里需要注意的是，由于 method swizzling 是在不同类型载体（AppDelegate对象 &lt;-&gt; YTXModule类）间交换的方法，所以会造成在 <code>+ytxmodule_applicationDidFinishLaunching:</code> 中调用 <code>self</code> 时，获取的并不是 YTXModule类，而是 AppDelegate对象，因为方法替换实际上替换了 IMP，并没有改变实参，参照 <code>objc_msgSend(id self, SEL op, ... )</code> 的参数排列，可以明确第一个参数是消息接收者，也就是 AppDelegate对象。通过上述分析可以知道，如果直接进行方法替换，不做特殊处理，使用以下代码将会抛出 <code>unrecognized selector </code>异常 ：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">+ (BOOL)ytxmodule_application:(UIApplication *)application didFinishLaunchingWithOptions:(nullable NSDictionary *)launchOptions</span><br><span class="line">&#123;</span><br><span class="line">	// self is AppDelegate instance</span><br><span class="line">    [self ytxmodule_application:application didFinishLaunchingWithOptions:launchOptions];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>而以下代码，是可以正常运行的：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">+ (BOOL)ytxmodule_application:(UIApplication *)application didFinishLaunchingWithOptions:(nullable NSDictionary *)launchOptions</span><br><span class="line">&#123;</span><br><span class="line"> 	[YTXModule ytxmodule_application:application didFinishLaunchingWithOptions:launchOptions];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>所以 caojun 在方法替换时，给 AppDelegate 添加了相同命名的实例方法，规避了这个异常 ：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">void Swizzle(Class class, SEL originalSelector, Method swizzledMethod)</span><br><span class="line">&#123;</span><br><span class="line">    Method originalMethod = class_getInstanceMethod(class, originalSelector);</span><br><span class="line">    SEL swizzledSelector = method_getName(swizzledMethod);</span><br><span class="line"></span><br><span class="line">    BOOL didAddMethod =</span><br><span class="line">    class_addMethod(class,</span><br><span class="line">                    originalSelector,</span><br><span class="line">                    method_getImplementation(swizzledMethod),</span><br><span class="line">                    method_getTypeEncoding(swizzledMethod));</span><br><span class="line"></span><br><span class="line">    if (didAddMethod &amp;&amp; originalMethod) &#123;</span><br><span class="line">        class_replaceMethod(class,</span><br><span class="line">                            swizzledSelector,</span><br><span class="line">                            method_getImplementation(originalMethod),</span><br><span class="line">                            method_getTypeEncoding(originalMethod));</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        method_exchangeImplementations(originalMethod, swizzledMethod);</span><br><span class="line">    &#125;</span><br><span class="line">    // 这一步给 AppDelegate 添加相同命名的实例方法，并且其 IMP 是 AppDelegate 自身方法的原实现</span><br><span class="line">    class_addMethod(class,</span><br><span class="line">                    swizzledSelector,</span><br><span class="line">                    method_getImplementation(swizzledMethod),</span><br><span class="line">                    method_getTypeEncoding(swizzledMethod));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>虽说这种方案也能实现事件的分发，但是在不同类型载体间使用 method swizzling 还是应该避免的，对其他开发者不是很友好。并且这种方案也存在依赖 YTXModule 是否替换了 UIApplicationDelegate 的代理方法问题，如果没有，组件方是无法捕获事件的。</p>
+<span id="more"></span>
+
+<h2 id="一种更加优雅的方案"><a href="#一种更加优雅的方案" class="headerlink" title="一种更加优雅的方案"></a>一种更加优雅的方案</h2><blockquote>
+<p>分发、代理</p>
+</blockquote>
+<p>看到这两个关键词，可以直接联想到 runtime 的另一重要组成部分，消息转发。以下是我结合消息转发实现的组件生命周期管理方案。</p>
+<p>先看下 UML 类图：</p>
+<p><a target="_blank" rel="noopener" href="https://dmanager.github.io/assets/images/2017-10-25-zu-jian-sheng-ming-zhou-qi/1509178037666.jpg"><img src="https://dmanager.github.io/assets/images/2017-10-25-zu-jian-sheng-ming-zhou-qi/1509178037666.jpg" alt="img"></a></p>
+<p>首先是 TDFModule ，模块基类，所有想要捕获 App 生命周期事件的模块都需要创建一个继承 TDFModule 的类，并且遵守 TDFModuleProtocol 协议：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> 模块子类必须遵守此协议</span><br><span class="line"> */</span><br><span class="line">@protocol TDFModuleProtocol &lt;UIApplicationDelegate&gt;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> 模块优先级</span><br><span class="line"></span><br><span class="line"> - TDFModulePriorityVeryLow: 极底</span><br><span class="line"> - TDFModulePriorityLow: 低</span><br><span class="line"> - TDFModulePriorityMedium: 中</span><br><span class="line"> - TDFModulePriorityHigh: 高</span><br><span class="line"> - TDFModulePriorityVeryHigh: 极高</span><br><span class="line"> */</span><br><span class="line">typedef NS_ENUM(NSInteger, TDFModulePriority) &#123;</span><br><span class="line">    TDFModulePriorityVeryLow = 0,</span><br><span class="line">    TDFModulePriorityLow = 1,</span><br><span class="line">    TDFModulePriorityMedium = 2,</span><br><span class="line">    TDFModulePriorityHigh = 3,</span><br><span class="line">    TDFModulePriorityVeryHigh = 4,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">@interface TDFModule : NSObject</span><br><span class="line">+ (instancetype)module;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> 在 load 中调用，以注册模块</span><br><span class="line"> */</span><br><span class="line">+ (void)registerModule;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> 模块优先级</span><br><span class="line"></span><br><span class="line"> 主工程模块的调用最先进行，剩余附属模块，</span><br><span class="line"> 内部会根据优先级，依次调用 UIApplicationDelegate 代理</span><br><span class="line"> 默认是 TDFModulePriorityMedium</span><br><span class="line"></span><br><span class="line"> @return 优先级</span><br><span class="line"> */</span><br><span class="line">+ (TDFModulePriority)priority;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@implementation TDFModule</span><br><span class="line">- (instancetype)init &#123;</span><br><span class="line">    if (self = [super init]) &#123;</span><br><span class="line">        if (![self conformsToProtocol:@protocol(TDFModuleProtocol)]) &#123;</span><br><span class="line">            @throw [NSException exceptionWithName:@&quot;TDFModuleRegisterProgress&quot; reason:@&quot;subclass should confirm to &lt;TDFModuleProtocol&gt;.&quot; userInfo:nil];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">+ (instancetype)module &#123;</span><br><span class="line">    return [[self alloc] init];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">+ (void)registerModule &#123;</span><br><span class="line">    [TDFModuleManager addModuleClass:self];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">+ (TDFModulePriority)priority &#123;</span><br><span class="line">    return TDFModulePriorityMedium;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>子类需要在 <code>+load</code> 方法中调用 <code>registerModule</code> 才能让模块具备捕获 App 事件的能力。因为 TDFModuleProtocol 直接遵守的 UIApplicationDelegate 协议，子类可以和 AppDelegate 一样，直接实现自己感兴趣的代理方法即可：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">@interface TDFAModule : TDFModule &lt;TDFModuleProtocol&gt;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation TDFAModule</span><br><span class="line">+ (void)load &#123;</span><br><span class="line">    [self registerModule];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">+ (TDFModulePriority)priority &#123;</span><br><span class="line">    return TDFModulePriorityHigh;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions &#123;</span><br><span class="line">    NSLog(@&quot;%@, %@&quot;, NSStringFromClass([self class]), NSStringFromSelector(_cmd));</span><br><span class="line">    return YES;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)applicationWillEnterForeground:(UIApplication *)application &#123;</span><br><span class="line">    NSLog(@&quot;%@, %@&quot;, NSStringFromClass([self class]), NSStringFromSelector(_cmd));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)applicationDidBecomeActive:(UIApplication *)application &#123;</span><br><span class="line">    NSLog(@&quot;%@, %@&quot;, NSStringFromClass([self class]), NSStringFromSelector(_cmd));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)applicationWillTerminate:(UIApplication *)application &#123;</span><br><span class="line">    NSLog(@&quot;%@, %@&quot;, NSStringFromClass([self class]), NSStringFromSelector(_cmd));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<p>以上就是一个简单的使用示例。</p>
+<p>接下来是 TDFModuleManager ，模块管理类。这个单例类主要负责模块的储存，以及在 UIApplication 的 <code>-setDelegate:</code> 中，把原来 delegate 替换成自己的 delegate proxy 。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br></pre></td><td class="code"><pre><span class="line">@interface TDFModuleManager : NSObject &#123;</span><br><span class="line">    @package</span><br><span class="line">    TDFApplicationDelegateProxy *_proxy;</span><br><span class="line">&#125;</span><br><span class="line">@property (strong, nonatomic, readonly) TDFApplicationDelegateProxy *proxy;</span><br><span class="line">@property (strong, nonatomic, readonly) NSArray &lt;TDFModule *&gt; *modules;</span><br><span class="line"></span><br><span class="line">+ (instancetype)shared;</span><br><span class="line">+ (void)addModuleClass:(Class)cls;</span><br><span class="line">+ (void)removeModuleClass:(Class)cls;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">static NSMutableArray const * TDFModuleClassArray = nil;</span><br><span class="line"></span><br><span class="line">@implementation TDFModuleManager</span><br><span class="line">+ (instancetype)shared &#123;</span><br><span class="line">    static dispatch_once_t onceToken;</span><br><span class="line">    static TDFModuleManager *singleton = nil;</span><br><span class="line">    dispatch_once(&amp;onceToken, ^&#123;</span><br><span class="line">        singleton = [[self alloc] init];</span><br><span class="line">    &#125;);</span><br><span class="line">    return singleton;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">+ (void)addModuleClass:(Class)cls &#123;</span><br><span class="line">    NSParameterAssert(cls &amp;&amp; [cls isSubclassOfClass:[TDFModule class]]);</span><br><span class="line"></span><br><span class="line">    if (!TDFModuleClassArray) &#123;</span><br><span class="line">        TDFModuleClassArray = [NSMutableArray array];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    if (![TDFModuleClassArray containsObject:cls]) &#123;</span><br><span class="line">        [TDFModuleClassArray addObject:cls];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">+ (void)removeModuleClass:(Class)cls &#123;</span><br><span class="line">    [TDFModuleClassArray removeObject:cls];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)generateRegistedModules &#123;</span><br><span class="line">    [self.mModules removeAllObjects];</span><br><span class="line"></span><br><span class="line">    [TDFModuleClassArray sortUsingDescriptors:@[[[NSSortDescriptor alloc] initWithKey:@&quot;priority&quot; ascending:NO]]];</span><br><span class="line"></span><br><span class="line">    for (Class cls in TDFModuleClassArray) &#123;</span><br><span class="line">        TDFModule *module = [cls module];</span><br><span class="line">        NSAssert(module, @&quot;module can&#x27;t be nil of class %@&quot;, NSStringFromClass(cls));</span><br><span class="line"></span><br><span class="line">        if (![self.mModules containsObject:module]) &#123;</span><br><span class="line">            [self.mModules addObject:module];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (TDFApplicationDelegateProxy *)proxy &#123;</span><br><span class="line">    if (!_proxy) &#123;</span><br><span class="line">        _proxy = [[TDFApplicationDelegateProxy alloc] init];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return _proxy;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (NSArray&lt;TDFModule *&gt; *)modules &#123;</span><br><span class="line">    return (NSArray&lt;TDFModule *&gt; *)self.mModules;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (NSMutableArray&lt;TDFModule *&gt; *)mModules &#123;</span><br><span class="line">    if (!_mModules) &#123;</span><br><span class="line">        _mModules = [NSMutableArray array];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return _mModules;</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">static void MCDSwizzleInstanceMethod(Class cls, SEL originalSelector, Class targetCls, SEL swizzledSelector) &#123;</span><br><span class="line">    Method originalMethod = class_getInstanceMethod(cls, originalSelector);</span><br><span class="line">    Method swizzledMethod = class_getInstanceMethod(targetCls, swizzledSelector);</span><br><span class="line">    BOOL didAddMethod = class_addMethod(cls, originalSelector, method_getImplementation(swizzledMethod), method_getTypeEncoding(swizzledMethod));</span><br><span class="line">    if (didAddMethod) &#123;</span><br><span class="line">        class_replaceMethod(cls, swizzledSelector, method_getImplementation(originalMethod), method_getTypeEncoding(originalMethod));</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        method_exchangeImplementations(originalMethod, swizzledMethod);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@implementation UIApplication (TDFModule)</span><br><span class="line">+ (void)load &#123;</span><br><span class="line">    static dispatch_once_t onceToken;</span><br><span class="line">    dispatch_once(&amp;onceToken, ^&#123;</span><br><span class="line">        MCDSwizzleInstanceMethod(self, @selector(setDelegate:), self, @selector(mcd_setDelegate:));</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)mcd_setDelegate:(id &lt;UIApplicationDelegate&gt;)delegate &#123;</span><br><span class="line">    TDFModuleManager.shared.proxy.realDelegate = delegate;</span><br><span class="line">    [TDFModuleManager.shared generateRegistedModules];</span><br><span class="line"></span><br><span class="line">    [self mcd_setDelegate:(id &lt;UIApplicationDelegate&gt;)TDFModuleManager.shared.proxy];</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<p>最后是这个方案的重点，也就是 TDFApplicationDelegateProxy 类：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><span class="line">@interface TDFApplicationDelegateProxy : NSObject</span><br><span class="line">@property (strong, nonatomic) id &lt;UIApplicationDelegate&gt; realDelegate;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation TDFApplicationDelegateProxy</span><br><span class="line">- (Protocol *)targetProtocol &#123;</span><br><span class="line">    return @protocol(UIApplicationDelegate);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (BOOL)isTargetProtocolMethod:(SEL)selector &#123;</span><br><span class="line">    unsigned int outCount = 0;</span><br><span class="line">    struct objc_method_description *methodDescriptions = protocol_copyMethodDescriptionList([self targetProtocol], NO, YES, &amp;outCount);</span><br><span class="line"></span><br><span class="line">    for (int idx = 0; idx &lt; outCount; idx++) &#123;</span><br><span class="line">        if (selector == methodDescriptions[idx].name) &#123;</span><br><span class="line">            return YES;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    free(methodDescriptions);</span><br><span class="line"></span><br><span class="line">    return NO;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (BOOL)respondsToSelector:(SEL)aSelector &#123;</span><br><span class="line">    if ([self.realDelegate respondsToSelector:aSelector]) &#123;</span><br><span class="line">        return YES;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    for (TDFModule *module in [TDFModuleManager shared].modules) &#123;</span><br><span class="line">        if ([self isTargetProtocolMethod:aSelector] &amp;&amp; [module respondsToSelector:aSelector]) &#123;</span><br><span class="line">            return YES;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return [super respondsToSelector:aSelector];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (id)forwardingTargetForSelector:(SEL)aSelector &#123;</span><br><span class="line">    if (![self isTargetProtocolMethod:aSelector] &amp;&amp; [self.realDelegate respondsToSelector:aSelector]) &#123;</span><br><span class="line">            return self.realDelegate;</span><br><span class="line">    &#125;</span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (NSMethodSignature *)methodSignatureForSelector:(SEL)aSelector &#123;</span><br><span class="line">    struct objc_method_description methodDescription = protocol_getMethodDescription([self targetProtocol], aSelector, NO, YES);</span><br><span class="line"></span><br><span class="line">    if (methodDescription.name == NULL &amp;&amp; methodDescription.types == NULL) &#123;</span><br><span class="line">        return [[self class] instanceMethodSignatureForSelector:@selector(doNothing)];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return [NSMethodSignature signatureWithObjCTypes:methodDescription.types];;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)forwardInvocation:(NSInvocation *)anInvocation &#123;</span><br><span class="line">    NSMutableArray *allModules = [NSMutableArray arrayWithObjects:self.realDelegate, nil];</span><br><span class="line">    [allModules addObjectsFromArray:[TDFModuleManager shared].modules];</span><br><span class="line">    </span><br><span class="line">    // BOOL 型返回值做特殊 | 处理</span><br><span class="line">    if (anInvocation.methodSignature.methodReturnType[0] == &#x27;B&#x27;) &#123;</span><br><span class="line">        BOOL realReturnValue = NO;</span><br><span class="line">        </span><br><span class="line">        for (TDFModule *module in allModules) &#123;</span><br><span class="line">            if ([module respondsToSelector:anInvocation.selector]) &#123;</span><br><span class="line">                [anInvocation invokeWithTarget:module];</span><br><span class="line">                </span><br><span class="line">                BOOL returnValue = NO;</span><br><span class="line">                [anInvocation getReturnValue:&amp;returnValue];</span><br><span class="line">                </span><br><span class="line">                realReturnValue = returnValue || realReturnValue;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        [anInvocation setReturnValue:&amp;realReturnValue];</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        for (TDFModule *module in allModules) &#123;</span><br><span class="line">            if ([module respondsToSelector:anInvocation.selector]) &#123;</span><br><span class="line">                [anInvocation invokeWithTarget:module];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)doNothing &#123;&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<p>先说 <code>-respondsToSelector:</code> ，由于系统内部会调用这个方法，判断是否实现了对应的 UIApplicationDelegate 代理方法，所以这里结合 AppDelegate 以及所有注册的 Module 判断是否有相应实现。</p>
+<p>当 <code>-respondsToSelector:</code> 返回 YES 后，程序来到消息转发第二步 Fast forwarding path ，对应方法 <code>-forwardingTargetForSelector:</code>，在这一步，我们判断转发的方法是否为 UIApplicationDelegate 的代理方法，如果不是，并且 realDelegate（也就是 AppDelegate） 能响应，就直接把消息转发给 realDelegate。</p>
+<p>如果在上一步中没有把消息转发给 realDelegate，那么就到了消息转发的最后一步 Normal forwarding path ，对应方法 <code>-methodSignatureForSelector:</code> 和 <code>-forwardInvocation:</code>，在这一步我们首先根据协议直接返回代理方法的签名，然后在 <code>-forwardInvocation:</code> 方法中，按照优先级，依次把消息转发给注册的模块。</p>
+<p>在不做额外操作的前提下， <code>-forwardInvocation:</code> 中只有最后一次调用的返回值会成为实际返回值，当实现类似 <code>- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary&lt;UIApplicationOpenURLOptionsKey,id&gt; *)options</code> 等返回 BOOL 值的代理方法时，就会出现问题。所以这里通过判断返回值是否为 BOOL 类型，去执行不同的操作。如果为 BOOL 类型，则对所有返回值执行逻辑或操作，并将结果设置成实际返回值。</p>
+<p>总结起来，流程如下：</p>
+<p><a target="_blank" rel="noopener" href="https://dmanager.github.io/assets/images/2017-10-25-zu-jian-sheng-ming-zhou-qi/1509083789825.jpg"><img src="https://dmanager.github.io/assets/images/2017-10-25-zu-jian-sheng-ming-zhou-qi/1509083789825.jpg" alt="img"></a></p>
+<p>经过上面几步，就可以把 App 的事件分发给各个组件了，而且组件对事件的捕获是不依赖于外界（AppDelegate）实现的，只要进行注册就可以了，个人认为还是比较优雅的。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/09/16/AppDelegate%E7%BB%84%E4%BB%B6%E8%A7%A3%E8%80%A6/" data-id="clgqf79a800015xd39rsn4gr0" data-title="AppDelegate组件解耦" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS-AppDelegate/" rel="tag">iOS AppDelegate</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/09/18/%E9%9A%8F%E6%9C%BA%E6%B7%B1%E6%9E%97/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          随机深林
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/09/09/carsh%E5%AE%9A%E4%BD%8D%E6%80%BB%E7%BB%93/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">carsh定位总结</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/cocoaPods/" rel="tag">cocoaPods</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flutter/" rel="tag">flutter</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS-AppDelegate/" rel="tag">iOS AppDelegate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" rel="tag">量化交易</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/cocoaPods/" style="font-size: 10px;">cocoaPods</a> <a href="/tags/flutter/" style="font-size: 10px;">flutter</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOS-AppDelegate/" style="font-size: 10px;">iOS AppDelegate</a> <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" style="font-size: 10px;">量化交易</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/01/11/%E5%AE%B9%E5%99%A8%E5%8C%96/">首页容器化</a>
+          </li>
+        
+          <li>
+            <a href="/2022/08/14/%E5%8A%A8%E6%80%81%E5%BA%93%E6%87%92%E5%8A%A0%E8%BD%BD/">动态库懒加载</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/17/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E9%97%AE%E9%A2%98%E4%B8%8E%E6%B2%BB%E7%90%86/">多线程问题专项治理</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/20/%E7%9B%B4%E6%92%AD%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7%E6%96%B9%E6%A1%88/">直播性能指标监控方案</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/14/%E8%A7%86%E9%A2%91%E7%9B%B8%E5%85%B3%E4%BC%98%E5%8C%96/">视频相关优化</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 xushuanghui<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

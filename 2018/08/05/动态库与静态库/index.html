@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>动态库与静态库 | xushuanghui</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="dymanic framework原因在iOS8以前,苹果只允许发布静态库,当然cocoapods只支持静态库,但是在iOS8苹果推出了APP extension的概念,可以对项目进行扩展,感兴趣的可以看APP extension. 因为APP extension和主项目是两个独立的进程,为了共享代码,苹果允许我们创建动态库,即dynamic framework. swift第三方库在swift语">
+<meta property="og:type" content="article">
+<meta property="og:title" content="动态库与静态库">
+<meta property="og:url" content="http://example.com/2018/08/05/%E5%8A%A8%E6%80%81%E5%BA%93%E4%B8%8E%E9%9D%99%E6%80%81%E5%BA%93/index.html">
+<meta property="og:site_name" content="xushuanghui">
+<meta property="og:description" content="dymanic framework原因在iOS8以前,苹果只允许发布静态库,当然cocoapods只支持静态库,但是在iOS8苹果推出了APP extension的概念,可以对项目进行扩展,感兴趣的可以看APP extension. 因为APP extension和主项目是两个独立的进程,为了共享代码,苹果允许我们创建动态库,即dynamic framework. swift第三方库在swift语">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2018-08-05T09:25:43.000Z">
+<meta property="article:modified_time" content="2023-04-13T10:34:27.658Z">
+<meta property="article:author" content="xushuanghui">
+<meta property="article:tag" content="iOS">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="xushuanghui" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">xushuanghui</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-动态库与静态库" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2018/08/05/%E5%8A%A8%E6%80%81%E5%BA%93%E4%B8%8E%E9%9D%99%E6%80%81%E5%BA%93/" class="article-date">
+  <time class="dt-published" datetime="2018-08-05T09:25:43.000Z" itemprop="datePublished">2018-08-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      动态库与静态库
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h4 id="dymanic-framework原因"><a href="#dymanic-framework原因" class="headerlink" title="dymanic framework原因"></a>dymanic framework原因</h4><p>在iOS8以前,苹果只允许发布静态库,当然cocoapods只支持静态库,但是在iOS8苹果推出了APP extension的概念,可以对项目进行扩展,感兴趣的可以看<a target="_blank" rel="noopener" href="https://developer.apple.com/library/content/documentation/General/Conceptual/ExtensibilityPG/index.html">APP extension</a>.<br> 因为APP extension和主项目是两个独立的进程,为了共享代码,苹果允许我们创建动态库,即<code>dynamic framework</code>.</p>
+<h4 id="swift第三方库"><a href="#swift第三方库" class="headerlink" title="swift第三方库"></a>swift第三方库</h4><p>在swift语言日益优化的前提下,我们想要进行项目swift化,但是在Xcode 6.0 Beta 4的 Release Notes 中，可以找到这句话：<br> <code>Xcode does not support building ``static</code> <code>libraries that include Swift code. (17181019)</code></p>
+<h4 id="动态库导致的static-library报错"><a href="#动态库导致的static-library报错" class="headerlink" title="动态库导致的static library报错"></a>动态库导致的static library报错</h4><p>看了上面的原因,你会问pod直接使用动态库不就好了,但是对于pod来说,有这么几个问题</p>
+<ul>
+<li>包含静态库报错<br> <code>The &#39;xxx&#39; target has transitive dependencies that include static binaries</code></li>
+<li>动态库不能依赖静态库</li>
+</ul>
+<p>ok,介绍完历史原因,我们继续看,在讲解适配前,先了解几个概念.</p>
+<h1 id="基础介绍"><a href="#基础介绍" class="headerlink" title="基础介绍"></a>基础介绍</h1><p>项目都使用cocoapods进行第三方库的管理,pod可以实现依赖管理,版本控制等功能,对于主项目X依赖A,A内部A-&gt;B,A-&gt;C,B→D,这类的依赖情况,主项目只需要引入A,在安装时就会检测其他的依赖pod是否存在,不存在进行安装.</p>
+<p>pod的管理,使得项目中同一类的库只存在一份,cocoapods的项目可以<strong>静态库</strong> <strong>动态库</strong>二选其一,关于这两种的区别下面会做详细解释</p>
+<p>默认使用静态库管理,如果想改为动态,需要在podfile内部添加use_frameworks!字段,该字段告诉pod,使用框架的方式,安装和管理第三方库</p>
+<p>静态库不能包含swift文件,pod将第三方编译为static library,不能支持swift语言,新版的改为了framework的形式,下面介绍library和framework的区别.</p>
+<h1 id="library和framework"><a href="#library和framework" class="headerlink" title="library和framework"></a>library和framework</h1><p><strong>library</strong>仅能包含编译后的代码,即.a文件,不能包含其他的资源文件.</p>
+<p>但是我们封装的第三方库,有时需要包含.h文件,.nib文件,图片,文档扥g</p>
+<p><strong>framework</strong>可以包含以上所有类型.且支持包含swift代码.</p>
+<p><strong>framework</strong>支持iOS8以后,而static library可以追溯到iOS6.</p>
+<p>由于 iOS 的沙盒机制,自己创建的 Framework 和系统Framework 不同,App 中使用的 Framework 运行在沙盒里,而不是系统中.每个 App 都只能用自己对应签名的动态库,做不到多个 App 使用一个动态库</p>
+<h1 id="区别总结"><a href="#区别总结" class="headerlink" title="区别总结"></a>区别总结</h1><p>动态库和静态库的区别如下</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>动态库</th>
+<th>静态库</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>命名空间</td>
+<td>有单独的命名空间,不同库同名文件不会冲突 使用import&lt;XXX&#x2F;xxx.h&gt;的方式引入</td>
+<td>没有单独命名空间,同名文件冲突 引入方式import”xxx.h”</td>
+</tr>
+<tr>
+<td>加载时机</td>
+<td>在启动时加载,加载时间较长</td>
+<td>构建时加载</td>
+</tr>
+<tr>
+<td>依赖关系</td>
+<td>可以依赖动态库,不能依赖静态库</td>
+<td>可以依赖动态库和静态库</td>
+</tr>
+<tr>
+<td>是否能使用swift</td>
+<td>可以包含swift文件</td>
+<td>在cocoapods1.4.0之后,可以使用use_framework!的方式包含swift文件 framework支持static_framework</td>
+</tr>
+</tbody></table>
+<span id="more"></span>
+
+<h1 id="原理分析"><a href="#原理分析" class="headerlink" title="原理分析"></a>原理分析</h1><p>上面的总结我们知道静态库在程序启动时被加载,动态库在使用时被加载</p>
+<p>那么这些区别原理何在呢,下面分析下几个概念:</p>
+<h3 id="编译-目标文件-符号表-链接"><a href="#编译-目标文件-符号表-链接" class="headerlink" title="编译,目标文件,符号表,链接"></a>编译,目标文件,符号表,链接</h3><p>编译: 编译器生成机器代码,生成目标文件.</p>
+<p>目标文件包含两种符号表: 1.文件转换后的符号(名称和方法的地址及偏移量)  2.未确定的符号(需要在链接阶段才能解析完成的机器代码)</p>
+<p>目标文件包含名为”main”的符号,可以将代码块加载进RAM运行.并将”main”作为符号表的运行入口的初始位置</p>
+<p>链接: 将我们的各种目标文件加上一些第三方库，和系统库链接为可执行文件</p>
+<p>链接主要决议符号,也就是变量函数等的地址</p>
+<ul>
+<li>若符号来⾃静态库(本质就是.o 的集合包)或 .o，将其纳⼊链接产物，并确定符号地址</li>
+<li>若符号来⾃动态库，打个标记，等启动的时候再说—交给 dyld 去加载和链接符号</li>
+</ul>
+<p>于是链接加装载就有了不同的情况</p>
+<p>Load 装载：将库⽂件载⼊内存</p>
+<ul>
+<li>Static Loading：启动时</li>
+<li>Dynamic Loading：启动后（使⽤时）<br> Link 链接：决议符号地址</li>
+<li>Static Linking：构建（链接）时</li>
+<li>Dynamic Linking：运⾏时（启动时或使⽤时）</li>
+</ul>
+<h3 id="静态-共享和动态库"><a href="#静态-共享和动态库" class="headerlink" title="静态,共享和动态库"></a>静态,共享和动态库</h3><p>静态库只是目标文件的集合.静态库只是为了方便处理大量文件.链接器只选取需要的文件并将它们写入最终代码块,这使得静态链接程序很大.( This makes statically linked programs pretty large.)</p>
+<p>共享和动态库只需要被系统加载一次.然后使用该库的工程只需要对其进行引用即可.共享和动态库有两种创建方式</p>
+<p>1.全量的链接对象文件,包含大量的可被调用的符号表(真实的库代码)</p>
+<p>2.通过”stub”对象文件,包含可调用方法的映射表(jump table)</p>
+<p>通过动态库链接时,stub对象文件是通过类似静态库的形式被加载到程序中的.但是方法只是加载了方法声明.</p>
+<p>当程序使用动态库加载时,系统需要额外链接存储在RAM中的共享库.在加载系统共享库的stub文件时有个实现技巧.有两种方式可以实现加载系统共享库,1.系统拦截调用,进入系统,修改项目地址的上下文,转换到共享库,工作量很大.另一种方式,将静态库映射到运行程序通过虚拟内存管理的地址空间,这使得共享库对于多个项目来说,只是项目的一部分,虽然只在内存中短暂存在.</p>
+<p>这样的话,代码被共享,但是每个程序的堆栈由自己管理,使得各个程序员直接完全独立.</p>
+<h3 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h3><p>静态库:稳定,但是占用内存空间.</p>
+<p>动态库:从系统加载代码,共享代码节约空间,但是可以会导致运行时的错误,且不易定位和修复.</p>
+<h1 id="动态库详解"><a href="#动态库详解" class="headerlink" title="动态库详解"></a>动态库详解</h1><p>苹果官方关于动态库的描述:</p>
+<p>动态库相比静态库,减少了app可执行文件的大小.并且可以只在使用时,按需加载而不是在启动时加载.这个特性减低了启动时间,并且更优秀的利用了内存.</p>
+<p>动态库不能依赖静态库</p>
+<h2 id="启动时间过长解决办法"><a href="#启动时间过长解决办法" class="headerlink" title="启动时间过长解决办法"></a>启动时间过长解决办法</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://github.com/keith/swift-staticlibs">第三方框架swift-staticlibs,集成的为动态库,在构建阶段,转为静态库加载的形式,这样做的原因:</a><ol>
+<li>Xcode的static library不能包含swift</li>
+<li>动态库启动时间过长</li>
+</ol>
+</li>
+<li>使用static framework的方式,下面会做介绍</li>
+</ol>
+<h1 id="静态库详解"><a href="#静态库详解" class="headerlink" title="静态库详解"></a>静态库详解</h1><p>我们可以在Build Setting里面通过Mach-O Type查看target的动态或者静态状态</p>
+<p>[图片上传失败…(image-28b016-1519821296948)]</p>
+<h2 id="cocoapods1-4-0对于static-framework的支持"><a href="#cocoapods1-4-0对于static-framework的支持" class="headerlink" title="cocoapods1.4.0对于static framework的支持"></a>cocoapods1.4.0对于static framework的支持</h2><h3 id="static-framework"><a href="#static-framework" class="headerlink" title="static framework"></a>static framework</h3><p>pod在1.4.0之后提供了静态框架的特性.过去的ues_framework!只能发布动态库,现在可以发布静态的框架.这一特性解决了过去动态框架不能依赖静态库的弊端.现在的静态framework也可以依赖静态库,也可以依赖通过vendored_frameworks发布的第三方框架.</p>
+<p>补充,vendored_frameworks和vendored_library是在podspec文件内使用的属性,用法是声明包含的第三方framework和library.</p>
+<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><ol>
+<li><ol>
+<li>static framework和library有什么区别呢? framework是对于library,头文件和资源等内容的封装.library可以是动态或者静态的,静态库在构建时期链接,但是动态库是在运行时才进行加载.</li>
+<li>动态库不能依赖静态库是因为静态库不需要在运行时再次加载,如果多个动态库依赖同一个静态库,会出现多个静态库的拷贝,而这些拷贝本身只是对于内存空间的消耗.</li>
+<li>另一个历史原因是,过去很多库是通过包含静态库的vendored_framework形式发布的.</li>
+<li>在1.4.0之前,资源只能通过动态库的方式构建,所以不能依赖vendored_framework的库.而且对于vendored_framework的二进制库,无法在转换成资源pod时仍保持动态性</li>
+</ol>
+</li>
+</ol>
+<p>以上原因,使得pod在1.4.0提供了静态框架的支持.用法简单,只需要在podspec文件内,声明如下即可</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">s.static_framework = true</span><br></pre></td></tr></table></figure>
+
+<h3 id="限制"><a href="#限制" class="headerlink" title="限制"></a>限制</h3><p>所有swift库需要保持一致的版本,包含Swift文件的framework,必须指定swift的版本号,pod之后提供了新特性<a target="_blank" rel="noopener" href="https://github.com/CocoaPods/CocoaPods/issues/7134">pod制定swift版本范围</a></p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">`Pod::Spec.`</span><span class="string">`new`</span> <span class="string">`do`</span> <span class="string">`|s|`</span></span><br><span class="line"></span><br><span class="line"><span class="string">`s.name = `</span><span class="string">`&#x27;BanannaLib&#x27;`</span></span><br><span class="line"></span><br><span class="line"><span class="string">`s.version = `</span><span class="string">`&#x27;1.0.0&#x27;`</span></span><br><span class="line"></span><br><span class="line"><span class="string">`s.swift_version = `</span><span class="string">`&#x27;&gt;= 3.2&#x27;`</span></span><br><span class="line"></span><br><span class="line"><span class="string">`s.source_files = `</span><span class="string">`&#x27;**/*.swift&#x27;`</span></span><br><span class="line"></span><br><span class="line"><span class="string">`end`</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="支持包含swift文件"><a href="#支持包含swift文件" class="headerlink" title="支持包含swift文件"></a>支持包含swift文件</h2><p>在创建私有pod时,如果项目中包含swift文件,需要在podfile内部添加use_framework!字段,如果不添加会报以下错误</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[!] Pods written <span class="keyword">in</span> Swift can only be integrated <span class="keyword">as</span> frameworks; <span class="keyword">add</span> `use_frameworks!` to your Podfile <span class="keyword">or</span> target to opt <span class="keyword">into</span> <span class="keyword">using</span> it. The Swift Pod being used <span class="keyword">is</span>: erp-boss-common-ios</span><br></pre></td></tr></table></figure>
+
+<p>如果框架已经声明了static_framework &#x3D; true,则可以包含swift文件,且可以依赖其他的静态库.</p>
+<p>苹果官方的Xcode9发布文档有以下说明<a target="_blank" rel="noopener" href="https://developer.apple.com/library/content/releasenotes/DeveloperTools/RN-Xcode/Chapters/Introduction.html#//apple_ref/doc/uid/TP40001051-CH1-SW936">Xcode release文档</a></p>
+<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">Xcode</span> supports <span class="keyword">static</span> library targets which contain <span class="title class_">Swift</span> code. <span class="title class_">Debugging</span> applications that use <span class="title class_">Swift</span> <span class="keyword">static</span> libraries may <span class="built_in">require</span> a complete set <span class="keyword">of</span> build artifacts that are <span class="keyword">in</span> their original location. (<span class="string">``</span><span class="number">33297067</span><span class="string">``</span>)<span class="string">`</span></span><br></pre></td></tr></table></figure>
+
+<p>Xcode支持包含swift代码的静态库项目.</p>
+<h4 id="tips"><a href="#tips" class="headerlink" title="tips:"></a>tips:</h4><p>包含.a的static library,可以用lipo查看.a库所支持的架构.</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">lipo -info libTestLib<span class="selector-class">.a</span> </span><br><span class="line"></span><br><span class="line">Architectures in the fat file: libTestLib.a are: armv7 i386 x86_64 arm64</span><br></pre></td></tr></table></figure>
+
+<h1 id="静态库报错"><a href="#静态库报错" class="headerlink" title="静态库报错"></a>静态库报错</h1><h3 id="错误"><a href="#错误" class="headerlink" title="错误"></a>错误</h3><p>在我们使用use_frameworks!的时候,会遇到类似于下面的错误提示,引起这种提示的原因,和各种情况,下面分析一下.</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[!] <span class="title class_">The</span> <span class="string">&#x27;Pods-testDynamic_Example&#x27;</span><span class="string">` `</span>target has transitive dependencies that <span class="keyword">include</span> static <span class="symbol">binaries:</span> (<span class="regexp">/Users/zhaoyanan</span><span class="regexp">/Documents/projects</span><span class="regexp">/pod/test</span>Dynamic/<span class="title class_">Example</span>/<span class="title class_">Pods</span>/<span class="variable constant_">SAKC</span>-<span class="title class_">Ares</span>/lib/libcares_iOS.a)</span><br></pre></td></tr></table></figure>
+
+<p>boss-&gt;A-&gt;B-&gt;SL(static library)</p>
+<p>boss为主项目</p>
+<p>SL为包含.a的静态库</p>
+<p>boss-&gt;SL,没有问题</p>
+<p>在B内增加static_framework &#x3D; true, 可以解决boss-&gt;B-&gt;C问题</p>
+<p>对于boss-&gt;A-&gt;B-&gt;C的情况,如果A,A’,A’’都依赖了B,需要保证他们依赖的方式相同,即都不指定版本号,都在都指定特定的版本号,或者都指定相同的范围,声明不同,则会报错.</p>
+<p>s.static_framework &#x3D; true, s.subspec不需要再设置</p>
+<h3 id="其他方法"><a href="#其他方法" class="headerlink" title="其他方法"></a>其他方法</h3><p>有一种做法,可以作为参考,没有测试,对于<code>A-&gt;B-&gt;C-SL</code>的情况十是否使用也不可知,感兴趣的可以研究下</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">A库依赖B库为例,B库中有一个静态库libB.a :</span><br><span class="line"></span><br><span class="line">在A库中修改.podspec :</span><br><span class="line"></span><br><span class="line">s.pod_target_xcconfig = &#123;</span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;FRAMEWORK_SEARCH_PATHS&#x27;</span>`=&gt;<span class="string">&#x27;$(inherited) $(PODS_ROOT)/Crashlytics&#x27;</span>,</span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;OTHER_LDFLAGS&#x27;</span>         =&gt; <span class="string">&#x27;$(inherited) -undefined dynamic_lookup&#x27;</span></span><br><span class="line"></span><br><span class="line">&#125;， </span><br><span class="line"></span><br><span class="line">然后在Podfile中添加hook：</span><br><span class="line"></span><br><span class="line">pre_install <span class="keyword">do</span> |installer|</span><br><span class="line"></span><br><span class="line"># workaround ``<span class="keyword">for</span>` `https:``<span class="comment">//github.com/CocoaPods/CocoaPods/issues/3289</span></span><br><span class="line"></span><br><span class="line">def installer.verify_no_static_framework_transitive_dependencies; end</span><br><span class="line"></span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+
+<h2 id="新特性"><a href="#新特性" class="headerlink" title="新特性"></a>新特性</h2><p>在pod1.5.0之后,安装包含swift第三方库的时候,不限制必须在podfile内声明<code>use_frameworks!</code>.但是,如果swift库依赖OC库,就需要在OC库内允许<code>modular headers</code></p>
+<h2 id="Modular-Headers"><a href="#Modular-Headers" class="headerlink" title="Modular Headers"></a>Modular Headers</h2><p>CocoaPods在创建之初,就致力于封装尽可能多的第三方库.pod管理了第三方库的头文件搜索路径(header search paths).pod允许任意pod之间的相互引用,不需要考虑命名空间,不用制定import &lt;nameSpace&#x2F;fileName&gt;.</p>
+<p>例如B库使用#import”A.h”的,pod会配置对应的build setting来保证这种引入的可行.但是如果在其他库内增加了module maps,这种引用就会找不到文件.pod尝试自动去管理静态库的module maps,但是因为这样破坏了pod的使用方式,没有进行下去.<br> 说一下 module maps<br> 在XCode的build setting内,<strong>Packaging</strong>内有以下设置module map的选项</p>
+<ol>
+<li><strong>Defines Module (DEFINES_MODULE)</strong> :<br> 如果设置为YES,会认为项目自定义自己的组件,允许项目通过组件的方式引入</li>
+<li><strong>Module Map File (MODULEMAP_FILE)</strong><br> 用来管理LLVM的module map,定义编译器组件结构.如果defines module为YES的时候,如果Module Map File没填,会自动生成.</li>
+</ol>
+<p>在pod1.5.0版本中,通过直接import和组件导入都能找到文件.对于pod开发者,可以在<code>pod_target_xcconfig</code>内添加<code>&#39;DEFINES_MODULE&#39; =&gt; &#39;YES&#39;</code>.对于使用者,可以在podfile内添加<code>use_modular_headers!</code>允许直接import和module map.也可以通过<code>:modular_headers =&gt; true</code>配置特定的pod.</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2018/08/05/%E5%8A%A8%E6%80%81%E5%BA%93%E4%B8%8E%E9%9D%99%E6%80%81%E5%BA%93/" data-id="clgqf79aw001n5xd38rbs8r80" data-title="动态库与静态库" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/01/17/Flutter-Tree/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Flutter Tree
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/04/01/buildProcess/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">buildProcess</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/cocoaPods/" rel="tag">cocoaPods</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flutter/" rel="tag">flutter</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS-AppDelegate/" rel="tag">iOS AppDelegate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" rel="tag">量化交易</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/cocoaPods/" style="font-size: 10px;">cocoaPods</a> <a href="/tags/flutter/" style="font-size: 10px;">flutter</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOS-AppDelegate/" style="font-size: 10px;">iOS AppDelegate</a> <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" style="font-size: 10px;">量化交易</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/01/11/%E5%AE%B9%E5%99%A8%E5%8C%96/">首页容器化</a>
+          </li>
+        
+          <li>
+            <a href="/2022/08/14/%E5%8A%A8%E6%80%81%E5%BA%93%E6%87%92%E5%8A%A0%E8%BD%BD/">动态库懒加载</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/17/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E9%97%AE%E9%A2%98%E4%B8%8E%E6%B2%BB%E7%90%86/">多线程问题专项治理</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/20/%E7%9B%B4%E6%92%AD%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7%E6%96%B9%E6%A1%88/">直播性能指标监控方案</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/14/%E8%A7%86%E9%A2%91%E7%9B%B8%E5%85%B3%E4%BC%98%E5%8C%96/">视频相关优化</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 xushuanghui<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

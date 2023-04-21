@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>xushuanghui</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="xushuanghui">
+<meta property="og:url" content="http://example.com/page/4/index.html">
+<meta property="og:site_name" content="xushuanghui">
+<meta property="og:locale" content="en_US">
+<meta property="article:author" content="xushuanghui">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="xushuanghui" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">xushuanghui</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-swift小总结" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/08/10/swift%E5%B0%8F%E6%80%BB%E7%BB%93/" class="article-date">
+  <time class="dt-published" datetime="2019-08-10T06:24:40.000Z" itemprop="datePublished">2019-08-10</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/08/10/swift%E5%B0%8F%E6%80%BB%E7%BB%93/">swift小总结</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="1、混编方式"><a href="#1、混编方式" class="headerlink" title="1、混编方式"></a>1、<a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/swift/imported_c_and_objective-c_apis/importing_swift_into_objective-c">混编方式</a></h3><p>1、SWIFT_OBJC_BRIDGING_HEADER方式适用简单项目</p>
+<ul>
+<li><p>简单的项目可以直接使用<code>projectName--Bridging-Header.h</code>文件的方式，将需要暴露给swift的oc类包含进去。</p>
+</li>
+<li><p>Swift 访问 Objective-C</p>
+<p>只需要在桥接文件中（Bridging-Header.h）中导入需要暴露给 Swift 模块的 Objective-C 类，即可在 Swift 中访问相应 Objective-C 的类和方法</p>
+</li>
+<li><p>Objective-C 访问 Swift</p>
+<p>在 Objective-C 类中导入 <code>ProductName-Swift.h</code>，即可访问 Swift 中暴露给 Objective-C 的类和方法</p>
+</li>
+</ul>
+<p>2、含三方库，业务分库的较复杂的项目</p>
+<ul>
+<li><p>Swift 访问 Objective-C</p>
+<p>用 Swift Module 系统，需要用到的 Objective-C 类用 import xxx 进行引用，即可在 Swift 中访问相应的 Objective-C 的类和方法</p>
+</li>
+<li><p>Objective-C 访问 Swift</p>
+<p>在 Objective-C 类中导入 <code>ProductName-Swift.h</code>，即可访问 Swift 中暴露给 Objective-C 的类和方法</p>
+        
+          <p class="article-more-link">
+            <a href="/2019/08/10/swift%E5%B0%8F%E6%80%BB%E7%BB%93/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/08/10/swift%E5%B0%8F%E6%80%BB%E7%BB%93/" data-id="clgqf79at001e5xd3cpgo3ygm" data-title="swift小总结" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-NSBlockOperation" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/05/16/NSBlockOperation/" class="article-date">
+  <time class="dt-published" datetime="2019-05-16T07:04:33.000Z" itemprop="datePublished">2019-05-16</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/05/16/NSBlockOperation/">NSBlockOperation</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>在日常开发中，我们可能会用到 NSBlockOperation 来做一些多线程的操作。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">NSOperationQueue *queue = [[NSOperationQueue alloc] init];</span><br><span class="line">NSBlockOperation *operation = [MyBlockOperation blockOperationWithBlock:^&#123;</span><br><span class="line">    // do something</span><br><span class="line">&#125;];</span><br><span class="line">[queue addOperation:operation];</span><br></pre></td></tr></table></figure>
+
+<p>因为其使用简单，所以也被广泛使用。</p>
+<p>但这个方法也有一个缺点，当 operation 开始执行后，[operation cancel]; 并不能及时取消。</p>
+<p>同时，blockOperationWithBlock 没有 operation 的回调参数。有些同学想要通过 operation.isCancelled 进行任务的及时取消，不太清楚应该怎么做，要是使用不当甚至会引入 循环引用 问题。</p>
+<p>下面，我们通过几个面试题来一步步了解清楚这个问题。</p>
+<h3 id="1-1"><a href="#1-1" class="headerlink" title="1.1"></a>1.1</h3><p>下面的代码输出什么？</p>
+<ul>
+<li>cancelled</li>
+<li>finish</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">NSOperationQueue *queue = [[NSOperationQueue alloc] init];</span><br><span class="line">NSBlockOperation *operation = [NSBlockOperation blockOperationWithBlock:^&#123;</span><br><span class="line">    sleep(2);</span><br><span class="line">    if (operation.isCancelled) &#123;</span><br><span class="line">        NSLog(@&quot;cancelled&quot;);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        NSLog(@&quot;finish&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;];</span><br><span class="line">[queue addOperation:operation];</span><br><span class="line">dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.0 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^&#123;</span><br><span class="line">    [operation cancel];</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p><strong>答案</strong></p>
+<ul>
+<li>finish</li>
+</ul>
+<p><strong>分析</strong></p>
+<p>初始化时传入了一个 block，block 中含有 operation 对象的访问，即发生了对象的捕获。但是现在是对象的创建过程中，operation 还没有被初始化出来，block这时捕获的是 operation 当前的值，即 operation &#x3D; nil。</p>
+        
+          <p class="article-more-link">
+            <a href="/2019/05/16/NSBlockOperation/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/05/16/NSBlockOperation/" data-id="clgqf79ai000j5xd37uhrfnif" data-title="NSBlockOperation" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-组件化方案比较" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/04/17/%E7%BB%84%E4%BB%B6%E5%8C%96%E6%96%B9%E6%A1%88%E6%AF%94%E8%BE%83/" class="article-date">
+  <time class="dt-published" datetime="2019-04-17T08:28:35.000Z" itemprop="datePublished">2019-04-17</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/04/17/%E7%BB%84%E4%BB%B6%E5%8C%96%E6%96%B9%E6%A1%88%E6%AF%94%E8%BE%83/">组件化方案比较</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h4 id="组件化第一步－剥离公共库和产品基础库"><a href="#组件化第一步－剥离公共库和产品基础库" class="headerlink" title="组件化第一步－剥离公共库和产品基础库"></a>组件化第一步－剥离公共库和产品基础库</h4><h4 id="组件化第二步－独立业务模块单独成库"><a href="#组件化第二步－独立业务模块单独成库" class="headerlink" title="组件化第二步－独立业务模块单独成库"></a>组件化第二步－独立业务模块单独成库</h4><ul>
+<li>模块间解耦</li>
+<li>模块重用</li>
+<li>提高团队协作开发效率</li>
+<li>单元测试</li>
+</ul>
+<p> iOS 上绝大部分的路由工具都是基于 URL 匹配的，或者是根据命名约定，用 runtime 方法进行动态调用</p>
+<p>缺点是需要维护字符串表，或者依赖于命名约定，无法在编译时暴露出所有问题，需要在运行时才能发现错误</p>
+<h2 id="target-action"><a href="#target-action" class="headerlink" title="target-action"></a>target-action</h2><p>A-&gt;中间-&gt;B</p>
+<p>通过分类给组件来封装一层target对象来给外界提供服务，然后调用者通过依赖中间件来使用服务；中间件是通过runtime来调用组件的服务，达到的解耦。然后，通过实现中间件的category添加新接口来提供服务给调用者，这样使用者只需要依赖中间件，而组件则不需要依赖中间件。</p>
+<p>利用 category 为路由工具添加新接口，在接口中通过字符串硬编码获取对应的类，再用 runtime 创建实例，动态调用实例的方法</p>
+        
+          <p class="article-more-link">
+            <a href="/2019/04/17/%E7%BB%84%E4%BB%B6%E5%8C%96%E6%96%B9%E6%A1%88%E6%AF%94%E8%BE%83/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/04/17/%E7%BB%84%E4%BB%B6%E5%8C%96%E6%96%B9%E6%A1%88%E6%AF%94%E8%BE%83/" data-id="clgqf79b000205xd340zn4ftu" data-title="组件化方案比较" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-block" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/04/17/block/" class="article-date">
+  <time class="dt-published" datetime="2019-04-17T05:21:41.000Z" itemprop="datePublished">2019-04-17</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/04/17/block/">block</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><strong>block本质是什么</strong></p>
+<p>Block 本质上是一个 Objective-C 的对象，它内部也有一个 <code>isa</code> 指针，它是一个封装了函数及函数调用环境的 Objective-C 对象</p>
+<ol>
+<li><strong>NSGlobalBlock</strong>、<strong>NSStackBlock</strong>、<strong>NSMallocBlock</strong></li>
+</ol>
+<p>当一个 <code>__NSStackBlock__</code> 类型 Block 做 <code>copy</code> 操作后就会将这个 Block 从栈上复制到堆上，而堆上的这个 Block 类型就是 <code>__NSMallocBlock__</code> 类型。在 ARC 环境下，编译器会根据情况，自动将 Block 从栈上 <code>copy</code> 到堆上。具体会进行 <code>copy</code> 的情况有如下 4 种：</p>
+<ul>
+<li><p>block 作为函数的返回值时；</p>
+</li>
+<li><p>block 赋值给 __strong 指针，或者赋值给 block 类型的成员变量时；</p>
+</li>
+<li><p>block 作为 Cocoa API 中方法名含有 usingBlock 的方法参数时；</p>
+</li>
+<li><p>block 作为 GCD API 的方法参数时</p>
+</li>
+<li><p><strong>__block 的作用</strong></p>
+</li>
+</ul>
+<p>简单来说，<code>__block</code> 作用是允许 <code>block</code> 内部访问和修改外部变量，在 ARC 环境下还可以用来防止循环引用；</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">__block int <span class="attr">age</span> = <span class="number">10</span><span class="comment">;</span></span><br><span class="line">void (^exampleBlock)(void) = ^&#123;</span><br><span class="line">    // block</span><br><span class="line">    NSLog(@&quot;1.age is: %d&quot;, age)<span class="comment">;</span></span><br><span class="line">    <span class="attr">age</span> = <span class="number">16</span><span class="comment">;</span></span><br><span class="line">    NSLog(@&quot;2.age is: %d&quot;, age)<span class="comment">;</span></span><br><span class="line">&#125;<span class="comment">;</span></span><br><span class="line">exampleBlock()<span class="comment">;</span></span><br><span class="line">NSLog(@&quot;3.age is: %d&quot;, age)<span class="comment">;</span></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p><code>__block</code> 主要用来解决 <code>block</code> 内部无法修改 <code>auto</code> 变量值的问题，为什么加上 <code>__block</code> 修饰之后，<code>auto</code> 变量值就能修改了呢？</p>
+<p>这是因为，加上 <code>__block</code> 修饰之后，编译器会将 <code>__block</code> 变量包装成一个结构体 <code>__Block_byref_age_0</code> ，结构体内部 <code>*__forwarding</code> 是指向自身的指针，并且结构体内部还存储着外部 <code>auto</code> 变量。</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">__Block_byref_val_0</span> &#123;</span><br><span class="line">    <span class="type">void</span> *__isa; <span class="comment">// isa指针</span></span><br><span class="line">    __Block_byref_val_0 *__forwarding; </span><br><span class="line">    <span class="type">int</span> __flags;</span><br><span class="line">    <span class="type">int</span> __size; <span class="comment">// Block结构体大小</span></span><br><span class="line">    <span class="type">int</span> age; <span class="comment">// 捕获到的变量</span></span><br><span class="line">&#125;</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/ce62d5b6e4f2412d884dda868637316b~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp?" alt="block_struct.jpg" style="zoom:50%;" />
+
+<p>从上图可以看到，如果 <code>block</code> 是在栈上，那么这个 <code>__forwarding</code> 指针就是指向它自己，当这个 <code>block</code> 从栈上复制到堆上后，栈上的 <code>__forwarding</code> 指针指向的是复制到堆上的 <code>__block</code> 结构体。堆上的 <code>__block</code> 结构体中的 <code>__forwarding</code> 指向的还是它自己，即 <code>age-&gt;__forwarding</code> 获取到堆上的 <code>__block</code> 结构体，<code>age-&gt;__forwarding-&gt;age</code> 会把堆上的 <code>age</code> 赋值为 16 。因此不管是栈上还是堆上的 <code>__block</code> 结构体，最终使用到的都是堆上的 <code>__block</code> 结构体里面的数据。</p>
+<ul>
+<li><strong>__weak 的作用</strong></li>
+</ul>
+<p>简单来说是为了防止循环引用。使 <code>block</code> 对象对 <code>self</code> 弱引用</p>
+<ul>
+<li><p><strong>__strong 的作用</strong> 简单来说，是防止 Block 内部引用的外部 <code>weak</code> 变量被提前释放，进而在 Block 内部无法获取 <code>weak</code> 变量以继续使用的情况；</p>
+</li>
+<li><p>思考题</p>
+</li>
+</ul>
+<p><code>Block</code> 内修改外部 <code>NSMutableString</code> 、<code>NSMutableArray</code> 、<code>NSMutableDictionary</code> 对象，是否需要添加 <code>__block</code> 修饰？</p>
+<figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">NSMutableArray *mutableArray = <span class="selector-attr">[[NSMutableArray alloc]</span> init];</span><br><span class="line"><span class="selector-attr">[mutableArray addObject:@<span class="string">&quot;1&quot;</span>]</span>;</span><br><span class="line">void (^exampleBlock)(void) = ^&#123;</span><br><span class="line">    <span class="comment">// block</span></span><br><span class="line">    <span class="selector-attr">[mutableArray addObject:@<span class="string">&quot;2&quot;</span>]</span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="built_in">exampleBlock</span>();</span><br><span class="line"><span class="built_in">NSLog</span>(@&quot;mutableArray: %@&quot;, mutableArray);</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p>打印日志：</p>
+<blockquote>
+<p>mutableArray: ( 1, 2 )</p>
+</blockquote>
+<p>答案是：不需要。因为在 <code>block</code> 内部，我们只是使用了对象 <code>mutableArray</code> 的内存地址，往其中添加内容。并没有修改其内存地址，因此不需要使用 <code>__block</code> 也可以正确执行。当我们只是使用局部变量的内存地址，而不是对其内存地址进行修改时，我们无需对其添加 <code>__block</code> ，如果添加了 <code>__block</code> 系统会自动创建相应的结构体，这种情况冗余且低效。</p>
+<ul>
+<li>Block 数据结构</li>
+</ul>
+<p>Block 内部数据结构图如下：</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4ab0ef1f0a6d49e9b1f6228dfcbf2447~tplv-k3u1fbpfcp-zoom-in-crop-mark:4536:0:0:0.awebp" alt="block_layout.jpg"></p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> Block_descriptor &#123;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> <span class="type">int</span> reserved;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">long</span> <span class="type">int</span> size;</span><br><span class="line">    <span class="type">void</span> (*<span class="keyword">copy</span>)(<span class="type">void</span> *dst, <span class="type">void</span> *src);</span><br><span class="line">    <span class="type">void</span> (*dispose)(<span class="type">void</span> *);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> Block_layout &#123;</span><br><span class="line">    <span class="type">void</span> *isa;</span><br><span class="line">    <span class="type">int</span> flags;</span><br><span class="line">    <span class="type">int</span> reserved; </span><br><span class="line">    <span class="type">void</span> (*invoke)(<span class="type">void</span> *, ...);</span><br><span class="line">    <span class="keyword">struct</span> Block_descriptor *descriptor;</span><br><span class="line">    <span class="comment">/* Imported variables. */</span></span><br><span class="line">&#125;;</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+
+<p><code>Block_layout</code> 结构体成员含义如下：</p>
+<blockquote>
+<p><code>isa:</code> 指向所属类的指针，也就是 block 的类型</p>
+<p><code>flags:</code> 按 bit 位表示一些 block 的附加信息，比如判断 block 类型、判断 block 引用计数、判断 block 是否需要执行辅助函数等；</p>
+<p><code>reserved:</code> 保留变量；</p>
+<p><code>invoke:</code> block 函数指针，指向具体的 block 实现的函数调用地址，block 内部的执行代码都在这个函数中；</p>
+<p><code>descriptor:</code> 结构体 Block_descriptor，block 的附加描述信息，包含 copy&#x2F;dispose 函数，block 的大小，保留变量；</p>
+<p><code>variables:</code> 因为 block 有闭包性，所以可以访问 block 外部的局部变量。这些 variables 就是复制到结构体中的外部局部变量或变量的地址；</p>
+</blockquote>
+<p><code>Block_descriptor</code> 结构体成员含义如下：</p>
+<blockquote>
+<p><code>reserved:</code> 保留变量；</p>
+<p><code>size:</code> block 的大小；</p>
+<p><code>copy:</code> 函数用于捕获变量并持有引用；</p>
+<p><code>dispose:</code> 析构函数，用来释放捕获的资源；</p>
+</blockquote>
+<p>调用copy,把NSStackBlock变成NSMallocBlock</p>
+<p>原因：栈中的代码在作用域结束之后内存就会被销毁，可能block内存销毁之后才去调用它</p>
+<p><strong>什么情况下ARC会自动将block进行一次copy操作？</strong></p>
+<p>1、block作为函数返回值时 2、 将block赋值给__strong指针时 3、block作为方法参数时</p>
+<p><strong>Block</strong></p>
+<p>1、解决block循环引用的思路就是中介者模式。<br>2、Block的本质就是对象<br>3、当Block捕获到外界变量时，他就会从全局block变成堆block</p>
+<ul>
+<li><p>_NSConcreteGlobalBlock 跟全局变量一样,设置在程序的数据区域data中</p>
+</li>
+<li><p>_NSConcreteStackBlock栈上(前面讲的都是栈上的 block)</p>
+</li>
+<li><p>_NSConcreteMallocBlock 堆上</p>
+</li>
+<li><p>通过<code>__block</code>修饰<code>int</code> <code>a</code>,block体中对这个变量的引用是指针拷贝,它会作为block结构体构造参数传入到结构体中且复制这个变量的指针引用，从而达到可以修改变量的作用.</p>
+</li>
+<li><p>| <code>__TestClass__testMethods_block_copy_0</code>    | 从栈复制到堆时      |<br>| <code>__TestClass__testMethods_block_dispose_0</code> | 堆上的Block被废弃时 |</p>
+</li>
+<li><h5 id="什么时候栈上的Block会被复制到堆呢？"><a href="#什么时候栈上的Block会被复制到堆呢？" class="headerlink" title="什么时候栈上的Block会被复制到堆呢？"></a>什么时候栈上的Block会被复制到堆呢？</h5><ul>
+<li>调用block的copy函数时。</li>
+<li>Block作为函数返回值返回时。</li>
+<li>将Block赋值给附有Block类型成员变量时。<br>将栈block复制到堆以后，block结构体的isa成员变量变成了_NSConcreteMallocBlock。</li>
+</ul>
+</li>
+</ul>
+<h5 id="什么时候Block被废弃呢？"><a href="#什么时候Block被废弃呢？" class="headerlink" title="什么时候Block被废弃呢？"></a>什么时候Block被废弃呢？</h5><ul>
+<li>堆上的Block被释放后,谁都不再持有Block时调用dispose函数。</li>
+</ul>
+<p>ARC下bl<br>因为block0持有__block变量，所以也会把这个__block变量复制到堆上</p>
+<h3 id="strong、-weak修饰解决循环引用"><a href="#strong、-weak修饰解决循环引用" class="headerlink" title="__strong、__weak修饰解决循环引用"></a><code>__strong</code>、<code>__weak</code>修饰解决循环引用</h3><p>首先因为block捕获变量的时候 结构体构造时传入了self,造成了默认的引用关系,<br>所以一般在block外部对操作对象会加上<code>__weak</code>,在Block内部使用<code>__strong</code>修饰符的对象类型的自动变量，那么当Block从栈复制到堆的时候，该对象就会被Block所持有,</p>
+<p><strong>被__block修饰的对象类型<br>当__block变量在栈上时，不会对指向的对象产生强引用<br>当__block变量被copy到堆时<br>会调用__block变量内部的copy函数<br>copy函数内部会调用_Block_object_assign函数<br>_Block_object_assign函数会根据所指向对象的修饰符（__strong、__weak、__unsafe_unretained）做出相应的操作，形成强引用（retain）或者弱引用（注意：这里仅限于ARC时会retain，MRC时不会retain）</strong></p>
+<p>如果__block变量从堆上移除<br>会调用__block变量内部的dispose函数<br>dispose函数内部会调用_Block_object_dispose函数<br>_Block_object_dispose函数会自动释放指向的对象（release）</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/04/17/block/" data-id="clgqf79ao00105xd3fsz83zmd" data-title="block" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-Sarsa算法" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/04/01/Sarsa%E7%AE%97%E6%B3%95/" class="article-date">
+  <time class="dt-published" datetime="2019-04-01T09:27:08.000Z" itemprop="datePublished">2019-04-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/04/01/Sarsa%E7%AE%97%E6%B3%95/">Sarsa算法</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="Sarsa-更新行为准则"><a href="#Sarsa-更新行为准则" class="headerlink" title="Sarsa 更新行为准则"></a>Sarsa 更新行为准则</h2><p><a target="_blank" rel="noopener" href="https://morvanzhou.github.io/static/results/ML-intro/s3.png"><img src="https://morvanzhou.github.io/static/results/ML-intro/s3.png" alt="Sarsa"></a></p>
+<p>同样, 我们会经历正在写作业的状态 s1, 然后再挑选一个带来最大潜在奖励的动作 a2, 这样我们就到达了 继续写作业状态 s2, 而在这一步, 如果你用的是 Q learning, 你会观看一下在 s2 上选取哪一个动作会带来最大的奖励, 但是在真正要做决定时, 却不一定会选取到那个带来最大奖励的动作, Q-learning 在这一步只是估计了一下接下来的动作值. 而 Sarsa 是实践派, 他说到做到, 在 s2 这一步估算的动作也是接下来要做的动作. 所以 Q(s1, a2) 现实的计算值, 我们也会稍稍改动, 去掉maxQ, 取而代之的是在 s2 上我们实实在在选取的 a2 的 Q 值. 最后像 Q learning 一样, 求出现实和估计的差距 并更新 Q 表里的 Q(s1, a2).</p>
+<h2 id="对比-Sarsa-和-Q-learning-算法"><a href="#对比-Sarsa-和-Q-learning-算法" class="headerlink" title="对比 Sarsa 和 Q-learning 算法"></a>对比 Sarsa 和 Q-learning 算法</h2><p><a target="_blank" rel="noopener" href="https://morvanzhou.github.io/static/results/ML-intro/s4.png"><img src="https://morvanzhou.github.io/static/results/ML-intro/s4.png" alt="Sarsa"></a></p>
+<p>从算法来看, 这就是他们两最大的不同之处了. 因为 Sarsa 是说到做到型, 所以我们也叫他 on-policy, 在线学习, 学着自己在做的事情. 而 Q learning 是说到但并不一定做到, 所以它也叫作 Off-policy, 离线学习. 而因为有了 maxQ, Q-learning 也是一个特别勇敢的算法.</p>
+<p><a target="_blank" rel="noopener" href="https://morvanzhou.github.io/static/results/ML-intro/s5.png"><img src="https://morvanzhou.github.io/static/results/ML-intro/s5.png" alt="Sarsa"></a></p>
+<p>为什么说他勇敢呢, 因为 Q learning 机器人 永远都会选择最近的一条通往成功的道路, 不管这条路会有多危险. 而 Sarsa 则是相当保守, 他会选择离危险远远的, 拿到宝藏是次要的, 保住自己的小命才是王道. 这就是使用 Sarsa 方法的不同之处.</p>
+<h2 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h2><p><a target="_blank" rel="noopener" href="https://morvanzhou.github.io/static/results/reinforcement-learning/3-1-1.png"><img src="https://morvanzhou.github.io/static/results/reinforcement-learning/3-1-1.png" alt="Sarsa 算法更新"></a></p>
+<p>整个算法还是一直不断更新 Q table 里的值, 然后再根据新的值来判断要在某个 state 采取怎样的 action. 不过于 Qlearning 不同之处:</p>
+<ul>
+<li>他在当前 <code>state</code> 已经想好了 <code>state</code> 对应的 <code>action</code>, 而且想好了 下一个 <code>state_</code> 和下一个 <code>action_</code> (Qlearning 还没有想好下一个 <code>action_</code>)</li>
+<li>更新 <code>Q(s,a)</code> 的时候基于的是下一个 <code>Q(s_, a_)</code> (Qlearning 是基于 <code>maxQ(s_)</code>)</li>
+</ul>
+<p>这种不同之处使得 Sarsa 相对于 Qlearning, 更加的胆小. 因为 Qlearning 永远都是想着 <code>maxQ</code> 最大化, 因为这个 <code>maxQ</code> 而变得贪婪, 不考虑其他非 <code>maxQ</code> 的结果. 我们可以理解成 Qlearning 是一种贪婪, 大胆, 勇敢的算法, 对于错误, 死亡并不在乎. 而 Sarsa 是一种保守的算法, 他在乎每一步决策, 对于错误和死亡比较铭感. 这一点我们会在可视化的部分看出他们的不同. 两种算法都有他们的好处, 比如在实际中, 你比较在乎机器的损害, 用一种保守的算法, 在训练时就能减少损坏的次数.</p>
+<h2 id="算法的代码形式"><a href="#算法的代码形式" class="headerlink" title="算法的代码形式"></a>算法的代码形式</h2><p>首先我们先 import 两个模块, <code>maze_env</code> 是我们的环境模块, 已经编写好了, <code>maze_env</code> 模块，我们可以不深入研究, 如果你对编辑环境感兴趣, 可以去看看如何使用 python 自带的简单 GUI 模块 <code>tkinter</code> 来编写虚拟环境.<code>maze_env</code> 就是用 <code>tkinter</code> 编写的. 而 <code>RL_brain</code> 这个模块是 RL 的大脑部分, 我们下节会讲.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">from maze_env import Maze</span><br><span class="line">from RL_brain import SarsaTable</span><br></pre></td></tr></table></figure>
+
+<p>下面的代码, 我们可以根据上面的图片中的算法对应起来, 这就是整个 Sarsa 最重要的迭代更新部分啦.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">def update():</span><br><span class="line">    for episode in range(100):</span><br><span class="line">        # 初始化环境</span><br><span class="line">        observation = env.reset()</span><br><span class="line"></span><br><span class="line">        # Sarsa 根据 state 观测选择行为</span><br><span class="line">        action = RL.choose_action(str(observation))</span><br><span class="line"></span><br><span class="line">        while True:</span><br><span class="line">            # 刷新环境</span><br><span class="line">            env.render()</span><br><span class="line"></span><br><span class="line">            # 在环境中采取行为, 获得下一个 state_ (obervation_), reward, 和是否终止</span><br><span class="line">            observation_, reward, done = env.step(action)</span><br><span class="line"></span><br><span class="line">            # 根据下一个 state (obervation_) 选取下一个 action_</span><br><span class="line">            action_ = RL.choose_action(str(observation_))</span><br><span class="line"></span><br><span class="line">            # 从 (s, a, r, s, a) 中学习, 更新 Q_tabel 的参数 ==&gt; Sarsa</span><br><span class="line">            RL.learn(str(observation), action, reward, str(observation_), action_)</span><br><span class="line"></span><br><span class="line">            # 将下一个当成下一步的 state (observation) and action</span><br><span class="line">            observation = observation_</span><br><span class="line">            action = action_</span><br><span class="line"></span><br><span class="line">            # 终止时跳出循环</span><br><span class="line">            if done:</span><br><span class="line">                break</span><br><span class="line"></span><br><span class="line">    # 大循环完毕</span><br><span class="line">    print(&#x27;game over&#x27;)</span><br><span class="line">    env.destroy()</span><br><span class="line"></span><br><span class="line">if __name__ == &quot;__main__&quot;:</span><br><span class="line">    env = Maze()</span><br><span class="line">    RL = SarsaTable(actions=list(range(env.n_actions)))</span><br><span class="line"></span><br><span class="line">    env.after(100, update)</span><br><span class="line">    env.mainloop()</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="代码主结构"><a href="#代码主结构" class="headerlink" title="代码主结构"></a>代码主结构</h2><p>和之前定义 Qlearning 中的 <code>QLearningTable</code> 一样, 因为使用 tabular 方式的 <code>Sarsa</code> 和 <code>Qlearning</code> 的相似度极高,</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">class SarsaTable:</span><br><span class="line">    # 初始化 (与之前一样)</span><br><span class="line">    def __init__(self, actions, learning_rate=0.01, reward_decay=0.9, e_greedy=0.9):</span><br><span class="line"></span><br><span class="line">    # 选行为 (与之前一样)</span><br><span class="line">    def choose_action(self, observation):</span><br><span class="line"></span><br><span class="line">    # 学习更新参数 (有改变)</span><br><span class="line">    def learn(self, s, a, r, s_):</span><br><span class="line"></span><br><span class="line">    # 检测 state 是否存在 (与之前一样)</span><br><span class="line">    def check_state_exist(self, state):</span><br></pre></td></tr></table></figure>
+
+<p>我们甚至可以定义一个 主class <code>RL</code>, 然后将 <code>QLearningTable</code> 和 <code>SarsaTable</code> 作为 主class <code>RL</code> 的衍生, 这个主 <code>RL</code> 可以这样定义. 所以我们将之前的 <code>__init__</code>, <code>check_state_exist</code>, <code>choose_action</code>, <code>learn</code> 全部都放在这个主结构中, 之后根据不同的算法更改对应的内容就好了. 所以还没弄懂这些功能的朋友们, 请回到之前的教程再看一遍.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">import numpy as np</span><br><span class="line">import pandas as pd</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class RL(object):</span><br><span class="line">    def __init__(self, action_space, learning_rate=0.01, reward_decay=0.9, e_greedy=0.9):</span><br><span class="line">        ... # 和 QLearningTable 中的代码一样</span><br><span class="line"></span><br><span class="line">    def check_state_exist(self, state):</span><br><span class="line">        ... # 和 QLearningTable 中的代码一样</span><br><span class="line"></span><br><span class="line">    def choose_action(self, observation):</span><br><span class="line">        ... # 和 QLearningTable 中的代码一样</span><br><span class="line"></span><br><span class="line">    def learn(self, *args):</span><br><span class="line">        pass # 每种的都有点不同, 所以用 pass</span><br></pre></td></tr></table></figure>
+
+<p>如果是这样定义父类的 <code>RL</code> class, 通过继承关系, 那之子类 <code>QLearningTable</code> class 就能简化成这样:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">class QLearningTable(RL):   # 继承了父类 RL</span><br><span class="line">    def __init__(self, actions, learning_rate=0.01, reward_decay=0.9, e_greedy=0.9):</span><br><span class="line">        super(QLearningTable, self).__init__(actions, learning_rate, reward_decay, e_greedy)    # 表示继承关系</span><br><span class="line"></span><br><span class="line">    def learn(self, s, a, r, s_):   # learn 的方法在每种类型中有不一样, 需重新定义</span><br><span class="line">        self.check_state_exist(s_)</span><br><span class="line">        q_predict = self.q_table.loc[s, a]</span><br><span class="line">        if s_ != &#x27;terminal&#x27;:</span><br><span class="line">            q_target = r + self.gamma * self.q_table.loc[s_, :].max()</span><br><span class="line">        else:</span><br><span class="line">            q_target = r</span><br><span class="line">        self.q_table.loc[s, a] += self.lr * (q_target - q_predict)</span><br></pre></td></tr></table></figure>
+
+<h2 id="学习"><a href="#学习" class="headerlink" title="学习"></a>学习</h2><p>有了父类的 <code>RL</code>, 我们这次的编写就很简单, 只需要编写 <code>SarsaTable</code> 中 <code>learn</code> 这个功能就完成了. 因为其他功能都和父类是一样的. 这就是我们所有的 <code>SarsaTable</code> 于父类 <code>RL</code> 不同之处的代码. 是不是很简单.</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">class SarsaTable(RL):   # 继承 RL class</span><br><span class="line"></span><br><span class="line">    def __init__(self, actions, learning_rate=0.01, reward_decay=0.9, e_greedy=0.9):</span><br><span class="line">        super(SarsaTable, self).__init__(actions, learning_rate, reward_decay, e_greedy)    # 表示继承关系</span><br><span class="line"></span><br><span class="line">    def learn(self, s, a, r, s_, a_):</span><br><span class="line">        self.check_state_exist(s_)</span><br><span class="line">        q_predict = self.q_table.loc[s, a]</span><br><span class="line">        if s_ != &#x27;terminal&#x27;:</span><br><span class="line">            q_target = r + self.gamma * self.q_table.loc[s_, a_]  # q_target 基于选好的 a_ 而不是 Q(s_) 的最大值</span><br><span class="line">        else:</span><br><span class="line">            q_target = r  # 如果 s_ 是终止符</span><br><span class="line">        self.q_table.loc[s, a] += self.lr * (q_target - q_predict)  # 更新 q_table</span><br></pre></td></tr></table></figure>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/04/01/Sarsa%E7%AE%97%E6%B3%95/" data-id="clgqf79am000u5xd3bu5188h2" data-title="Sarsa算法" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-Q-Learning-2" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/04/01/Q-Learning-2/" class="article-date">
+  <time class="dt-published" datetime="2019-04-01T08:46:27.000Z" itemprop="datePublished">2019-04-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/04/01/Q-Learning-2/">Q-Learning-2</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="算法更新"><a href="#算法更新" class="headerlink" title="算法更新"></a>算法更新</h2><p><a target="_blank" rel="noopener" href="https://morvanzhou.github.io/static/results/reinforcement-learning/4-1-1.jpg"><img src="https://morvanzhou.github.io/static/results/reinforcement-learning/4-1-1.jpg" alt="DQN 算法更新 (Tensorflow)"></a></p>
+<p>整个算法乍看起来很复杂, 不过我们拆分一下, 就变简单了. 也就是个 Q learning 主框架上加了些装饰.</p>
+<p>这些装饰包括:</p>
+<ul>
+<li>记忆库 (用于重复学习)</li>
+<li>神经网络计算 Q 值</li>
+<li>暂时冻结 <code>q_target</code> 参数 (切断相关性)
+        
+          <p class="article-more-link">
+            <a href="/2019/04/01/Q-Learning-2/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/04/01/Q-Learning-2/" data-id="clgqf79ak000o5xd3gbbf26uh" data-title="Q-Learning-2" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-Q-Learning" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/03/29/Q-Learning/" class="article-date">
+  <time class="dt-published" datetime="2019-03-29T12:06:02.000Z" itemprop="datePublished">2019-03-29</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/03/29/Q-Learning/">Q-Learning-1</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>###Q-Learning 整体算法</p>
+<p><a target="_blank" rel="noopener" href="https://morvanzhou.github.io/static/results/ML-intro/q4.png"><img src="https://morvanzhou.github.io/static/results/ML-intro/q4.png" alt="Q Leaning"></a></p>
+<p> Q learning 的算法, 每次更新我们都用到了 Q 现实和 Q 估计, 而且 Q learning 的迷人之处就是 在 Q(s1, a2) 现实 中, 也包含了一个 Q(s2) 的最大估计值, 将对下一步的衰减的最大估计和当前所得到的奖励当成这一步的现实, 很奇妙吧. 最后我们来说说这套算法中一些参数的意义. Epsilon greedy 是用在决策上的一种策略, 比如 epsilon &#x3D; 0.9 时, 就说明有90% 的情况我会按照 Q 表的最优值选择行为, 10% 的时间使用随机选行为. alpha是学习率, 来决定这次的误差有多少是要被学习的, alpha是一个小于1 的数. gamma 是对未来 reward 的衰减值. 我们可以这样想象.</p>
+        
+          <p class="article-more-link">
+            <a href="/2019/03/29/Q-Learning/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/03/29/Q-Learning/" data-id="clgqf79al000r5xd392jp4uvj" data-title="Q-Learning-1" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-GitLab-CI" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/03/26/GitLab-CI/" class="article-date">
+  <time class="dt-published" datetime="2019-03-26T07:59:06.000Z" itemprop="datePublished">2019-03-26</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/03/26/GitLab-CI/">GitLab CI</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>目前团队内部缺少组件发布平台，每次 App 发版都需要组件负责人去发布自己名下涉及的组件。这中间存在组件间依赖以及发布时间差问题，上层组件需要依赖下层组件的发布，负责人之间沟通起来极为耗时。所以团队暂时没有限制私有源仓库的推送权限，当发布时间比较紧时，方便负责人绕过 lint， 直接推送 podspec 到私有源仓库。</p>
+<p>虽然这种发布方式能节省一部分时间，但是容易出现下层组件 lint 失败向上层传递的情况。久而久之，lint 不通过的组件将会越来越多。为了尽量避免这种情况的发生，引入 CI 对组件进行 lint 监测是个不错的选择。</p>
+<p>以上就是团队当初引入 CI 的初衷。不过 CI 能带来的便利远不止如此，当然，这都是后话了。</p>
+<h2 id="GitLab-CI"><a href="#GitLab-CI" class="headerlink" title="GitLab CI"></a>GitLab CI</h2><blockquote>
+<p>本文使用 GitLab Community Edition 10.4.0 版本</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://dmanager.github.io/images/cicd_pipeline_infograph.png"><img src="https://dmanager.github.io/images/cicd_pipeline_infograph.png" alt="cicd_pipeline_infograph"></a></p>
+<p>GitLab 在 8.0 版本之后，就集成了 GitLab CI ，随着版本的迭代，其功能越来越强大。使用者只需要在仓库根目录下 （可以通过仓库的 Setting -&gt; CI&#x2F;CD -&gt; General pipelines settings -&gt; Custom CI config path 设置加载路径，默认根目录）添加 <code>.gitlab-ci.yml</code> 配置文件，并且存在可用的 GitLab Runner ，就可以实现持续集成。</p>
+<p>如果在仓库中没有发现 CI&#x2F;CD 设置项，则需要到 Setting -&gt; CI&#x2F;CD -&gt; Permissions -&gt; Pipeline 打开设置。</p>
+<p>首先需要明确的是和 GitLab CI 任务相关的几个概念： pipeline、stage、job。</p>
+        
+          <p class="article-more-link">
+            <a href="/2019/03/26/GitLab-CI/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/03/26/GitLab-CI/" data-id="clgqf79ah000g5xd32d5adcxr" data-title="GitLab CI" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-Runloop" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/03/16/Runloop/" class="article-date">
+  <time class="dt-published" datetime="2019-03-16T07:23:07.000Z" itemprop="datePublished">2019-03-16</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/03/16/Runloop/">Runloop</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p> 本篇主要是围绕着项目使用到的Runloop的应用场景及衍生出来的知识点，将讲述以下部分：</p>
+<ul>
+<li>控制线程的生命周期【线程保活】</li>
+<li>解决NSTimer在滑动过程中停止工作的问题及衍生问题</li>
+<li>监控应用卡顿</li>
+<li>性能优化</li>
+</ul>
+<p><img src="https://i.loli.net/2020/12/16/bF3XPHuQE9yoqxG.png" alt="2020-12-16-4.12.57.png"></p>
+<h2 id="一、线程保活"><a href="#一、线程保活" class="headerlink" title="一、线程保活"></a>一、线程保活</h2><p>线程保活问题,从字面意思上就是保护线程的生命周期不结束.正常情况下,当线程执行完一次任务之后,需要进行资源回收,但是当有一个任务,随时都有可能去调用,如果在子线程去执行,并且让子线程一直存活着,为了避免来回多次创建毁线程的动作, 降低性能消耗.</p>
+<h3 id="情景1"><a href="#情景1" class="headerlink" title="情景1"></a>情景1</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation/Foundation.h&gt;</span><br><span class="line">//定义继承自NSThread线程</span><br><span class="line">@interface ZXYThread : NSThread</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation ZXYThread</span><br><span class="line">//线程销毁会被调用</span><br><span class="line">- (void)dealloc</span><br><span class="line">&#123;</span><br><span class="line">    NSLog(@&quot;%s&quot;, __func__);</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation ViewController</span><br><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line"></span><br><span class="line">    self.thread = [[ZXYThread alloc] initWithTarget:self selector:@selector(run) object:nil];</span><br><span class="line">    [self.thread start];</span><br><span class="line">&#125;</span><br><span class="line">- (void)touchesBegan:(NSSet&lt;UITouch *&gt; *)touches withEvent:(UIEvent *)event</span><br><span class="line">&#123;</span><br><span class="line">    [self performSelector:@selector(test) onThread:self.thread withObject:nil waitUntilDone:NO];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 子线程需要执行的任务</span><br><span class="line">- (void)test</span><br><span class="line">&#123;</span><br><span class="line">    NSLog(@&quot;%s %@&quot;, __func__, [NSThread currentThread]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)run &#123;</span><br><span class="line">    NSLog(@&quot;%s %@&quot;, __func__, [NSThread currentThread]);</span><br><span class="line">    NSLog(@&quot;%s ----end----&quot;, __func__);</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<p>当执行完上面的代码后,会发现打印出如下-[子线程也就销毁了]</p>
+<p>但是运行完App,当点击App时没有反应,也可以证明此线程已经销毁.如果改进让线程处于随时接受命令的状态呢?</p>
+<h3 id="情景2"><a href="#情景2" class="headerlink" title="情景2"></a>情景2</h3><p>从Runloop中得知,如果Mode里没有任何的Source0&#x2F;Source1&#x2F;Timer&#x2F;Observer, Runloop会立马退出.</p>
+<p>所以会想到能不能向其中加入上面中的一个是否可以如下: [run 方法中]</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// 这个方法的目的：线程保活</span><br><span class="line">- (void)run &#123;</span><br><span class="line">    NSLog(@&quot;%s %@&quot;, __func__, [NSThread currentThread]);</span><br><span class="line">    // 往RunLoop里面添加Source\Timer\Observer</span><br><span class="line">    [[NSRunLoop currentRunLoop] addPort:[[NSPort alloc] init] forMode:NSDefaultRunLoopMode];</span><br><span class="line">//    [[NSRunLoop currentRunLoop] addTimer:[[NSTimer alloc]init] forMode:NSDefaultRunLoopMode];</span><br><span class="line">    [[NSRunLoop currentRunLoop] run];</span><br><span class="line">    NSLog(@&quot;%s ----end----&quot;, __func__);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过在run方法中加入上面代码,让线程一直不死,打印屏幕界面:</p>
+<p><img src="https://i.loli.net/2020/12/16/bGvNnoDlcUdYy74.png" alt="2020-12-16-4.14.23.png"></p>
+<p>好像上面已经满足了要求,达到了线程不死的状态,但是能不能在销毁页面控制器的时候,也销毁定时器,并且随时停掉定时器.</p>
+        
+          <p class="article-more-link">
+            <a href="/2019/03/16/Runloop/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/03/16/Runloop/" data-id="clgqf79an000w5xd36w1set8u" data-title="Runloop" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-OC接入swift" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2019/03/04/OC%E6%8E%A5%E5%85%A5swift/" class="article-date">
+  <time class="dt-published" datetime="2019-03-04T09:20:14.000Z" itemprop="datePublished">2019-03-04</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2019/03/04/OC%E6%8E%A5%E5%85%A5swift/">OC接入swift</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="一、设置桥接文件"><a href="#一、设置桥接文件" class="headerlink" title="一、设置桥接文件"></a>一、设置桥接文件</h2><p>不管是objective-c调用swift，还是swift调用objective-c，都需要创建桥接文件，通过桥接文件实现两者的相互调用。<br>当我们引入oc或者swift进入另一个语言的项目的时候系统会提示是否自动创建桥接文件，此时可直接创建。<br>但除此之外我们也可以选择手动创建。此时需要我们在新建文件里选择<code>Header File</code>，点击确认创建桥接文件，桥接文件名字一般为：<code>ProjectName-Bridging-Header.h</code>。然后在<code>Build settings</code>里搜索bridging，找到<code>Objective-C Bridging Header</code>的选项，将该文件的路径填写进去，或者直接拉入。这里的路径最好选择相对路径的形式（<code>ProjectName/BridgingFileName.h</code>）。<br>ProjectName为你项目的项目名，BridgingFileName为桥接文件的名字。</p>
+<h2 id="二、桥接方法"><a href="#二、桥接方法" class="headerlink" title="二、桥接方法"></a>二、桥接方法</h2><h3 id="oc项目调用swift文件"><a href="#oc项目调用swift文件" class="headerlink" title="oc项目调用swift文件"></a>oc项目调用swift文件</h3><p>oc项目针对swift文件会自动创建<code>ProjectName-Swift.h</code>文件，该文件不需要我们去做更改，所以当我们设置完桥接文件之后，只需要在要调用的文件处import该头文件即可，即：<code>import &lt;ProjectName-Swift.h&gt;</code>，其中ProjectName为该项目的工程名。引入该头文件后，即可调用Swift对应的类和方法。</p>
+<p>注意点：<strong>引入的swift文件需要调用的类和方法需要进行修饰，然后oc项目才能调用</strong>。可使用@objcMembers直接修饰类，或者也可以使用@objc分别修饰想要调用给oc的方法和属性，然后oc项目就可调用swift的相关方法了。</p>
+<h3 id="swift项目调用oc文件"><a href="#swift项目调用oc文件" class="headerlink" title="swift项目调用oc文件"></a>swift项目调用oc文件</h3><p>swift项目调用oc文件更为简单，只需要将oc类的头文件导入桥接文件即可，需要调用哪个oc文件就import哪个头文件（#import “ClassName.h”）进去。<br>swift项目调用oc的类和方法不需要引入头文件，所以设置完之后可以直接在swift中直接调用oc方法。</p>
+        
+          <p class="article-more-link">
+            <a href="/2019/03/04/OC%E6%8E%A5%E5%85%A5swift/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2019/03/04/OC%E6%8E%A5%E5%85%A5swift/" data-id="clgqf79aj000m5xd3d6fkddng" data-title="OC接入swift" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/page/3/">&laquo; Prev</a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/5/">Next &raquo;</a>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/cocoaPods/" rel="tag">cocoaPods</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flutter/" rel="tag">flutter</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS-AppDelegate/" rel="tag">iOS AppDelegate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" rel="tag">量化交易</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/cocoaPods/" style="font-size: 10px;">cocoaPods</a> <a href="/tags/flutter/" style="font-size: 10px;">flutter</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOS-AppDelegate/" style="font-size: 10px;">iOS AppDelegate</a> <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" style="font-size: 10px;">量化交易</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/01/11/%E5%AE%B9%E5%99%A8%E5%8C%96/">首页容器化</a>
+          </li>
+        
+          <li>
+            <a href="/2022/08/14/%E5%8A%A8%E6%80%81%E5%BA%93%E6%87%92%E5%8A%A0%E8%BD%BD/">动态库懒加载</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/17/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E9%97%AE%E9%A2%98%E4%B8%8E%E6%B2%BB%E7%90%86/">多线程问题专项治理</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/20/%E7%9B%B4%E6%92%AD%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7%E6%96%B9%E6%A1%88/">直播性能指标监控方案</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/14/%E8%A7%86%E9%A2%91%E7%9B%B8%E5%85%B3%E4%BC%98%E5%8C%96/">视频相关优化</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 xushuanghui<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

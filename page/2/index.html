@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>xushuanghui</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="xushuanghui">
+<meta property="og:url" content="http://example.com/page/2/index.html">
+<meta property="og:site_name" content="xushuanghui">
+<meta property="og:locale" content="en_US">
+<meta property="article:author" content="xushuanghui">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="xushuanghui" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">xushuanghui</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-检测私有API" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/10/21/%E6%A3%80%E6%B5%8B%E7%A7%81%E6%9C%89API/" class="article-date">
+  <time class="dt-published" datetime="2020-10-21T07:17:06.000Z" itemprop="datePublished">2020-10-21</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/10/21/%E6%A3%80%E6%B5%8B%E7%A7%81%E6%9C%89API/">检测私有API</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="preg"><a href="#preg" class="headerlink" title="preg"></a>preg</h1><ol>
+<li>cd到工程根目录</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> 工程根目录</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>遍历查找关键字</li>
+</ol>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">grep 关键字 -r .</span><br><span class="line">以上面的邮件举例的话：”grep com<span class="selector-class">.apple</span><span class="selector-class">.springboard</span><span class="selector-class">.complete</span> -r .“</span><br></pre></td></tr></table></figure>
+
+<p>此命令会查找根目录以及多级目录以下的所有文件，包括.framework和.a库，找到匹配结果的话，会打印出来。<br> -r参数表示会遍历多级目录下的文件。<br> 注意:-r和.之间有个空格</p>
+<h1 id="strings"><a href="#strings" class="headerlink" title="strings"></a>strings</h1><p>首先需要找到app对应的一个Unix可执行文件，可以从两个途径获取这个文件。</p>
+<h4 id="工程中获取"><a href="#工程中获取" class="headerlink" title="工程中获取"></a>工程中获取</h4><ol>
+<li>在Xcode文件树中搜索“.app”</li>
+<li>找到对应文件，右键“Show in Finder”</li>
+<li>选中.app文件，右键“显示包内容”</li>
+<li>下拉可找到一个跟app名字一致的Unix执行文件</li>
+</ol>
+<h4 id="ipa文件中获取"><a href="#ipa文件中获取" class="headerlink" title="ipa文件中获取"></a>ipa文件中获取</h4><ol>
+<li>将.ipa改变成.zip后缀</li>
+<li>解压文件，进入文件夹，进入Payload子文件，找到.app文件</li>
+<li>选中.app文件，右键“显示包内容”</li>
+<li>下拉可找到一个跟app名字一致的Unix执行文件</li>
+</ol>
+<h4 id="查找指令"><a href="#查找指令" class="headerlink" title="查找指令"></a>查找指令</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">strings - -a -arch armv7 Unix可执行文件 | grep 关键字</span><br></pre></td></tr></table></figure>
+
+<p>-a、-arch、armv7这几个参数作用未知，此处只是做一个简单记录，以后有空再做学习。</p>
+<h1 id="otool"><a href="#otool" class="headerlink" title="otool"></a>otool</h1><p>跟strings一样，需要先找到Unix可执行文件，然后运行指令。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">otool -L Unix可执行文件</span><br></pre></td></tr></table></figure>
+
+<p>会打印出工程中用到的系统库，我尝试的结果是只有系统库，可以在打印结果中检查是否引入了私有库。</p>
+<h1 id="nm"><a href="#nm" class="headerlink" title="nm"></a>nm</h1><p>跟strings一样，需要先找到Unix可执行文件，然后运行指令。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nm Unix可执行文件 | grep 关键字</span><br></pre></td></tr></table></figure>
+
+<p>会打印关键字对应的方法调用的位置等，未仔细研究，暂且做记录。</p>
+<h1 id="检查私有API的开源库"><a href="#检查私有API的开源库" class="headerlink" title="检查私有API的开源库"></a>检查私有API的开源库</h1><p>查资料过程中，发现一个开源库iOS-private-api-checker，可以用来检查app是否使用了私有API，并定位调用位置。</p>
+<p>进入开源库的GitHub界面，显示“Deprecated”状态，最终测试结果，不能检测出私有API的问题，不知道是否我的配置有问题。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>在查找“定位调用私有API位置的方法”的过程，发现大多数文章的作者通过grep的方式就可以定位到问题所在。我之所以查找了其他工具的使用方法，是因为我用grep的方式没有查找到问题，最终花了很多时间来查找问题，结果是让人很无奈。<br> 原因竟然是提交审核的包跟我查找问题的包不是同一份代码，最后用提交审核对应的工程马上就定位到问题了，工作中很多时候，一个异常查找很久没有定位到问题的时候，需要跳出来，考虑一下是否是源头出了问题。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/10/21/%E6%A3%80%E6%B5%8B%E7%A7%81%E6%9C%89API/" data-id="clgqf79ay001v5xd3fcfr6s02" data-title="检测私有API" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-swift-protocol协议" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/08/24/swift-protocol%E5%8D%8F%E8%AE%AE/" class="article-date">
+  <time class="dt-published" datetime="2020-08-24T08:29:39.000Z" itemprop="datePublished">2020-08-24</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/08/24/swift-protocol%E5%8D%8F%E8%AE%AE/">swift protocol小结</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>协议定义了一个蓝图，规定了用来实现某一特定任务或者功能的方法、属性，以及其他需要的东西。类、结构体和枚举都可以遵循协议，并为协议定义的这些要求提供具体实现。某个类型能够满足某个协议的要求，就可以说该类型遵循这个协议。</p>
+<p>除了遵循协议的类型必须实现的要求外，还可以对协议进行扩展，通过扩展来实现一部分要求或者实现一些附加功能，这些遵循协议的类型就能够使用这些功能。</p>
+        
+          <p class="article-more-link">
+            <a href="/2020/08/24/swift-protocol%E5%8D%8F%E8%AE%AE/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/08/24/swift-protocol%E5%8D%8F%E8%AE%AE/" data-id="clgqf79at001c5xd3dg6w6f6i" data-title="swift protocol小结" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-内存泄漏" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/06/15/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/" class="article-date">
+  <time class="dt-published" datetime="2020-06-15T06:27:00.000Z" itemprop="datePublished">2020-06-15</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/06/15/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/">内存泄漏</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>我们在编写日常业务代码时，或多或少都会引入一些导致内存泄漏的代码，而这种行为又很难被监控，这就导致应用内存泄漏的口子越开越大，直接影响到线上应用的稳定性。虽然 Xcode 的 Instrucment 提供了 Leaks 和 Allocations 工具让我们能精准地定位内存泄漏问题，但是这种方式相对比较繁琐，需要开发人员频繁地去操作应用界面，以触发泄漏场景，所以 Leaks 和 Allocations 更加适合定期组织的大排查，作为监测手段，则显得笨重。</p>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>对于内存泄漏的监测，业内已经有了两款成熟的开源工具，分别是 PLeakSniffer 和 MLeaksFinder。PLeakSniffer 使用 Ping-Pong 方式监测对象是否存活，在进入页面时，创建控制器关联的一系列对象代理，根据这些代理在控制器销毁时能否响应 Ping 判断代理对应的对象是否泄漏。MLeaksFinder 则是在控制器销毁时，延迟 3s 后再向监测对象发送消息，根据监测对象能否响应消息判断其是否泄漏。这两个方案基本能覆盖大部分对象泄漏或者延迟释放了的场景，考虑到性能损耗以及内存占用因素，我偏向于第二种方案。</p>
+<p>下面说下在实际试用这两款工具后，我遇到的部分问题。</p>
+<p>首先是 MLeaksFinder ：</p>
+<ul>
+<li>没有处理集合对象</li>
+<li>没有处理对象持有的属性</li>
+<li>每个对象都触发 3s 延迟机制，没有缓存后统一处理</li>
+<li>检测结果输出分散</li>
+</ul>
+<p>然后是 PLeakSniffer ：</p>
+<ul>
+<li>没有处理集合对象</li>
+<li>处理对象持有属性时，系统类过滤不全面</li>
+<li>处理对象持有属性时，通过 KVC 访问属性导致一些懒加载的触发</li>
+<li>无法处理未添加到视图栈中的泄漏视图</li>
+<li>检测结果输出分散</li>
+</ul>
+        
+          <p class="article-more-link">
+            <a href="/2020/06/15/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/06/15/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/" data-id="clgqf79av001m5xd3ani66tos" data-title="内存泄漏" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-网络优化" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/05/23/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/" class="article-date">
+  <time class="dt-published" datetime="2020-05-23T09:11:09.000Z" itemprop="datePublished">2020-05-23</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/05/23/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/">网络优化</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><strong>网络优化及监控</strong><br>一、短连接优化方案<br>1、域名合并：<br>客户端修改huiyuan.api.2dfire.com、tuangou.api.2dfire.com合并api.2dfire.com&#x2F;huiyuan 、api.2dfire.com&#x2F;tuangou ，服务端Server Load Balancing中还原转发到不同业务服务器<br>优势：<br>1）域名得到了收编，减少了DNS调用次数，降低了DNS劫持风险；<br>2）针对同一域名，可以利用Keep-Alive来复用Http的连接；<br>3）客户端业务层不需要修改代码，后端业务服务也不需要进行任何修改。</p>
+<p>2、IP直连<br>客户端架设自己的DNS服务<br>1）程序启动的时候拉取“api.2dfire.com”对应的所有的IP列表；<br>2）对所有IP进行跑马测试，找到速度最快的IP（后续所有的HTTPS请求都将域名更换为跑马最快的IP即可）。<br>比如：经过跑马测试发现域名“api.dianping.com”对应最快的IP是“1.23.456.789”。<br>URL“<a target="_blank" rel="noopener" href="http://api.2dfire.com/ad/command?param1=123%E2%80%9D%E5%B0%86%E8%A2%AB%E6%9B%BF%E6%8D%A2%E4%B8%BA%E2%80%9Chttp://">http://api.2dfire.com/ad/command?param1=123”将被替换为“http://</a> 1.23.456.789&#x2F;ad&#x2F;command?param1&#x3D;123”<br>优势：<br>1）摒弃了系统DNS，减少外界干扰，摆脱DNS劫持困扰；<br>2）自建DNS更新时机可以控制；<br>3）IP列表更换方便。</p>
+<p>3、代理长连模式<br>客户端与代理服务器之间的长连通道是通过IP建立的，与DNS没有关系。客户端的HTTP请求被转换为二进制数据流送到代理服务器，也不需要进行DNS解析。代理服务器转发请求到业务服务器时，都处于同一内网，因此可以自己搭建DNS服务，减少对公网DNS服务的依赖。<br>相比公网http通道，代理服务器与业务服务器之间的网络通道也可以进行优化，通过架设专线或者租用腾讯云等方式可以大大提升通道服务质量</p>
+<img src="/Users/xushuanghui/Library/Application Support/typora-user-images/image-20211123121958366.png" alt="image-20211123121958366" style="zoom:33%;" />
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/05/23/%E7%BD%91%E7%BB%9C%E4%BC%98%E5%8C%96/" data-id="clgqf79b0001z5xd300mcc014" data-title="网络优化" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-swif与oc区别总结" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/04/20/swif%E4%B8%8Eoc%E5%8C%BA%E5%88%AB%E6%80%BB%E7%BB%93/" class="article-date">
+  <time class="dt-published" datetime="2020-04-20T09:07:16.000Z" itemprop="datePublished">2020-04-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/04/20/swif%E4%B8%8Eoc%E5%8C%BA%E5%88%AB%E6%80%BB%E7%BB%93/">swif与oc区别总结</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="一、Swift中struct和class有什么区别？"><a href="#一、Swift中struct和class有什么区别？" class="headerlink" title="一、Swift中struct和class有什么区别？"></a>一、Swift中struct和class有什么区别？</h2><h6 id="1-struct是值引用、更轻量，存放于栈区，class是类型引用，存放于堆区。struct无法继承，class可以继承。"><a href="#1-struct是值引用、更轻量，存放于栈区，class是类型引用，存放于堆区。struct无法继承，class可以继承。" class="headerlink" title="1.struct是值引用、更轻量，存放于栈区，class是类型引用，存放于堆区。struct无法继承，class可以继承。"></a>1.struct是值引用、更轻量，存放于栈区，class是类型引用，存放于堆区。struct无法继承，class可以继承。</h6><p>对于值类型都有他们自己的数据副本，因此对一个变量操作不可能影响另一个变量。值类型包括结构体（数组和字典），枚举，基本数据类型（boolean, integer, float等）</p>
+<p>二者的本质区别：struct是深拷贝；class是浅拷贝。</p>
+<h6 id="2-property的初始化不同："><a href="#2-property的初始化不同：" class="headerlink" title="2.property的初始化不同："></a>2.property的初始化不同：</h6><p>class在初始化的时候不能直接把property放在默认的constructor的参数里，而是需要自己创建一个带参数的constructor；而struct可以把属性放在默认的constructor的参数里。</p>
+<h6 id="3-变量赋值方式不同。"><a href="#3-变量赋值方式不同。" class="headerlink" title="3.变量赋值方式不同。"></a>3.变量赋值方式不同。</h6><p>struct是值拷贝；<br> class是引用拷贝</p>
+<h6 id="4-struct-和-class-的差別是-struct-的-function-要去改变-property-的值的时候要加上-mutating，而-class-不用"><a href="#4-struct-和-class-的差別是-struct-的-function-要去改变-property-的值的时候要加上-mutating，而-class-不用" class="headerlink" title="4.struct 和 class 的差別是 struct 的 function 要去改变 property 的值的时候要加上 mutating，而 class 不用"></a>4.struct 和 class 的差別是 struct 的 function 要去改变 property 的值的时候要加上 mutating，而 class 不用</h6><p><img src="https://upload-images.jianshu.io/upload_images/1367599-d343b80b39aa1540.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/604/format/webp" alt="img"></p>
+<p>image.png</p>
+<h6 id="5-继承"><a href="#5-继承" class="headerlink" title="5.继承"></a>5.继承</h6><p>struct不可以继承，class可以继承。</p>
+<h6 id="6-struct比class更轻量："><a href="#6-struct比class更轻量：" class="headerlink" title="6.struct比class更轻量："></a>6.struct比class更轻量：</h6><p>struct分配在栈中，class分配在堆中。</p>
+        
+          <p class="article-more-link">
+            <a href="/2020/04/20/swif%E4%B8%8Eoc%E5%8C%BA%E5%88%AB%E6%80%BB%E7%BB%93/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/04/20/swif%E4%B8%8Eoc%E5%8C%BA%E5%88%AB%E6%80%BB%E7%BB%93/" data-id="clgqf79at001g5xd31jgwcfas" data-title="swif与oc区别总结" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-data段注册" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/04/13/data%E6%AE%B5%E6%B3%A8%E5%86%8C/" class="article-date">
+  <time class="dt-published" datetime="2020-04-13T10:06:09.000Z" itemprop="datePublished">2020-04-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/04/13/data%E6%AE%B5%E6%B3%A8%E5%86%8C/">data段注册</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h4 id="1-attribute"><a href="#1-attribute" class="headerlink" title="1. attribute"></a>1. <strong>attribute</strong></h4><p><strong><strong>attribute</strong></strong>((used, section(“____DATA,____launch”)))</p>
+<p>Clang 提供了很多的编译函数，它们可以完成不同的功能，其中一项就是 section() 函数，section() 函数提供了二进制段的读写能力，它可以将一些编译期就可以确定的常量写入数据段。在具体的实现中，主要分为编译期和运行时两部分。在编译期，编译器会将标记了 attribute((section())) 的数据写到指定的数据段中，例如写一个{key(key代表不同的启动阶段), *pointer} 对到数据段。到运行时，在合适的时间节点，在根据 key 读取出函数指针，完成函数的调用。</p>
+<p>Clang Attributes 是 Clang 提供的一种源码注解，方便开发者向编译器表达某种要求，参与控制如 Static Analyzer、Name Mangling、Code Generation 等过程，一般以 <strong>attribute</strong>(xxx) 的形式出现在代码中；为方便使用，一些常用属性也被 Cocoa 定义成宏，比如在系统头文件中经常出现的 NS_CLASS_AVAILABLE_IOS(9_0) 就是 <strong>attribute</strong>(availability(…)) 这个属性的简单写法。编译器提供了我们一种 <strong>attribute</strong>((section(“xxx段，xxx节”)的方式让我们将一个指定的数据储存到我们需要的节当中。</p>
+<p><strong>used</strong></p>
+<p>used的作用是告诉编译器，我声明的这个符号是需要保留的。被used修饰以后，意味着即使函数没有被引用，在Release下也不会被优化。如果不加这个修饰，那么Release环境链接器会去掉没有被引用的段。</p>
+<p><strong>section</strong></p>
+<p>通常情况下，编译器会将对象放置于DATA段的data或者bss节中。但是，有时我们需要将数据放置于特殊的节中，此时section可以达到目的。</p>
+<p><strong>constructor</strong></p>
+<p>constructor：顾名思义，加上这个属性的函数会在可执行文件（或 shared library）load时被调用，可以理解为在 main() 函数调用前执行。</p>
+<p>constructor 和 +load 都是在 main 函数执行前调用，但 +load 比 constructor 更加早一点，因为 dyld（动态链接器，程序的最初起点）在加载 image（可以理解成 Mach-O 文件）时会先通知 objc runtime 去加载其中所有的类，每加载一个类时，它的 +load 随之调用，全部加载完成后，dyld 才会调用这个 image 中所有的 constructor 方法。所以 constructor 是一个干坏事的绝佳时机：</p>
+        
+          <p class="article-more-link">
+            <a href="/2020/04/13/data%E6%AE%B5%E6%B3%A8%E5%86%8C/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/04/13/data%E6%AE%B5%E6%B3%A8%E5%86%8C/" data-id="clgqf79aq00165xd3dg6x3s1t" data-title="data段注册" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-app启动时间优化" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/03/21/app%E5%90%AF%E5%8A%A8%E6%97%B6%E9%97%B4%E4%BC%98%E5%8C%96/" class="article-date">
+  <time class="dt-published" datetime="2020-03-21T08:36:16.000Z" itemprop="datePublished">2020-03-21</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/03/21/app%E5%90%AF%E5%8A%A8%E6%97%B6%E9%97%B4%E4%BC%98%E5%8C%96/">app启动时间优化</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p><a href="https://link.zhihu.com/?target=https://developer.apple.com/videos/play/wwdc2016/406/">《Optimizing App Startup Time》议题</a>上，提到了启动分为冷启动和暖启动两种。</p>
+<p>常规的优化方式，还包括像动态库懒加载、TTI 任务调度、后台启动、防劣化等。</p>
+<p>暖启动：是指内存中包含 App 的相关数据，与我们日常提到的热启动不太一样，连续杀掉 App 的启动也可能是暖启动。</p>
+<p>冷启动：是指系统的内核缓存区里没有 App 相关数据。冷暖启动的启动时间会差异比较大，冷启动的数据更能反映 App 真实的启动时长。保证 App 是冷启动的方法，就是通过重启设备，清理系统内核缓存区。</p>
+<p>常见的 iOS 启动时长测试方法，主要有以下几种</p>
+<ol>
+<li><strong>Xcode Developer Tool</strong>： 使用 Instruments 的 Time Profiler 插件，可以检测 App CPU 的使用情况。能看到 App 的启动时间和各个方法消耗的时间；</li>
+<li><strong>客户端计算统计</strong>： 通过 hook 关键函数的调用，计算获得性能数据。</li>
+<li>![image-20230227114633430](&#x2F;Users&#x2F;xushuanghui&#x2F;Library&#x2F;Application Support&#x2F;typora-user-images&#x2F;image-20230227114633430.png)</li>
+</ol>
+<p> <strong>App总启动流程 &#x3D; pre-main (+load,initializer)+ main函数代理（didFinishLaunchingWithOptions）+ 首屏渲染（viewDidAppear）</strong>，后两个阶段都属于 <code>main函数</code> 执行阶段。</p>
+<p>![image-20210310151027524](&#x2F;Users&#x2F;xushuanghui&#x2F;Library&#x2F;Application Support&#x2F;typora-user-images&#x2F;image-20210310151027524.png)</p>
+<p>![image-20211114154156099](&#x2F;Users&#x2F;xushuanghui&#x2F;Library&#x2F;Application Support&#x2F;typora-user-images&#x2F;image-20211114154156099.png)</p>
+<ul>
+<li><p>main前</p>
+<ul>
+<li>加载可执行文件（App的.o文件集合）</li>
+<li>加载动态链接库（系统和应用的动态链接库），进行rebase指针调整和bind符号绑定</li>
+<li>Objc运行时的初始处理，包括Objc相关类的注册，category注册，selector唯一性检查</li>
+<li>初始化，包括执行+load()、attribute(constructor)修饰的函数的调用、创建C++静态全局变量</li>
+</ul>
+<p>main后</p>
+<ul>
+<li>首页初始化所需要配置文件的读写操作</li>
+<li>首页界面渲染</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Total pre-main time: 977.95 milliseconds (100.0%)</span><br><span class="line">         dylib loading time: 433.20 milliseconds (44.2%)</span><br><span class="line">        rebase/binding time:  97.24 milliseconds (9.9%)</span><br><span class="line">            ObjC setup time:  50.13 milliseconds (5.1%)</span><br><span class="line">           initializer time: 397.36 milliseconds (40.6%)</span><br><span class="line">           slowest intializers :</span><br><span class="line">             libSystem.B.dylib :  11.48 milliseconds (1.1%)</span><br><span class="line">                   AgoraRtcKit : 105.87 milliseconds (10.8%)</span><br><span class="line">                        Hestia : 415.46 milliseconds (42.4%)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+        
+          <p class="article-more-link">
+            <a href="/2020/03/21/app%E5%90%AF%E5%8A%A8%E6%97%B6%E9%97%B4%E4%BC%98%E5%8C%96/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/03/21/app%E5%90%AF%E5%8A%A8%E6%97%B6%E9%97%B4%E4%BC%98%E5%8C%96/" data-id="clgqf79an000y5xd3c3rd5gjh" data-title="app启动时间优化" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-iOS接入flutter" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/03/05/iOS%E6%8E%A5%E5%85%A5flutter/" class="article-date">
+  <time class="dt-published" datetime="2020-03-05T07:44:02.000Z" itemprop="datePublished">2020-03-05</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/03/05/iOS%E6%8E%A5%E5%85%A5flutter/">oc接入flutter</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="前言："><a href="#前言：" class="headerlink" title="前言："></a>前言：</h3><h3 id="1、Swift"><a href="#1、Swift" class="headerlink" title="1、Swift"></a>1、<strong>Swift</strong></h3><ul>
+<li>优秀的文档</li>
+<li>免费和开源</li>
+<li>代码可读性好</li>
+<li>构建速度速度快</li>
+</ul>
+<h3 id="2、Flutter"><a href="#2、Flutter" class="headerlink" title="2、Flutter"></a>2、Flutter</h3><ul>
+<li>完美的文档</li>
+<li>跨平台：单一代码库为多个平台开发应用程序的优势，减少开发、测试工作量</li>
+<li>速度快</li>
+<li>图形引擎</li>
+<li>加速开发的各种工具</li>
+<li>热重载</li>
+<li>插件和代码重用性：Flutter 还提供了各种各样的插件，以实现更快、更容易的开发</li>
+<li>Flutter 动画</li>
+<li>上市速度</li>
+</ul>
+        
+          <p class="article-more-link">
+            <a href="/2020/03/05/iOS%E6%8E%A5%E5%85%A5flutter/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/03/05/iOS%E6%8E%A5%E5%85%A5flutter/" data-id="clgqf79as001a5xd35v0sbdu8" data-title="oc接入flutter" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-遇见多线程问题记录" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/02/21/%E9%81%87%E8%A7%81%E5%A4%9A%E7%BA%BF%E7%A8%8B%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" class="article-date">
+  <time class="dt-published" datetime="2020-02-21T06:31:42.000Z" itemprop="datePublished">2020-02-21</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/02/21/%E9%81%87%E8%A7%81%E5%A4%9A%E7%BA%BF%E7%A8%8B%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/">遇见多线程问题记录</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="1-NSNotification"><a href="#1-NSNotification" class="headerlink" title="1. NSNotification"></a>1. NSNotification</h2><p>我们都知道，NSNotification 在哪个线程 post，最终就会在哪个线程执行。如果我们不是在主线程 post 的，但是却在主线程接收的，而且我们期望 selector 在主线程执行。这时候我们需要注意下，在 selector 需要 dispatch 到主线程才可以。当然你也可以使用 addObserverForName:object:queue:usingBlock: 来指定执行 block 的 queue。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">@implementation BLPostNotification</span><br><span class="line"></span><br><span class="line">- (void)postNotification &#123;</span><br><span class="line">    dispatch_queue_t queue = dispatch_queue_create(&quot;com.bool.post.notification&quot;, DISPATCH_QUEUE_SERIAL);</span><br><span class="line">    dispatch_async(queue, ^&#123;</span><br><span class="line">        // 从非主线程发送通知 （通知名字最好定义成一个常量）</span><br><span class="line">        [[NSNotificationCenter defaultCenter] postNotificationName:@&quot;downloadImage&quot; object:nil];</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation ImageViewController</span><br><span class="line"></span><br><span class="line">- (void)viewDidLoad &#123;</span><br><span class="line">    [super viewDidLoad];</span><br><span class="line">    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(show) name:@&quot;downloadImage&quot; object:nil];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)showImage &#123;</span><br><span class="line">    // 需要 dispatch 到主线程更新 UI</span><br><span class="line">    dispatch_async(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">        // update UI</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-NSTimer"><a href="#2-NSTimer" class="headerlink" title="2. NSTimer"></a>2. NSTimer</h2><p>使用 NSTimer 时，在哪个线程生成的 timer，就在哪个线程销毁，否则会有意想不到的结果。官方这样描述的：</p>
+<blockquote>
+<p>However, for a repeating timer, you must invalidate the timer object yourself by calling its invalidate method. Calling this method requests the removal of the timer from the current run loop; as a result, you should always call the invalidate method from the same thread on which the timer was installed.</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">@interface BLTimerTest ()</span><br><span class="line">@property (nonatomic, strong) dispatch_queue_t queue;</span><br><span class="line">@property (nonatomic, strong) NSTimer *timer;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation BLTimerTest</span><br><span class="line">- (instancetype)init &#123;</span><br><span class="line">    self = [super init];</span><br><span class="line">    if (self) &#123;</span><br><span class="line">        _queue = dispatch_queue_create(&quot;com.bool.timer.test&quot;, DISPATCH_QUEUE_SERIAL);</span><br><span class="line">    &#125;</span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)installTimer &#123;</span><br><span class="line">    dispatch_async(self.queue, ^&#123;</span><br><span class="line">        self.timer = [NSTimer scheduledTimerWithTimeInterval:3.0f repeats:YES block:^(NSTimer * _Nonnull timer) &#123;</span><br><span class="line">            NSLog(@&quot;test timer&quot;);</span><br><span class="line">        &#125;];</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)clearTimer &#123;</span><br><span class="line">    dispatch_async(self.queue, ^&#123;</span><br><span class="line">        if ([self.timer isValid]) &#123;</span><br><span class="line">            [self.timer invalidate];</span><br><span class="line">            self.timer = nil;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-Dispatch-Once-死锁"><a href="#3-Dispatch-Once-死锁" class="headerlink" title="3. Dispatch Once 死锁"></a>3. Dispatch Once 死锁</h2><p>在开发中，我们经常使用 dispatch_once，但是递归调用会造成死锁。例如下面这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">- (void)dispatchOnceTest &#123;</span><br><span class="line">    static dispatch_once_t onceToken;</span><br><span class="line">    dispatch_once(&amp;onceToken, ^&#123;</span><br><span class="line">        [self dispatchOnceTest];</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>至于为什么会死锁，上文介绍 Dispatch Once 的时候已经说明了，这里就不多做介绍了。提醒一下使用的时候要注意，不要造成递归调用。</p>
+<h2 id="4-Dispatch-Group"><a href="#4-Dispatch-Group" class="headerlink" title="4. Dispatch Group"></a>4. Dispatch Group</h2><p>在使用 dispatch_group 的时候，dispatch_group_enter(taskGroup) 和 dispatch_group_leave(taskGroup) 一定要成对，否则也会出现崩溃。大多数情况下我们都会注意，但是有时候可能会疏忽。例如多层 for loop 时 ：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">- (void)testDispatchGroup &#123;</span><br><span class="line">    NSString *path = @&quot;&quot;;</span><br><span class="line">    NSFileManager *fileManager = [NSFileManager defaultManager];</span><br><span class="line">    NSArray *folderList = [fileManager contentsOfDirectoryAtPath:path error:nil];</span><br><span class="line">    dispatch_group_t taskGroup = dispatch_group_create();</span><br><span class="line">    </span><br><span class="line">    for (NSString *folderName in folderList) &#123;</span><br><span class="line">        dispatch_group_enter(taskGroup);</span><br><span class="line">        NSString *folderPath = [@&quot;path&quot; stringByAppendingPathComponent:folderName];</span><br><span class="line">        NSArray *fileList = [fileManager contentsOfDirectoryAtPath:folderPath error:nil];</span><br><span class="line">        for (NSString *fileName in fileList) &#123;</span><br><span class="line">            dispatch_async(_queue, ^&#123;</span><br><span class="line">                // 异步任务</span><br><span class="line">                dispatch_group_leave(taskGroup);</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面的 dispatch_group_enter(taskGroup) 在第一层 for loop 中，而 dispatch_group_leave(taskGroup) 在第二层 for loop 中，两者的关系是一对多，很容造成崩溃。有时候嵌套层级太多，很容易忽略这个问题。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/02/21/%E9%81%87%E8%A7%81%E5%A4%9A%E7%BA%BF%E7%A8%8B%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/" data-id="clgqf79b100215xd3dw518ule" data-title="遇见多线程问题记录" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-内存泄漏检测工具" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2020/01/22/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E6%A3%80%E6%B5%8B%E5%B7%A5%E5%85%B7/" class="article-date">
+  <time class="dt-published" datetime="2020-01-22T03:33:40.000Z" itemprop="datePublished">2020-01-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2020/01/22/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E6%A3%80%E6%B5%8B%E5%B7%A5%E5%85%B7/">内存泄漏检测工具</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>我们在编写日常业务代码时，或多或少都会引入一些导致内存泄漏的代码，而这种行为又很难被监控，这就导致应用内存泄漏的口子越开越大，直接影响到线上应用的稳定性。虽然 Xcode 的 Instrucment 提供了 Leaks 和 Allocations 工具让我们能精准地定位内存泄漏问题，但是这种方式相对比较繁琐，需要开发人员频繁地去操作应用界面，以触发泄漏场景，所以 Leaks 和 Allocations 更加适合定期组织的大排查，作为监测手段，则显得笨重。</p>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>对于内存泄漏的监测，业内已经有了两款成熟的开源工具，分别是 PLeakSniffer 和 MLeaksFinder。PLeakSniffer 使用 Ping-Pong 方式监测对象是否存活，在进入页面时，创建控制器关联的一系列对象代理，根据这些代理在控制器销毁时能否响应 Ping 判断代理对应的对象是否泄漏。MLeaksFinder 则是在控制器销毁时，延迟 3s 后再向监测对象发送消息，根据监测对象能否响应消息判断其是否泄漏。这两个方案基本能覆盖大部分对象泄漏或者延迟释放了的场景，考虑到性能损耗以及内存占用因素，我偏向于第二种方案。</p>
+<p>下面说下在实际试用这两款工具后，我遇到的部分问题。</p>
+<p>首先是 MLeaksFinder ：</p>
+<ul>
+<li>没有处理集合对象</li>
+<li>没有处理对象持有的属性</li>
+<li>每个对象都触发 3s 延迟机制，没有缓存后统一处理</li>
+<li>检测结果输出分散</li>
+</ul>
+<p>然后是 PLeakSniffer ：</p>
+<ul>
+<li>没有处理集合对象</li>
+<li>处理对象持有属性时，系统类过滤不全面</li>
+<li>处理对象持有属性时，通过 KVC 访问属性导致一些懒加载的触发</li>
+<li>无法处理未添加到视图栈中的泄漏视图</li>
+<li>检测结果输出分散</li>
+</ul>
+<p>对于检测到泄漏对象的交互处理，两者都提供了终端 log 输出和 alert 提示功能，MLeaksFinder 甚至可以直接通过断言中断应用。这种提示在开发阶段尚可接受，但是在提测阶段，强交互会给测试人员造成困扰。至于为什么在提测阶段还要集成泄漏监测工具，主要有两个原因：</p>
+<ul>
+<li>应用功能过多的情况下，开发人员无法兼顾到老页面，一些老页面的泄漏场景可以通过测试人员在测试时触发，收集之后再统一处理</li>
+<li>在组件化开发环境下，开发人员可能并没有集成泄漏监测工具，这种情况下，需要在提测阶段统一收集没有解决的泄漏问题</li>
+</ul>
+<p>所以我目前对于监测输出的诉求有两点：</p>
+<ul>
+<li>开发时，通过终端日志提示开发者出现了内存泄漏</li>
+<li>提测时，收集内存泄漏的信息并上传至效能后台，周会时统一分配处理</li>
+</ul>
+<p>下面就针对这些调研和需求，打造一个符合自身业务场景的泄漏监测轮子。</p>
+<h2 id="监测入口"><a href="#监测入口" class="headerlink" title="监测入口"></a>监测入口</h2><p>和 MLeaksFinder 一样，我选择延迟 3s 的机制来判断对象是否泄漏，但是实现的细节略有差别。</p>
+<p>首先，监测入口变更为 <code>viewDidDisappear:</code> 方法，我们只需在控制器被父控制器中移除或者被 Dismissed 时，触发监测动作即可：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">- (void)LeaksMonitor_viewDidDisappear:(BOOL)animated &#123;</span><br><span class="line">    [self LeaksMonitor_viewDidDisappear:animated];</span><br><span class="line">    </span><br><span class="line">    if (![self isMovingFromParentViewController] &amp;&amp; ![self isBeingDismissed]) &#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    [[TDFLeaksMonitor shared] detectLeaksForObject:self];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        
+          <p class="article-more-link">
+            <a href="/2020/01/22/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E6%A3%80%E6%B5%8B%E5%B7%A5%E5%85%B7/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2020/01/22/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E6%A3%80%E6%B5%8B%E5%B7%A5%E5%85%B7/" data-id="clgqf79av001l5xd3bgh23d29" data-title="内存泄漏检测工具" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/3/">Next &raquo;</a>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/cocoaPods/" rel="tag">cocoaPods</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flutter/" rel="tag">flutter</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS-AppDelegate/" rel="tag">iOS AppDelegate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" rel="tag">量化交易</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/cocoaPods/" style="font-size: 10px;">cocoaPods</a> <a href="/tags/flutter/" style="font-size: 10px;">flutter</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOS-AppDelegate/" style="font-size: 10px;">iOS AppDelegate</a> <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" style="font-size: 10px;">量化交易</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/01/11/%E5%AE%B9%E5%99%A8%E5%8C%96/">首页容器化</a>
+          </li>
+        
+          <li>
+            <a href="/2022/08/14/%E5%8A%A8%E6%80%81%E5%BA%93%E6%87%92%E5%8A%A0%E8%BD%BD/">动态库懒加载</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/17/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E9%97%AE%E9%A2%98%E4%B8%8E%E6%B2%BB%E7%90%86/">多线程问题专项治理</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/20/%E7%9B%B4%E6%92%AD%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7%E6%96%B9%E6%A1%88/">直播性能指标监控方案</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/14/%E8%A7%86%E9%A2%91%E7%9B%B8%E5%85%B3%E4%BC%98%E5%8C%96/">视频相关优化</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 xushuanghui<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

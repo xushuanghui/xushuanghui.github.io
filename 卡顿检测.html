@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>xushuanghui</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="RunLoop卡顿检测 在移动设备上开发软件,性能一直是我们最为关心的话题之一,我们作为程序员除了需要努力提高代码质量之外,及时发现和监控软件中那些造成性能低下的”罪魁祸首”也是我们神圣的职责. 众所周知,iOS平台因为UIKit本身的特性,需要将所有的UI操作都放在主线程执行,所以也造成不少程序员都习惯将一些线程安全性不确定的逻辑,以及其它线程结束后的汇总工作等等放到了主线,所以主线程中包含的这">
+<meta property="og:type" content="website">
+<meta property="og:title" content="xushuanghui">
+<meta property="og:url" content="http://example.com/%E5%8D%A1%E9%A1%BF%E6%A3%80%E6%B5%8B.html">
+<meta property="og:site_name" content="xushuanghui">
+<meta property="og:description" content="RunLoop卡顿检测 在移动设备上开发软件,性能一直是我们最为关心的话题之一,我们作为程序员除了需要努力提高代码质量之外,及时发现和监控软件中那些造成性能低下的”罪魁祸首”也是我们神圣的职责. 众所周知,iOS平台因为UIKit本身的特性,需要将所有的UI操作都放在主线程执行,所以也造成不少程序员都习惯将一些线程安全性不确定的逻辑,以及其它线程结束后的汇总工作等等放到了主线,所以主线程中包含的这">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-04-21T08:00:00.728Z">
+<meta property="article:modified_time" content="2023-04-13T10:34:27.673Z">
+<meta property="article:author" content="xushuanghui">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="xushuanghui" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">xushuanghui</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="page-" class="h-entry article article-type-page" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/%E5%8D%A1%E9%A1%BF%E6%A3%80%E6%B5%8B.html" class="article-date">
+  <time class="dt-published" datetime="2023-04-21T08:00:00.728Z" itemprop="datePublished">2023-04-21</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>RunLoop卡顿检测</p>
+<p>在移动设备上开发软件,性能一直是我们最为关心的话题之一,我们作为程序员除了需要努力提高代码质量之外,及时发现和监控软件中那些造成性能低下的”罪魁祸首”也是我们神圣的职责.</p>
+<p>众所周知,iOS平台因为UIKit本身的特性,需要将所有的UI操作都放在主线程执行,所以也造成不少程序员都习惯将一些线程安全性不确定的逻辑,以及其它线程结束后的汇总工作等等放到了主线,所以主线程中包含的这些大量计算、IO、绘制都有可能造成卡顿.</p>
+<p>在Xcode中已经集成了非常方便的调试工具Instruments,它可以帮助我们在开发测试阶段分析软件运行的性能消耗,但一款软件经过测试流程和实验室分析肯定是不够的,在正式环境中由大量用户在使用过程中监控、分析到的数据更能解决一些隐藏的问题.</p>
+<h3 id="寻找卡顿的切入点"><a href="#寻找卡顿的切入点" class="headerlink" title="寻找卡顿的切入点"></a>寻找卡顿的切入点</h3><p>监控卡顿,最直接就是找到主线程都在干些啥玩意儿.我们知道一个线程的消息事件处理都是依赖于NSRunLoop来驱动,所以要知道线程正在调用什么方法,就需要从NSRunLoop来入手.CFRunLoop的代码是开源,可以在此处查阅到源代码<a target="_blank" rel="noopener" href="http://opensource.apple.com/source/CF/CF-1151.16/CFRunLoop.c,%E5%85%B6%E4%B8%AD%E6%A0%B8%E5%BF%83%E6%96%B9%E6%B3%95CFRunLoopRun%E7%AE%80%E5%8C%96%E5%90%8E%E7%9A%84%E4%B8%BB%E8%A6%81%E9%80%BB%E8%BE%91%E5%A4%A7%E6%A6%82%E6%98%AF%E8%BF%99%E6%A0%B7%E7%9A%84">http://opensource.apple.com/source/CF/CF-1151.16/CFRunLoop.c,其中核心方法CFRunLoopRun简化后的主要逻辑大概是这样的</a>:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">int32_t __CFRunLoopRun()&#123;    //通知即将进入runloop    __CFRunLoopDoObservers(KCFRunLoopEntry);        do    &#123;        // 通知将要处理timer和source        __CFRunLoopDoObservers(kCFRunLoopBeforeTimers);        __CFRunLoopDoObservers(kCFRunLoopBeforeSources);                __CFRunLoopDoBlocks();  //处理非延迟的主线程调用        __CFRunLoopDoSource0(); //处理UIEvent事件                //GCD dispatch main queue        CheckIfExistMessagesInMainDispatchQueue();                // 即将进入休眠        __CFRunLoopDoObservers(kCFRunLoopBeforeWaiting);                // 等待内核mach_msg事件        mach_port_t wakeUpPort = SleepAndWaitForWakingUpPorts();                // Zzz...                // 从等待中醒来        __CFRunLoopDoObservers(kCFRunLoopAfterWaiting);                // 处理因timer的唤醒        if (wakeUpPort == timerPort)            __CFRunLoopDoTimers();                // 处理异步方法唤醒,如dispatch_async        else if (wakeUpPort == mainDispatchQueuePort)            __CFRUNLOOP_IS_SERVICING_THE_MAIN_DISPATCH_QUEUE__()                    // UI刷新,动画显示        else            __CFRunLoopDoSource1();                // 再次确保是否有同步的方法需要调用        __CFRunLoopDoBlocks();            &#125; while (!stop &amp;&amp; !timeout);        //通知即将退出runloop    __CFRunLoopDoObservers(CFRunLoopExit);&#125;</span><br></pre></td></tr></table></figure>
+
+<p>不难发现NSRunLoop调用方法主要就是在kCFRunLoopBeforeSources和kCFRunLoopBeforeWaiting之间,还有kCFRunLoopAfterWaiting之后,也就是如果我们发现这两个时间内耗时太长,那么就可以判定出此时主线程卡顿.</p>
+<h3 id="量化卡顿的程度"><a href="#量化卡顿的程度" class="headerlink" title="量化卡顿的程度"></a>量化卡顿的程度</h3><p>要监控NSRunLoop的状态,我们需要使用到CFRunLoopObserverRef,通过它可以实时获得这些状态值的变化,具体的使用如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">static void runLoopObserverCallBack(CFRunLoopObserverRef observer, CFRunLoopActivity activity, void *info)&#123;    MyClass *object = (__bridge MyClass*)info;    object-&gt;activity = activity;&#125;- (void)registerObserver&#123;    CFRunLoopObserverContext context = &#123;0,(__bridge void*)self,NULL,NULL&#125;;    CFRunLoopObserverRef observer = CFRunLoopObserverCreate(kCFAllocatorDefault,                                                            kCFRunLoopAllActivities,                                                            YES,                                                            0,                                                            &amp;runLoopObserverCallBack,                                                            &amp;context);    CFRunLoopAddObserver(CFRunLoopGetMain(), observer, kCFRunLoopCommonModes);&#125;</span><br></pre></td></tr></table></figure>
+
+<p>只需要另外再开启一个线程,实时计算这两个状态区域之间的耗时是否到达某个阀值,便能揪出这些性能杀手.</p>
+<p>为了让计算更精确,需要让子线程更及时的获知主线程NSRunLoop状态变化,所以dispatch_semaphore_t是个不错的选择,另外卡顿需要覆盖到多次连续小卡顿和单次长时间卡顿两种情景,所以判定条件也需要做适当优化.将上面两个方法添加计算的逻辑如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">static void runLoopObserverCallBack(CFRunLoopObserverRef observer, CFRunLoopActivity activity, void *info)&#123;    MyClass *object = (__bridge MyClass*)info;        // 记录状态值    object-&gt;activity = activity;        // 发送信号    dispatch_semaphore_t semaphore = moniotr-&gt;semaphore;    dispatch_semaphore_signal(semaphore);&#125;- (void)registerObserver&#123;    CFRunLoopObserverContext context = &#123;0,(__bridge void*)self,NULL,NULL&#125;;    CFRunLoopObserverRef observer = CFRunLoopObserverCreate(kCFAllocatorDefault,                                                            kCFRunLoopAllActivities,                                                            YES,                                                            0,                                                            &amp;runLoopObserverCallBack,                                                            &amp;context);    CFRunLoopAddObserver(CFRunLoopGetMain(), observer, kCFRunLoopCommonModes);        // 创建信号    semaphore = dispatch_semaphore_create(0);        // 在子线程监控时长    dispatch_async(dispatch_get_global_queue(0, 0), ^&#123;        while (YES)        &#123;            // 假定连续5次超时50ms认为卡顿(当然也包含了单次超时250ms)            long st = dispatch_semaphore_wait(semaphore, dispatch_time(DISPATCH_TIME_NOW, 50*NSEC_PER_MSEC));            if (st != 0)            &#123;                if (activity==kCFRunLoopBeforeSources || activity==kCFRunLoopAfterWaiting)                &#123;                    if (++timeoutCount &lt; 5)                        continue;                                        NSLog(@&quot;好像有点儿卡哦&quot;);                &#125;            &#125;            timeoutCount = 0;        &#125;    &#125;);&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="记录卡顿的函数调用"><a href="#记录卡顿的函数调用" class="headerlink" title="记录卡顿的函数调用"></a>记录卡顿的函数调用</h3><p>监控到了卡顿现场,当然下一步便是记录此时的函数调用信息,此处可以使用一个第三方Crash收集组件PLCrashReporter,它不仅可以收集Crash信息也可用于实时获取各线程的调用堆栈,使用示例如下:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PLCrashReporterConfig *config = [[PLCrashReporterConfig alloc] initWithSignalHandlerType:PLCrashReporterSignalHandlerTypeBSD                                                                   symbolicationStrategy:PLCrashReporterSymbolicationStrategyAll];PLCrashReporter *crashReporter = [[PLCrashReporter alloc] initWithConfiguration:config];NSData *data = [crashReporter generateLiveReport];PLCrashReport *reporter = [[PLCrashReport alloc] initWithData:data error:NULL];NSString *report = [PLCrashReportTextFormatter stringValueForCrashReport:reporter                                                          withTextFormat:PLCrashReportTextFormatiOS];NSLog(@&quot;------------\n%@\n------------&quot;, report);</span><br></pre></td></tr></table></figure>
+
+<p>当检测到卡顿时,抓取堆栈信息,然后在客户端做一些过滤处理,便可以上报到服务器,通过收集一定量的卡顿数据后经过分析便能准确定位需要优化的逻辑,至此这个实时卡顿监控就大功告成了!</p>
+<p>文章示例代码下载:<a target="_blank" rel="noopener" href="http://storage.tanhao.me/2015/11/PerformanceMonitor.zip">PerformanceMonitor.zip</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/%E5%8D%A1%E9%A1%BF%E6%A3%80%E6%B5%8B.html" data-id="clgqf79aj000l5xd3fg2wezlg" data-title="" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/cocoaPods/" rel="tag">cocoaPods</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flutter/" rel="tag">flutter</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS-AppDelegate/" rel="tag">iOS AppDelegate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" rel="tag">量化交易</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/cocoaPods/" style="font-size: 10px;">cocoaPods</a> <a href="/tags/flutter/" style="font-size: 10px;">flutter</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOS-AppDelegate/" style="font-size: 10px;">iOS AppDelegate</a> <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" style="font-size: 10px;">量化交易</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2023/01/11/%E5%AE%B9%E5%99%A8%E5%8C%96/">首页容器化</a>
+          </li>
+        
+          <li>
+            <a href="/2022/08/14/%E5%8A%A8%E6%80%81%E5%BA%93%E6%87%92%E5%8A%A0%E8%BD%BD/">动态库懒加载</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/17/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E9%97%AE%E9%A2%98%E4%B8%8E%E6%B2%BB%E7%90%86/">多线程问题专项治理</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/20/%E7%9B%B4%E6%92%AD%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7%E6%96%B9%E6%A1%88/">直播性能指标监控方案</a>
+          </li>
+        
+          <li>
+            <a href="/2021/05/14/%E8%A7%86%E9%A2%91%E7%9B%B8%E5%85%B3%E4%BC%98%E5%8C%96/">视频相关优化</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2023 xushuanghui<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
