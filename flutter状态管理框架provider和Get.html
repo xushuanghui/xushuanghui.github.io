@@ -1,18 +1,28 @@
+
+
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
   
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="xushuanghui">
+  <meta name="keywords" content="">
   
-  <title>flutter状态管理框架provider和Get | xushuanghui</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="为什么需要状态管理？首先，为什么需要状态管理？根据笔者的经验，这是因为 Flutter 基于声明式 2 构建 UI ，使用状态管理的目的之一就是解决「声明式」开发带来的问题。 「声明式」开发是一种区别于传原生的方式，所以我们没有在原生开发中听到过状态管理，那如何理解「声明式」开发呢？ 「声明式」VS「命令式」分析以最经典的的计数器例子分析： [">
+    <meta name="description" content="为什么需要状态管理？首先，为什么需要状态管理？根据笔者的经验，这是因为 Flutter 基于声明式 2 构建 UI ，使用状态管理的目的之一就是解决「声明式」开发带来的问题。 「声明式」开发是一种区别于传原生的方式，所以我们没有在原生开发中听到过状态管理，那如何理解「声明式」开发呢？ 「声明式」VS「命令式」分析以最经典的的计数器例子分析： [">
 <meta property="og:type" content="website">
 <meta property="og:title" content="flutter状态管理框架provider和Get">
 <meta property="og:url" content="http://example.com/flutter%E7%8A%B6%E6%80%81%E7%AE%A1%E7%90%86%E6%A1%86%E6%9E%B6provider%E5%92%8CGet.html">
 <meta property="og:site_name" content="xushuanghui">
 <meta property="og:description" content="为什么需要状态管理？首先，为什么需要状态管理？根据笔者的经验，这是因为 Flutter 基于声明式 2 构建 UI ，使用状态管理的目的之一就是解决「声明式」开发带来的问题。 「声明式」开发是一种区别于传原生的方式，所以我们没有在原生开发中听到过状态管理，那如何理解「声明式」开发呢？ 「声明式」VS「命令式」分析以最经典的的计数器例子分析： [">
-<meta property="og:locale" content="en_US">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://101ugcs.andfun.cn/optimized/1X/07a296feac3c6316ab17d88a2b220793d5a974b9_2_305x500.jpeg">
 <meta property="og:image" content="https://101ugcs.andfun.cn/original/1X/17e5ae9466d6617f3001806ab8f62fe7b184e756.jpeg">
 <meta property="og:image" content="https://101ugcs.andfun.cn/optimized/1X/54b5708e0a837c3cffc63c93daad46ee34f40692_2_690x339.jpeg">
@@ -29,102 +39,215 @@
 <meta property="article:published_time" content="2021-04-14T09:14:57.000Z">
 <meta property="article:modified_time" content="2023-04-20T07:09:55.693Z">
 <meta property="article:author" content="xushuanghui">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://101ugcs.andfun.cn/optimized/1X/07a296feac3c6316ab17d88a2b220793d5a974b9_2_305x500.jpeg">
   
-    <link rel="alternate" href="/atom.xml" title="xushuanghui" type="application/atom+xml">
   
   
-    <link rel="shortcut icon" href="/favicon.png">
-  
-  
-    
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+  <title>flutter状态管理框架provider和Get - xushuanghui</title>
 
-  
-  
-<link rel="stylesheet" href="/css/style.css">
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
+
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
   
-    
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
 
   
 <meta name="generator" content="Hexo 6.3.0"></head>
 
+
 <body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">xushuanghui</a>
-      </h1>
-      
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 60vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
     </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="flutter状态管理框架provider和Get"></span>
+          
+        </div>
+
         
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
       </div>
+
+      
     </div>
   </div>
-</header>
+</div>
 
-      <div class="outer">
-        <section id="main"><article id="page-" class="h-entry article article-type-page" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/flutter%E7%8A%B6%E6%80%81%E7%AE%A1%E7%90%86%E6%A1%86%E6%9E%B6provider%E5%92%8CGet.html" class="article-date">
-  <time class="dt-published" datetime="2021-04-14T09:14:57.000Z" itemprop="datePublished">2021-04-14</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="p-name article-title" itemprop="headline name">
-      flutter状态管理框架provider和Get
-    </h1>
-  
+</div>
 
-      </header>
+  </header>
+
+  <main>
     
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h2 id="为什么需要状态管理？"><a href="#为什么需要状态管理？" class="headerlink" title="为什么需要状态管理？"></a>为什么需要状态管理？</h2><p>首先，为什么需要状态管理？<br>根据笔者的经验，这是因为 Flutter 基于<br><a target="_blank" rel="noopener" href="https://flutter.cn/docs/resources/architectural-overview#reactive-user-interfaces"><strong>声明式</strong> 2</a> 构建 UI ，<br>使用状态管理的目的之一就是解决「声明式」开发带来的问题。</p>
+      <div class="container nopadding-x-md">
+        <div id="board"
+          >
+          
+          <div class="container">
+            <div class="row">
+              <div class="col-12 col-md-10 m-auto">
+                
+
+<article class="page-content">
+  <h2 id="为什么需要状态管理？"><a href="#为什么需要状态管理？" class="headerlink" title="为什么需要状态管理？"></a>为什么需要状态管理？</h2><p>首先，为什么需要状态管理？<br>根据笔者的经验，这是因为 Flutter 基于<br><a target="_blank" rel="noopener" href="https://flutter.cn/docs/resources/architectural-overview#reactive-user-interfaces"><strong>声明式</strong> 2</a> 构建 UI ，<br>使用状态管理的目的之一就是解决「声明式」开发带来的问题。</p>
 <p>「声明式」开发是一种区别于传原生的方式，所以我们没有在原生开发中听到过状态管理，那如何理解「声明式」开发呢？</p>
 <h3 id="「声明式」VS「命令式」分析"><a href="#「声明式」VS「命令式」分析" class="headerlink" title="「声明式」VS「命令式」分析"></a>「声明式」VS「命令式」分析</h3><p>以最经典的的计数器例子分析：</p>
-<p>[<img src="https://101ugcs.andfun.cn/optimized/1X/07a296feac3c6316ab17d88a2b220793d5a974b9_2_305x500.jpeg" alt="通过计数器 app 理解 Flutter 的「声明式」和「命令式」" style="zoom:50%;" /></p>
+<p>[<img src="https://101ugcs.andfun.cn/optimized/1X/07a296feac3c6316ab17d88a2b220793d5a974b9_2_305x500.jpeg" srcset="/img/loading.gif" lazyload alt="通过计数器 app 理解 Flutter 的「声明式」和「命令式」" style="zoom:50%;" /></p>
 <span id="more"></span>
 
 <p>如上图所示：点击右下角按钮，显示的文本数字加一。<br>Android 中可以这么实现：当右下角按钮点中时，<br>拿到 <code>TextView</code> 的对象，手动设置其展示的文本。</p>
 <p>实现代码如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 一、定义展示的内容</span></span><br><span class="line"><span class="keyword">private</span> <span class="type">int</span> <span class="variable">mCount</span> <span class="operator">=</span><span class="number">0</span>;</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 二、中间展示数字的控件 TextView</span></span><br><span class="line"><span class="keyword">private</span> TextView mTvCount;</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 三、关联 TextView 与 xml 中的组件</span></span><br><span class="line">mTvCount = findViewById(R.id.tv_count)</span><br><span class="line"> </span><br><span class="line"><span class="comment">// 四、点击按钮控制组件更新</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">increase</span><span class="params">( )</span>&#123; </span><br><span class="line">	mCount++;</span><br><span class="line">	mTvCounter.setText(mCount.toString()); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">// 一、定义展示的内容</span><br><span class="hljs-keyword">private</span> <span class="hljs-type">int</span> <span class="hljs-variable">mCount</span> <span class="hljs-operator">=</span><span class="hljs-number">0</span>;<br> <br><span class="hljs-comment">// 二、中间展示数字的控件 TextView</span><br><span class="hljs-keyword">private</span> TextView mTvCount;<br> <br><span class="hljs-comment">// 三、关联 TextView 与 xml 中的组件</span><br>mTvCount = findViewById(R.id.tv_count)<br> <br><span class="hljs-comment">// 四、点击按钮控制组件更新</span><br><span class="hljs-keyword">private</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">increase</span><span class="hljs-params">( )</span>&#123; <br>	mCount++;<br>	mTvCounter.setText(mCount.toString()); <br>&#125;<br></code></pre></td></tr></table></figure>
 
 <p>而在 Flutter 中，我们只需要使变量增加之后调用 <code>setState(()&#123;&#125;)</code> 即可。<code>setState</code> 会刷新整个页面，使得中间展示的值进行变更。</p>
-<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 一、声明变量</span></span><br><span class="line"><span class="built_in">int</span> _counter =<span class="number">0</span>; </span><br><span class="line"></span><br><span class="line"><span class="comment">// 二、展示变量 </span></span><br><span class="line">Text(<span class="string">&#x27;<span class="subst">$_counter</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">//  三、变量增加，更新界面</span></span><br><span class="line">setState(() &#123;</span><br><span class="line">   _counter++; </span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-comment">// 一、声明变量</span><br><span class="hljs-built_in">int</span> _counter =<span class="hljs-number">0</span>; <br><br><span class="hljs-comment">// 二、展示变量 </span><br>Text(<span class="hljs-string">&#x27;<span class="hljs-subst">$_counter</span>&#x27;</span>)<br><br><span class="hljs-comment">//  三、变量增加，更新界面</span><br>setState(() &#123;<br>   _counter++; <br>&#125;);<br></code></pre></td></tr></table></figure>
 
 <p>可以发现，Flutter 中只对 <code>_counter</code> 属性进行了修改，并没有对 Text 组件进行任何的操作，整个界面随着状态的改变而改变。</p>
 <p>所以在 Flutter 中有这么一种说法: <strong>UI &#x3D; f(state)</strong>:</p>
-<p><img src="https://101ugcs.andfun.cn/original/1X/17e5ae9466d6617f3001806ab8f62fe7b184e756.jpeg" alt="img"></p>
+<p><img src="https://101ugcs.andfun.cn/original/1X/17e5ae9466d6617f3001806ab8f62fe7b184e756.jpeg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>上面的例子中，状态 (state) 就是 <code>_counter</code> 的值，调用 <code>setState</code> 驱动 <code>f</code> build 方法生成新的 UI。</p>
 <p>那么，声明式有哪些优势，并带来了哪些问题呢？</p>
 <p><strong>优势: 让开发者摆脱组件的繁琐控制，聚焦于状态处理</strong></p>
@@ -139,11 +262,11 @@
 </ol>
 <p>接下来，我先带领大家逐个了解这些问题，下一章向大家详细描述状态管理框架如何解决这些问题。</p>
 <p><strong>1) 逻辑和页面 UI 耦合，导致无法复用&#x2F;单元测试、修改混乱等</strong></p>
-<p><a target="_blank" rel="noopener" href="https://101ugcs.andfun.cn/original/1X/54b5708e0a837c3cffc63c93daad46ee34f40692.jpeg"><img src="https://101ugcs.andfun.cn/optimized/1X/54b5708e0a837c3cffc63c93daad46ee34f40692_2_690x339.jpeg" alt="img">2637×1299 217 KB</a></p>
+<p><a target="_blank" rel="noopener" href="https://101ugcs.andfun.cn/original/1X/54b5708e0a837c3cffc63c93daad46ee34f40692.jpeg"><img src="https://101ugcs.andfun.cn/optimized/1X/54b5708e0a837c3cffc63c93daad46ee34f40692_2_690x339.jpeg" srcset="/img/loading.gif" lazyload alt="img">2637×1299 217 KB</a></p>
 <p>一开始业务不复杂的时候，所有的代码都直接写到 widget 中，随着业务迭代，<br>文件越来越大，其他开发者很难直观地明白里面的业务逻辑。<br>并且一些通用逻辑，例如网络请求状态的处理、分页等，在不同的页面来回粘贴。</p>
 <p>这个问题在原生上同样存在，后面也衍生了诸如 MVP 设计模式的思路去解决。</p>
 <p><strong>2) 难以跨组件 (跨页面) 访问数据</strong></p>
-<p><a target="_blank" rel="noopener" href="https://101ugcs.andfun.cn/original/1X/906ca3d75a09b2dd0035dd45aacddede5540b487.jpeg"><img src="https://101ugcs.andfun.cn/optimized/1X/906ca3d75a09b2dd0035dd45aacddede5540b487_2_689x372.jpeg" alt="img">2388×1288 222 KB</a></p>
+<p><a target="_blank" rel="noopener" href="https://101ugcs.andfun.cn/original/1X/906ca3d75a09b2dd0035dd45aacddede5540b487.jpeg"><img src="https://101ugcs.andfun.cn/optimized/1X/906ca3d75a09b2dd0035dd45aacddede5540b487_2_689x372.jpeg" srcset="/img/loading.gif" lazyload alt="img">2388×1288 222 KB</a></p>
 <p>第二点在于跨组件交互，比如在 Widget 结构中，<br>一个子组件想要展示父组件中的 <code>name</code> 字段，<br>可能需要层层进行传递。</p>
 <p>又或者是要在两个页面之间共享筛选数据，<br>并没有一个很优雅的机制去解决这种跨页面的数据访问。</p>
 <p><strong>3) 无法轻松的控制刷新范围 (页面 setState 的变化会导致全局页面的变化)</strong></p>
@@ -151,10 +274,10 @@
 <h2 id="Provider、Get-状态管理框架设计分析"><a href="#Provider、Get-状态管理框架设计分析" class="headerlink" title="Provider、Get 状态管理框架设计分析"></a>Provider、Get 状态管理框架设计分析</h2><p>Flutter 中状态管理框架的核心在于这三个问题的解决思路，<br>下面一起看看 Provider、Get 是如何解决的：</p>
 <h3 id="解决逻辑和页面-UI-耦合问题"><a href="#解决逻辑和页面-UI-耦合问题" class="headerlink" title="解决逻辑和页面 UI 耦合问题"></a>解决逻辑和页面 UI 耦合问题</h3><p>传统的原生开发同样存在这个问题，Activity 文件也可能随着迭代变得难以维护，<br>这个问题可以通过 MVP 模式进行解耦。</p>
 <p>简单来说就是将 View 中的逻辑代码抽离到 Presenter 层，<br>View 只负责视图的构建。</p>
-<p><a target="_blank" rel="noopener" href="https://101ugcs.andfun.cn/original/1X/1f37a6c5a59ee37f7d50e8ab3550674295cdf4d5.jpeg"><img src="https://101ugcs.andfun.cn/optimized/1X/1f37a6c5a59ee37f7d50e8ab3550674295cdf4d5_2_690x267.jpeg" alt="img">3438×1332 226 KB</a></p>
+<p><a target="_blank" rel="noopener" href="https://101ugcs.andfun.cn/original/1X/1f37a6c5a59ee37f7d50e8ab3550674295cdf4d5.jpeg"><img src="https://101ugcs.andfun.cn/optimized/1X/1f37a6c5a59ee37f7d50e8ab3550674295cdf4d5_2_690x267.jpeg" srcset="/img/loading.gif" lazyload alt="img">3438×1332 226 KB</a></p>
 <p>这也是 Flutter 中几乎所有状态管理框架的解决思路，<br>上图的 Presenter 你可以认为是 Get 中的 <code>GetController</code>、<br>Provider 中的 <code>ChangeNotifier</code> 或者 Bloc 中的 <code>Bloc</code>。<br>值得一提的是，具体做法上 Flutter 和原生 MVP 框架有所不同。</p>
 <p>我们知道在经典 MVP 模式中，<br>一般 View 和 Presenter 以接口定义自身行为 (action)，<br><strong>相互持有接口进行调用</strong> 。</p>
-<p><a target="_blank" rel="noopener" href="https://101ugcs.andfun.cn/original/1X/0df62af42e57a4b651fc826f3b4e9a32796eecb8.jpeg"><img src="https://101ugcs.andfun.cn/optimized/1X/0df62af42e57a4b651fc826f3b4e9a32796eecb8_2_690x273.jpeg" alt="img">3405×1348 269 KB</a></p>
+<p><a target="_blank" rel="noopener" href="https://101ugcs.andfun.cn/original/1X/0df62af42e57a4b651fc826f3b4e9a32796eecb8.jpeg"><img src="https://101ugcs.andfun.cn/optimized/1X/0df62af42e57a4b651fc826f3b4e9a32796eecb8_2_690x273.jpeg" srcset="/img/loading.gif" lazyload alt="img">3405×1348 269 KB</a></p>
 <p>但 Flutter 中不太适合这么做，<br>从 Presenter → View 关系上 View 在 Flutter 中对应 Widget，<br>但在 Flutter 中 Widget 只是用户声明 UI 的配置，<br>直接控制 Widget 实例并不是好的做法。</p>
 <p>而在从 View → Presenter 的关系上，<br>Widget 可以确实可以直接持有 Presenter，<br>但是这样又会带来难以数据通信的问题。</p>
 <p>这一点不同状态管理框架的解决思路不一样，从实现上他们可以分为两大类：</p>
@@ -163,20 +286,20 @@
 <li>通过 <strong>依赖注入</strong>，例如 Get。</li>
 </ul>
 <p><strong>1) 通过 Flutter 树机制处理 V → P 的获取</strong></p>
-<p><a target="_blank" rel="noopener" href="https://101ugcs.andfun.cn/original/1X/5e0b8158b122a15fcb43cbc604fbc6437e2d946c.jpeg"><img src="https://101ugcs.andfun.cn/optimized/1X/5e0b8158b122a15fcb43cbc604fbc6437e2d946c_2_592x499.jpeg" alt="img">2039×1721 172 KB</a></p>
-<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Element</span> <span class="keyword">implements</span> <span class="title">BuildContext</span> </span>&#123; </span><br><span class="line">	<span class="comment">/// <span class="language-markdown">当前 Element 的父节点</span></span></span><br><span class="line">	<span class="built_in">Element?</span> _parent; </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">BuildContext</span> </span>&#123;</span><br><span class="line">	<span class="comment">/// <span class="language-markdown">查找父节点中的T类型的State</span></span></span><br><span class="line">	T findAncestorState0fType&lt;T <span class="keyword">extends</span> State&gt;( );</span><br><span class="line"></span><br><span class="line">	<span class="comment">/// <span class="language-markdown">遍历子元素的element对象</span></span></span><br><span class="line">	<span class="keyword">void</span> visitChildElements(ElementVisitor visitor);</span><br><span class="line"></span><br><span class="line">	<span class="comment">/// <span class="language-markdown">查找父节点中的T类型的 InheritedWidget 例如 MediaQuery 等</span></span></span><br><span class="line">	T dependOnInheritedWidget0fExactType&lt;T <span class="keyword">extends</span> InheritedWidget&gt;(&#123; </span><br><span class="line">		<span class="built_in">Object</span> aspect &#125;);</span><br><span class="line">	……</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://101ugcs.andfun.cn/original/1X/5e0b8158b122a15fcb43cbc604fbc6437e2d946c.jpeg"><img src="https://101ugcs.andfun.cn/optimized/1X/5e0b8158b122a15fcb43cbc604fbc6437e2d946c_2_592x499.jpeg" srcset="/img/loading.gif" lazyload alt="img">2039×1721 172 KB</a></p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-keyword">abstract</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Element</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">BuildContext</span> </span>&#123; <br>	<span class="hljs-comment">/// <span class="language-markdown">当前 Element 的父节点</span></span><br>	<span class="hljs-built_in">Element?</span> _parent; <br>&#125;<br><br><span class="hljs-keyword">abstract</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">BuildContext</span> </span>&#123;<br>	<span class="hljs-comment">/// <span class="language-markdown">查找父节点中的T类型的State</span></span><br>	T findAncestorState0fType&lt;T <span class="hljs-keyword">extends</span> State&gt;( );<br><br>	<span class="hljs-comment">/// <span class="language-markdown">遍历子元素的element对象</span></span><br>	<span class="hljs-keyword">void</span> visitChildElements(ElementVisitor visitor);<br><br>	<span class="hljs-comment">/// <span class="language-markdown">查找父节点中的T类型的 InheritedWidget 例如 MediaQuery 等</span></span><br>	T dependOnInheritedWidget0fExactType&lt;T <span class="hljs-keyword">extends</span> InheritedWidget&gt;(&#123; <br>		<span class="hljs-built_in">Object</span> aspect &#125;);<br>	……<br>&#125; <br></code></pre></td></tr></table></figure>
 
 <p>Element 实现了父类 BuildContext 中操作树结构的方法</p>
 <p>我们知道 Flutter 中存在三棵树，Widget、Element 和 RenderObject。<br>所谓的 <strong>Widget 树其实只是我们描述组件嵌套关系的一种说法，是一种虚拟的结构</strong>。<br>但 Element 和 RenderObject 在运行时实际存在，<br>可以看到 Element 组件中包含了 <code>_parent</code> 属性，存放其父节点。<br>而它实现了 <code>BuildContext</code> 接口，包含了诸多对于树结构操作的方法，<br>例如 <code>findAncestorStateOfType</code>，向上查找父节点；<br><code>visitChildElements</code> 遍历子节点。</p>
 <p>在一开始的例子中，我们可以通过 <code>context.findAncestorStateOfType</code><br>一层一层地向上查找到需要的 Element 对象，<br>获取 Widget 或者 State 后即可取出需要的变量。</p>
-<p><a target="_blank" rel="noopener" href="https://101ugcs.andfun.cn/original/1X/1024465acba76a81ad8c3c6e8a0069738d342ef1.jpeg"><img src="https://101ugcs.andfun.cn/optimized/1X/1024465acba76a81ad8c3c6e8a0069738d342ef1_2_690x325.jpeg" alt="img">3064×1444 270 KB</a></p>
+<p><a target="_blank" rel="noopener" href="https://101ugcs.andfun.cn/original/1X/1024465acba76a81ad8c3c6e8a0069738d342ef1.jpeg"><img src="https://101ugcs.andfun.cn/optimized/1X/1024465acba76a81ad8c3c6e8a0069738d342ef1_2_690x325.jpeg" srcset="/img/loading.gif" lazyload alt="img">3064×1444 270 KB</a></p>
 <p>provider 也是借助了这样的机制，完成了 View → Presenter 的获取。<br>通过 <code>Provider.of</code> 获取顶层 Provider 组件中的 Present 对象。<br>显然，所有 Provider 以下的 Widget 节点，<br>都可以通过自身的 context 访问到 Provider 中的 Presenter，<br>很好地解决了跨组件的通信问题。</p>
 <p><strong>2) 通过依赖注入的方式解决 V → P</strong></p>
 <p>树机制很不错，但依赖于 context，这一点有时很让人抓狂。<br>我们知道 Dart 是一种单线程的模型，<br>所以不存在多线程下对于对象访问的竞态问题。<br>基于此 Get 借助一个全局单例的 Map 存储对象。<br>通过依赖注入的方式，实现了对 Presenter 层的获取。<br>这样在任意的类中都可以获取到 Presenter。</p>
-<p><a target="_blank" rel="noopener" href="https://101ugcs.andfun.cn/original/1X/d9dca70e30d6a9da212315374f31d26c9c4f6840.jpeg"><img src="https://101ugcs.andfun.cn/optimized/1X/d9dca70e30d6a9da212315374f31d26c9c4f6840_2_690x321.jpeg" alt="img">3233×1506 340 KB</a></p>
+<p><a target="_blank" rel="noopener" href="https://101ugcs.andfun.cn/original/1X/d9dca70e30d6a9da212315374f31d26c9c4f6840.jpeg"><img src="https://101ugcs.andfun.cn/optimized/1X/d9dca70e30d6a9da212315374f31d26c9c4f6840_2_690x321.jpeg" srcset="/img/loading.gif" lazyload alt="img">3233×1506 340 KB</a></p>
 <p>这个 Map 对应的 key 是 <code>runtimeType</code> + <code>tag</code>，<br>其中 tag 是可选参数，而 value 对应 <code>Object</code>，<br>也就是说我们可以存入任何类型的对象，并且在任意位置获取。</p>
 <h3 id="解决难以跨组件-跨页面-访问数据的问题"><a href="#解决难以跨组件-跨页面-访问数据的问题" class="headerlink" title="解决难以跨组件 (跨页面) 访问数据的问题"></a>解决难以跨组件 (跨页面) 访问数据的问题</h3><p>这个问题其实和上一部分的思考基本类似，所以我们可以总结一下两种方案特点：</p>
-<p><a target="_blank" rel="noopener" href="https://101ugcs.andfun.cn/original/1X/a46c2aa84120dc416d081eebf62c562ad2878527.jpeg"><img src="https://101ugcs.andfun.cn/optimized/1X/a46c2aa84120dc416d081eebf62c562ad2878527_2_690x297.jpeg" alt="img">3478×1500 312 KB</a></p>
+<p><a target="_blank" rel="noopener" href="https://101ugcs.andfun.cn/original/1X/a46c2aa84120dc416d081eebf62c562ad2878527.jpeg"><img src="https://101ugcs.andfun.cn/optimized/1X/a46c2aa84120dc416d081eebf62c562ad2878527_2_690x297.jpeg" srcset="/img/loading.gif" lazyload alt="img">3478×1500 312 KB</a></p>
 <p><strong>Provider</strong></p>
 <ul>
 <li>依赖树机制，必须基于 context</li>
@@ -192,37 +315,37 @@
 <li>观察者去订阅被观察的对象；</li>
 <li>被观察的对象通知观察者。</li>
 </ol>
-<p><a target="_blank" rel="noopener" href="https://101ugcs.andfun.cn/original/1X/2c30cb293c843a948bf9841592eb561408a86dfd.jpeg"><img src="https://101ugcs.andfun.cn/optimized/1X/2c30cb293c843a948bf9841592eb561408a86dfd_2_455x500.jpeg" alt="img">1528×1677 161 KB</a></p>
+<p><a target="_blank" rel="noopener" href="https://101ugcs.andfun.cn/original/1X/2c30cb293c843a948bf9841592eb561408a86dfd.jpeg"><img src="https://101ugcs.andfun.cn/optimized/1X/2c30cb293c843a948bf9841592eb561408a86dfd_2_455x500.jpeg" srcset="/img/loading.gif" lazyload alt="img">1528×1677 161 KB</a></p>
 <p>系统也提供了 <code>ValueNotifier</code> 等组件的实现：</p>
-<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/// <span class="language-markdown">声明可能变化的数据</span></span></span><br><span class="line">ValueNotifier&lt;<span class="built_in">int</span>&gt; _statusNotifier = ValueNotifier(<span class="number">0</span>); </span><br><span class="line"></span><br><span class="line">ValueListenableBuilder&lt;<span class="built_in">int</span>&gt;(</span><br><span class="line">	<span class="comment">// 建立与 _statusNotifier 的绑定关系 </span></span><br><span class="line">	valueListenable: _statusNotifier, </span><br><span class="line">	builder: (c, data, _) &#123;</span><br><span class="line">		<span class="keyword">return</span> Text(<span class="string">&#x27;<span class="subst">$data</span>&#x27;</span>); </span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">///<span class="language-markdown">数据变化驱动 ValueListenableBuilder 局部刷新 </span></span></span><br><span class="line">_statusNotifier.value += <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-comment">/// <span class="language-markdown">声明可能变化的数据</span></span><br>ValueNotifier&lt;<span class="hljs-built_in">int</span>&gt; _statusNotifier = ValueNotifier(<span class="hljs-number">0</span>); <br><br>ValueListenableBuilder&lt;<span class="hljs-built_in">int</span>&gt;(<br>	<span class="hljs-comment">// 建立与 _statusNotifier 的绑定关系 </span><br>	valueListenable: _statusNotifier, <br>	builder: (c, data, _) &#123;<br>		<span class="hljs-keyword">return</span> Text(<span class="hljs-string">&#x27;<span class="hljs-subst">$data</span>&#x27;</span>); <br>&#125;)<br><br><span class="hljs-comment">///<span class="language-markdown">数据变化驱动 ValueListenableBuilder 局部刷新 </span></span><br>_statusNotifier.value += <span class="hljs-number">1</span>;<br></code></pre></td></tr></table></figure>
 
 <p>了解到最基础的观察者模式后，看看不同框架中提供的组件：</p>
 <p>比如 Provider 中提供了 <code>ChangeNotifierProvider</code>:</p>
-<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Counter</span> <span class="title">extend</span> <span class="title">ChangeNotifier</span> </span>&#123; </span><br><span class="line">	<span class="built_in">int</span> count = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/// <span class="language-markdown">调用此方法更新所有观察节点</span></span></span><br><span class="line">	<span class="keyword">void</span> increment() &#123;</span><br><span class="line">		count++;</span><br><span class="line">		notifyListeners(); </span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> main() &#123; </span><br><span class="line">	runApp(</span><br><span class="line">		ChangeNotifierProvider(</span><br><span class="line">			<span class="comment">/// <span class="language-markdown"> 返回一个实现 ChangeNotifier 接口的对象 </span></span></span><br><span class="line">			create: (_) =&gt; Counter(),</span><br><span class="line">			child: <span class="keyword">const</span> MyApp( ), </span><br><span class="line">		),</span><br><span class="line">	);</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/// <span class="language-markdown"> 子节点通过 Consumer 获取 Counter 对象 </span></span></span><br><span class="line">Consumer&lt;Counter&gt;(</span><br><span class="line">	builder:(_, counter, _) =&gt; Text(counter.count.toString()) </span><br></pre></td></tr></table></figure>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Counter</span> <span class="hljs-title">extend</span> <span class="hljs-title">ChangeNotifier</span> </span>&#123; <br>	<span class="hljs-built_in">int</span> count = <span class="hljs-number">0</span>;<br><br>	<span class="hljs-comment">/// <span class="language-markdown">调用此方法更新所有观察节点</span></span><br>	<span class="hljs-keyword">void</span> increment() &#123;<br>		count++;<br>		notifyListeners(); <br>	&#125;<br>&#125;<br><br><span class="hljs-keyword">void</span> main() &#123; <br>	runApp(<br>		ChangeNotifierProvider(<br>			<span class="hljs-comment">/// <span class="language-markdown"> 返回一个实现 ChangeNotifier 接口的对象 </span></span><br>			create: (_) =&gt; Counter(),<br>			child: <span class="hljs-keyword">const</span> MyApp( ), <br>		),<br>	);<br> &#125;<br><br><span class="hljs-comment">/// <span class="language-markdown"> 子节点通过 Consumer 获取 Counter 对象 </span></span><br>Consumer&lt;Counter&gt;(<br>	builder:(_, counter, _) =&gt; Text(counter.count.toString()) <br></code></pre></td></tr></table></figure>
 
 <p>还是之前计数器的例子，这里 <code>Counter</code> 继承了<br><code>ChangeNotifier</code> 通过顶层的 Provider 进行存储。<br>子节点通过 Consumer 即可获取实例，<br>调用了 <code>increment</code> 方法之后，只有对应的 Text 组件进行变化。</p>
 <p>同样的功能，在 Get 中，<br>只需要提前调用 <code>Get.put</code> 方法存储 <code>Counter</code> 对象，<br>为 <code>GetBuilder</code> 组件指定 <code>Counter</code> 作为泛型。<br>因为 Get 基于单例，所以 <code>GetBuilder</code> 可以直接通过泛型获取到存入的对象，<br>并在 builder 方法中暴露。这样 <code>Counter</code> 便与组件建立了监听关系，<br>之后 <code>Counter</code> 的变动，只会驱动以它作为泛型的 <code>GetBuilder</code> 组件更新。</p>
-<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Counter</span> <span class="keyword">extends</span> <span class="title">GetxController</span> </span>&#123; </span><br><span class="line">	<span class="built_in">int</span> count = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">void</span> increase() &#123; </span><br><span class="line">		count++;</span><br><span class="line">		update(); </span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/// <span class="language-markdown">提前进行存储</span></span></span><br><span class="line"><span class="keyword">final</span> counter = Get.put(Counter( )); </span><br><span class="line"></span><br><span class="line"><span class="comment">/// <span class="language-markdown">直接通过泛型获取存储好的实例</span></span></span><br><span class="line">GetBuilder&lt;Counter&gt;(</span><br><span class="line">	builder: (Counter counter) =&gt; Text(<span class="string">&#x27;<span class="subst">$&#123;counter.count&#125;</span>&#x27;</span>) ); </span><br></pre></td></tr></table></figure>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Counter</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">GetxController</span> </span>&#123; <br>	<span class="hljs-built_in">int</span> count = <span class="hljs-number">0</span>;<br><br>	<span class="hljs-keyword">void</span> increase() &#123; <br>		count++;<br>		update(); <br>	&#125;<br>&#125;<br><br><span class="hljs-comment">/// <span class="language-markdown">提前进行存储</span></span><br><span class="hljs-keyword">final</span> counter = Get.put(Counter( )); <br><br><span class="hljs-comment">/// <span class="language-markdown">直接通过泛型获取存储好的实例</span></span><br>GetBuilder&lt;Counter&gt;(<br>	builder: (Counter counter) =&gt; Text(<span class="hljs-string">&#x27;<span class="hljs-subst">$&#123;counter.count&#125;</span>&#x27;</span>) ); <br></code></pre></td></tr></table></figure>
 
 <h2 id="实践中的常见问题"><a href="#实践中的常见问题" class="headerlink" title="实践中的常见问题"></a>实践中的常见问题</h2><p>在使用这些框架过程中，可能会遇到以下的问题：</p>
-<h3 id="Provider-中-context-层级过高"><a href="#Provider-中-context-层级过高" class="headerlink" title="Provider 中 context 层级过高"></a>Provider 中 context 层级过高</h3><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyApp</span> <span class="keyword">extends</span> <span class="title">StatelessWidget</span> </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> MyApp(&#123;Key? key&#125;) : <span class="keyword">super</span>(key: key);</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> Provider(</span><br><span class="line">      create: (_) =&gt; <span class="keyword">const</span> Count(),</span><br><span class="line">      child: MaterialApp(</span><br><span class="line">        home: Scaffold(</span><br><span class="line">          body: Center(child: Text(<span class="string">&#x27;<span class="subst">$&#123;Provider.of&lt;Counter&gt;(context).count&#125;</span>&#x27;</span>)),</span><br><span class="line">        ),</span><br><span class="line">      ),</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Provider-中-context-层级过高"><a href="#Provider-中-context-层级过高" class="headerlink" title="Provider 中 context 层级过高"></a>Provider 中 context 层级过高</h3><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyApp</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">StatelessWidget</span> </span>&#123;<br>  <span class="hljs-keyword">const</span> MyApp(&#123;Key? key&#125;) : <span class="hljs-keyword">super</span>(key: key);<br><br>  <span class="hljs-meta">@override</span><br>  Widget build(BuildContext context) &#123;<br>    <span class="hljs-keyword">return</span> Provider(<br>      create: (_) =&gt; <span class="hljs-keyword">const</span> Count(),<br>      child: MaterialApp(<br>        home: Scaffold(<br>          body: Center(child: Text(<span class="hljs-string">&#x27;<span class="hljs-subst">$&#123;Provider.of&lt;Counter&gt;(context).count&#125;</span>&#x27;</span>)),<br>        ),<br>      ),<br>    );<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 
 
 
-<p><a target="_blank" rel="noopener" href="https://101ugcs.andfun.cn/original/1X/95408fbe74cec349042f9febc4cffc4d45674486.jpeg"><img src="https://101ugcs.andfun.cn/optimized/1X/95408fbe74cec349042f9febc4cffc4d45674486_2_526x500.jpeg" alt="img">1355×1287 174 KB</a></p>
+<p><a target="_blank" rel="noopener" href="https://101ugcs.andfun.cn/original/1X/95408fbe74cec349042f9febc4cffc4d45674486.jpeg"><img src="https://101ugcs.andfun.cn/optimized/1X/95408fbe74cec349042f9febc4cffc4d45674486_2_526x500.jpeg" srcset="/img/loading.gif" lazyload alt="img">1355×1287 174 KB</a></p>
 <p>如代码所示，当我们直接将 Provider 与组件嵌套于同一层级时，<br>这时代码中的 <code>Provider.of(context)</code> 运行时抛出 <code>ProviderNotFoundException</code>。<br>因为此处我们使用的 context 来自于 MyApp，<br>但 Provider 的 element 节点位于 MyApp 的下方，<br>所以 <code>Provider.of(context)</code> 无法获取到 Provider 节点。<br>这个问题可以有两种改法，如下方代码所示：</p>
 <p><strong>改法 1: 通过嵌套 Builder 组件，使用子节点的 context 访问:</strong></p>
-<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyApp</span> <span class="keyword">extends</span> <span class="title">StatelessWidget</span> </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> MyApp(&#123;Key? key&#125;) : <span class="keyword">super</span>(key: key);</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> Provider(</span><br><span class="line">      create: (_) =&gt; <span class="keyword">const</span> Count(),</span><br><span class="line">      child: MaterialApp(</span><br><span class="line">        home: Scaffold(</span><br><span class="line">          body: Center(</span><br><span class="line">            child: Builder(builder: (builderContext) &#123;</span><br><span class="line">              <span class="keyword">return</span> Text(<span class="string">&#x27;<span class="subst">$&#123;Provider.of&lt;Counter&gt;(builderContext).count&#125;</span>&#x27;</span>);</span><br><span class="line">            &#125;),</span><br><span class="line">          ),</span><br><span class="line">        ),</span><br><span class="line">      ),</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyApp</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">StatelessWidget</span> </span>&#123;<br>  <span class="hljs-keyword">const</span> MyApp(&#123;Key? key&#125;) : <span class="hljs-keyword">super</span>(key: key);<br><br>  <span class="hljs-meta">@override</span><br>  Widget build(BuildContext context) &#123;<br>    <span class="hljs-keyword">return</span> Provider(<br>      create: (_) =&gt; <span class="hljs-keyword">const</span> Count(),<br>      child: MaterialApp(<br>        home: Scaffold(<br>          body: Center(<br>            child: Builder(builder: (builderContext) &#123;<br>              <span class="hljs-keyword">return</span> Text(<span class="hljs-string">&#x27;<span class="hljs-subst">$&#123;Provider.of&lt;Counter&gt;(builderContext).count&#125;</span>&#x27;</span>);<br>            &#125;),<br>          ),<br>        ),<br>      ),<br>    );<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <p><strong>改法 2: 将 Provider 提至顶层:</strong></p>
-<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> main() &#123;</span><br><span class="line">  runApp(</span><br><span class="line">    Provider(</span><br><span class="line">      create: (_) =&gt; Counter(),</span><br><span class="line">      child: <span class="keyword">const</span> MyApp(),</span><br><span class="line">    ),</span><br><span class="line">  );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyApp</span> <span class="keyword">extends</span> <span class="title">StatelessWidget</span> </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> MyApp(&#123;Key? key&#125;) : <span class="keyword">super</span>(key: key);</span><br><span class="line"></span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  Widget build(BuildContext context) &#123;</span><br><span class="line">    <span class="keyword">return</span> MaterialApp(</span><br><span class="line">      home: Scaffold(</span><br><span class="line">        body: Center(child: Text(<span class="string">&#x27;<span class="subst">$&#123;Provider.of&lt;Counter&gt;(context).count&#125;</span>&#x27;</span>)),</span><br><span class="line">      ),</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-keyword">void</span> main() &#123;<br>  runApp(<br>    Provider(<br>      create: (_) =&gt; Counter(),<br>      child: <span class="hljs-keyword">const</span> MyApp(),<br>    ),<br>  );<br>&#125;<br><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyApp</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">StatelessWidget</span> </span>&#123;<br>  <span class="hljs-keyword">const</span> MyApp(&#123;Key? key&#125;) : <span class="hljs-keyword">super</span>(key: key);<br><br>  <span class="hljs-meta">@override</span><br>  Widget build(BuildContext context) &#123;<br>    <span class="hljs-keyword">return</span> MaterialApp(<br>      home: Scaffold(<br>        body: Center(child: Text(<span class="hljs-string">&#x27;<span class="hljs-subst">$&#123;Provider.of&lt;Counter&gt;(context).count&#125;</span>&#x27;</span>)),<br>      ),<br>    );<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
 
 
 
 <h3 id="Get-由于全局单例带来的问题–重点"><a href="#Get-由于全局单例带来的问题–重点" class="headerlink" title="Get 由于全局单例带来的问题–重点"></a>Get 由于全局单例带来的问题–重点</h3><p>正如前面提到 Get 通过全局单例，默认以 <code>runtimeType</code> 为 key 进行对象的存储，<br>部分场景可能获取到的对象不符合预期，例如商品详情页之间跳转。<br>由于不同的详情页实例对应的是同一 Class，即 <code>runtimeType</code> 相同。<br>如果不添加 tag 参数，在某个页面调用 <code>Get.find</code> 会获取到其它页面已经存储过的对象。<br>同时 Get 中一定要注意考虑到对象的回收，不然很有可能引起内存泄漏。<br>要么手动在页面 <code>dispose</code> 的时候做 <code>delete</code> 操作，<br>要么完全使用 Get 中提供的组件，例如 <code>GetBuilder</code>，<br>它会在 <code>dispose</code> 中释放。</p>
-<p><a target="_blank" rel="noopener" href="https://101ugcs.andfun.cn/original/1X/3221b30c8a5294a5b163f6f1ac360a3e0a93516b.jpeg"><img src="https://101ugcs.andfun.cn/optimized/1X/3221b30c8a5294a5b163f6f1ac360a3e0a93516b_2_595x500.jpeg" alt="img">2050×1722 151 KB</a></p>
+<p><a target="_blank" rel="noopener" href="https://101ugcs.andfun.cn/original/1X/3221b30c8a5294a5b163f6f1ac360a3e0a93516b.jpeg"><img src="https://101ugcs.andfun.cn/optimized/1X/3221b30c8a5294a5b163f6f1ac360a3e0a93516b_2_595x500.jpeg" srcset="/img/loading.gif" lazyload alt="img">2050×1722 151 KB</a></p>
 <p><code>GetBuilder</code> 中在 <code>dispose</code> 阶段进行回收:</p>
-<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@override</span></span><br><span class="line"><span class="keyword">void</span> dispose() &#123;</span><br><span class="line">  <span class="keyword">super</span>.dispose();</span><br><span class="line">  widget.dispose?.call(<span class="keyword">this</span>);</span><br><span class="line">  <span class="keyword">if</span> (_isCreator! || widget.assignId) &#123;</span><br><span class="line">    <span class="keyword">if</span> (widget.autoRemove &amp;&amp; GetInstance().isRegistered&lt;T&gt;(tag: widget.tag)) &#123;</span><br><span class="line">      GetInstance().delete&lt;T&gt;(tag: widget.tag);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  _remove?.call();</span><br><span class="line"></span><br><span class="line">  controller = <span class="keyword">null</span>;</span><br><span class="line">  _isCreator = <span class="keyword">null</span>;</span><br><span class="line">  _remove = <span class="keyword">null</span>;</span><br><span class="line">  _filter = <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs dart"><span class="hljs-meta">@override</span><br><span class="hljs-keyword">void</span> dispose() &#123;<br>  <span class="hljs-keyword">super</span>.dispose();<br>  widget.dispose?.call(<span class="hljs-keyword">this</span>);<br>  <span class="hljs-keyword">if</span> (_isCreator! || widget.assignId) &#123;<br>    <span class="hljs-keyword">if</span> (widget.autoRemove &amp;&amp; GetInstance().isRegistered&lt;T&gt;(tag: widget.tag)) &#123;<br>      GetInstance().delete&lt;T&gt;(tag: widget.tag);<br>    &#125;<br>  &#125;<br><br>  _remove?.call();<br><br>  controller = <span class="hljs-keyword">null</span>;<br>  _isCreator = <span class="hljs-keyword">null</span>;<br>  _remove = <span class="hljs-keyword">null</span>;<br>  _filter = <span class="hljs-keyword">null</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
 
 <h2 id="Get-与-Provider-优缺点总结"><a href="#Get-与-Provider-优缺点总结" class="headerlink" title="Get 与 Provider 优缺点总结"></a>Get 与 Provider 优缺点总结</h2><p><strong>Provider</strong></p>
 <p>ChangeNotifier、Consumer、ChangeNotifierProvider</p>
@@ -245,129 +368,127 @@
 <p>其次，如果使用状态管理，那么 Get 和 Provider 哪个更好？</p>
 <p>这两个框架各有优缺点，我认为如果你或者你的团队刚接触 Flutter，<br>使用 Provider 能帮助你们更快理解 Flutter 的核心机制。<br>而如果已经对 Flutter 的原理有了解，Get 丰富的功能和简洁的 API，<br>则能帮助你很好地提高开发效率。</p>
 
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/flutter%E7%8A%B6%E6%80%81%E7%AE%A1%E7%90%86%E6%A1%86%E6%9E%B6provider%E5%92%8CGet.html" data-id="clgowamp60005tjd3g31khoku" data-title="flutter状态管理框架provider和Get" class="article-share-link">Share</a>
-      
-      
-      
-    </footer>
-  </div>
+
   
-    
-  
+
 </article>
 
 
-</section>
-        
-          <aside id="sidebar">
-  
-    
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xcode/" rel="tag">Xcode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cocoaPods/" rel="tag">cocoaPods</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flutter/" rel="tag">flutter</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS-AppDelegate/" rel="tag">iOS AppDelegate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" rel="tag">强化学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" rel="tag">量化交易</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a> <a href="/tags/cocoaPods/" style="font-size: 10px;">cocoaPods</a> <a href="/tags/flutter/" style="font-size: 10px;">flutter</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOS-AppDelegate/" style="font-size: 10px;">iOS AppDelegate</a> <a href="/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" style="font-size: 15px;">强化学习</a> <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">机器学习</a> <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" style="font-size: 10px;">量化交易</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2023/01/11/%E5%AE%B9%E5%99%A8%E5%8C%96/">首页容器化</a>
-          </li>
-        
-          <li>
-            <a href="/2022/08/14/%E5%8A%A8%E6%80%81%E5%BA%93%E6%87%92%E5%8A%A0%E8%BD%BD/">动态库懒加载</a>
-          </li>
-        
-          <li>
-            <a href="/2022/03/17/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E9%97%AE%E9%A2%98%E4%B8%8E%E6%B2%BB%E7%90%86/">多线程问题专项治理</a>
-          </li>
-        
-          <li>
-            <a href="/2021/07/20/%E7%9B%B4%E6%92%AD%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7%E6%96%B9%E6%A1%88/">直播性能指标监控方案</a>
-          </li>
-        
-          <li>
-            <a href="/2021/05/14/%E8%A7%86%E9%A2%91%E7%9B%B8%E5%85%B3%E4%BC%98%E5%8C%96/">视频相关优化</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      
-      &copy; 2023 xushuanghui<br>
-      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
     
 
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
 
-<script src="/js/jquery-3.4.1.min.js"></script>
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
 
 
 
   
-<script src="/fancybox/jquery.fancybox.min.js"></script>
+    <script  src="/js/img-lazyload.js" ></script>
+  
 
 
 
 
-<script src="/js/script.js"></script>
+  <script  src="/js/local-search.js" ></script>
 
 
 
 
 
-  </div>
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
 </body>
 </html>

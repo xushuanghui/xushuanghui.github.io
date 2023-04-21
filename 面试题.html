@@ -1,18 +1,28 @@
+
+
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
   
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="xushuanghui">
+  <meta name="keywords" content="">
   
-  <title>xushuanghui</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="1、Swift中struct和class有什么区别？ struct是值引用，更轻量，存放于栈区，class是类型引用，存放于堆区。struct无法继承，class可继承。 2、Swift中的方法调用有哪些形式？ 答：直接派发、函数表派发、消息机制派发。派发方式受声明位置，引用类型，特定行为的影响。为什么Swift有这么多派发形式？为了效率。 参考文章：深入理解 Swift 派发机制  3、Swif">
+    <meta name="description" content="1、Swift中struct和class有什么区别？ struct是值引用，更轻量，存放于栈区，class是类型引用，存放于堆区。struct无法继承，class可继承。 2、Swift中的方法调用有哪些形式？ 答：直接派发、函数表派发、消息机制派发。派发方式受声明位置，引用类型，特定行为的影响。为什么Swift有这么多派发形式？为了效率。 参考文章：深入理解 Swift 派发机制  3、Swif">
 <meta property="og:type" content="website">
-<meta property="og:title" content="xushuanghui">
+<meta property="og:title" content="page.title">
 <meta property="og:url" content="http://example.com/%E9%9D%A2%E8%AF%95%E9%A2%98.html">
 <meta property="og:site_name" content="xushuanghui">
 <meta property="og:description" content="1、Swift中struct和class有什么区别？ struct是值引用，更轻量，存放于栈区，class是类型引用，存放于堆区。struct无法继承，class可继承。 2、Swift中的方法调用有哪些形式？ 答：直接派发、函数表派发、消息机制派发。派发方式受声明位置，引用类型，特定行为的影响。为什么Swift有这么多派发形式？为了效率。 参考文章：深入理解 Swift 派发机制  3、Swif">
-<meta property="og:locale" content="en_US">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b291d68b2faa477b91c615751c49ba33~tplv-k3u1fbpfcp-watermark.awebp">
 <meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9577cb14d49b4abc924d8d53abcf6101~tplv-k3u1fbpfcp-watermark.awebp">
 <meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/cedd7e163d334201950ee7b6734fe2b8~tplv-k3u1fbpfcp-watermark.awebp">
@@ -22,88 +32,211 @@
 <meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b998a18543964f1daabfd6c79dddaea6~tplv-k3u1fbpfcp-watermark.awebp">
 <meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/93898ff40fd44cce84e1beddee24c105~tplv-k3u1fbpfcp-watermark.awebp">
 <meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/bd999676298f4ee38b98944cf1dfe1b9~tplv-k3u1fbpfcp-watermark.awebp">
-<meta property="article:published_time" content="2023-04-20T09:02:20.002Z">
+<meta property="article:published_time" content="2023-04-20T13:14:14.320Z">
 <meta property="article:modified_time" content="2023-04-20T09:02:20.002Z">
 <meta property="article:author" content="xushuanghui">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b291d68b2faa477b91c615751c49ba33~tplv-k3u1fbpfcp-watermark.awebp">
   
-    <link rel="alternate" href="/atom.xml" title="xushuanghui" type="application/atom+xml">
   
   
-    <link rel="shortcut icon" href="/favicon.png">
-  
-  
-    
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+  <title>page.title - xushuanghui</title>
 
-  
-  
-<link rel="stylesheet" href="/css/style.css">
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
+
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
   
-    
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
 
   
 <meta name="generator" content="Hexo 6.3.0"></head>
 
-<body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">xushuanghui</a>
-      </h1>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
-        
-          <a class="main-nav-link" href="/">Home</a>
-        
-          <a class="main-nav-link" href="/archives">Archives</a>
-        
-      </nav>
-      <nav id="sub-nav">
-        
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
-        
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
-      </div>
-    </div>
-  </div>
-</header>
 
-      <div class="outer">
-        <section id="main"><article id="page-" class="h-entry article article-type-page" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/%E9%9D%A2%E8%AF%95%E9%A2%98.html" class="article-date">
-  <time class="dt-published" datetime="2023-04-20T09:02:20.002Z" itemprop="datePublished">2023-04-20</time>
-</a>
+<body>
+  
+
+  <header>
     
+
+<div class="header-inner" style="height: 60vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
   </div>
-  <div class="article-inner">
-    
-    
-    <div class="e-content article-entry" itemprop="articleBody">
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="page.title"></span>
+          
+        </div>
+
+        
+      </div>
+
       
-        <p><strong>1、Swift中struct和class有什么区别？</strong></p>
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      <div class="container nopadding-x-md">
+        <div id="board"
+          >
+          
+          <div class="container">
+            <div class="row">
+              <div class="col-12 col-md-10 m-auto">
+                
+
+<article class="page-content">
+  <p><strong>1、Swift中struct和class有什么区别？</strong></p>
 <p>struct是值引用，更轻量，存放于栈区，class是类型引用，存放于堆区。struct无法继承，class可继承。</p>
 <p><strong>2、Swift中的方法调用有哪些形式？</strong></p>
 <p>答：直接派发、函数表派发、消息机制派发。派发方式受声明位置，引用类型，特定行为的影响。为什么Swift有这么多派发形式？为了效率。</p>
 <p>参考文章：深入理解 Swift 派发机制</p>
-<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b291d68b2faa477b91c615751c49ba33~tplv-k3u1fbpfcp-watermark.awebp" alt="12.2.png.png"></p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b291d68b2faa477b91c615751c49ba33~tplv-k3u1fbpfcp-watermark.awebp" srcset="/img/loading.gif" lazyload alt="12.2.png.png"></p>
 <p><strong>3、Swift和OC有什么区别？</strong></p>
 <p>Swift和OC的区别有很多，这里简要总结这几条：</p>
-<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9577cb14d49b4abc924d8d53abcf6101~tplv-k3u1fbpfcp-watermark.awebp" alt="++.png.PNG"></p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9577cb14d49b4abc924d8d53abcf6101~tplv-k3u1fbpfcp-watermark.awebp" srcset="/img/loading.gif" lazyload alt="++.png.PNG"></p>
 <p><strong>4、从OC向Swift迁移的时候遇到过什么问题？</strong></p>
 <p>可以参考这篇文章：OC项目转Swift指南 里的混编注意事项。</p>
 <p><strong>5、怎么理解面向协议编程？</strong></p>
@@ -118,7 +251,7 @@
 <p>####OC语法 <strong>1、Block是如何实现的？Block对应的数据结构是什么样子的？__block的作用是什么？它对应的数据结构又是什么样子的？</strong></p>
 <p>block本质是一个对象，底层用struct实现。</p>
 <p>数据结构如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">struct Block_descriptor &#123;</span><br><span class="line">    unsigned long int reserved;</span><br><span class="line">    unsigned long int size;</span><br><span class="line">    void (*copy)(void *dst, void *src);</span><br><span class="line">    void (*dispose)(void *);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">struct Block_layout &#123;</span><br><span class="line">    void *isa;</span><br><span class="line">    int flags;</span><br><span class="line">    int reserved;</span><br><span class="line">    void (*invoke)(void *, ...);</span><br><span class="line">    struct Block_descriptor *descriptor;</span><br><span class="line">    /* Imported variables. */</span><br><span class="line">&#125;;</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs objectivec"><span class="hljs-keyword">struct</span> Block_descriptor &#123;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> <span class="hljs-type">int</span> reserved;<br>    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> <span class="hljs-type">int</span> size;<br>    <span class="hljs-type">void</span> (*<span class="hljs-keyword">copy</span>)(<span class="hljs-type">void</span> *dst, <span class="hljs-type">void</span> *src);<br>    <span class="hljs-type">void</span> (*dispose)(<span class="hljs-type">void</span> *);<br>&#125;;<br><br><span class="hljs-keyword">struct</span> Block_layout &#123;<br>    <span class="hljs-type">void</span> *isa;<br>    <span class="hljs-type">int</span> flags;<br>    <span class="hljs-type">int</span> reserved;<br>    <span class="hljs-type">void</span> (*invoke)(<span class="hljs-type">void</span> *, ...);<br>    <span class="hljs-keyword">struct</span> Block_descriptor *descriptor;<br>    <span class="hljs-comment">/* Imported variables. */</span><br>&#125;;<br>复制代码<br></code></pre></td></tr></table></figure>
 
 <ul>
 <li>isa 指针，所有对象都有该指针，用于实现对象相关的功能。</li>
@@ -129,7 +262,7 @@
 <li>variables，capture 过来的变量，block 能够访问它外部的局部变量，就是因为将这些变量（或变量的地址）复制到了结构体中。</li>
 </ul>
 <p>__block的作用是可以获取对应变量的指针，使其可以在block内部被修改。通过反编译的代码我们可以看到该对象是这样的：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">struct __Block_byref_i_0 &#123;</span><br><span class="line">    void *__isa;</span><br><span class="line">    __Block_byref_i_0 *__forwarding;</span><br><span class="line">    int __flags;</span><br><span class="line">    int __size;</span><br><span class="line">    int val; //变量名</span><br><span class="line">&#125;;</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<figure class="highlight sqf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs sqf">struct <span class="hljs-variable">__Block_byref_i_0</span> &#123;<br>    void *<span class="hljs-variable">__isa</span>;<br>    <span class="hljs-variable">__Block_byref_i_0</span> *<span class="hljs-variable">__forwarding</span>;<br>    int <span class="hljs-variable">__flags</span>;<br>    int <span class="hljs-variable">__size</span>;<br>    int val; <span class="hljs-comment">//变量名</span><br>&#125;;<br>复制代码<br></code></pre></td></tr></table></figure>
 
 <p>对于block的深入了解，可以参考《Objective-C高级编程》第二章或者唐巧的这篇谈Objective-C block的实现</p>
 <p><strong>2、GCD中的Block是在堆上还是栈上？</strong></p>
@@ -164,7 +297,7 @@
 <p>这个可以参考我之前写的一篇文章iOS开发图片格式选择 中的前半部分内容。</p>
 <p><strong>5、什么是离屏渲染，什么情况会导致离屏渲染？</strong></p>
 <p>如果要在显示屏上显示内容，我们至少需要一块与屏幕像素数据量一样大的frame buffer，作为像素数据存储区域。如果有时因为面临一些限制，无法把渲染结果直接写入frame buffer，而是先暂存在另外的内存区域，之后再写入frame buffer，那么这个过程被称之为离屏渲染。</p>
-<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/cedd7e163d334201950ee7b6734fe2b8~tplv-k3u1fbpfcp-watermark.awebp" alt="12.3.png.png"></p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/cedd7e163d334201950ee7b6734fe2b8~tplv-k3u1fbpfcp-watermark.awebp" srcset="/img/loading.gif" lazyload alt="12.3.png.png"></p>
 <p>以阴影为例，为什么它会导致离屏渲染。因为GPU的渲染是遵循“画家算法”，一层一层绘制的，但阴影很特殊，它需要全部内容绘制完成，再根据外轮廓进行绘制。这就导致了，阴影这一层要一直占据一块内存区域，这就导致了离屏渲染。</p>
 <p>类似导致离屏渲染的情况还有：</p>
 <ul>
@@ -175,7 +308,7 @@
 </ul>
 <p><strong>6、CoreAnimation这个框架的作用什么，它跟UIKit的关系是什么？</strong></p>
 <p>CoreAnimation虽然直译是核心动画，但它其实是一个图像渲染框架，动画实现只是它的一部分功能。</p>
-<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4681a94698fc4630a2daec1a135bfb3d~tplv-k3u1fbpfcp-watermark.awebp" alt="12.4.png.png"></p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4681a94698fc4630a2daec1a135bfb3d~tplv-k3u1fbpfcp-watermark.awebp" srcset="/img/loading.gif" lazyload alt="12.4.png.png"></p>
 <p>看这张图我们可以知道，它是UIKit和AppKit的底层实现，位于Metal、Core Graphics和GPU之上之上。</p>
 <p>苹果官方文档：About Core Animation</p>
 <p>####引用计数 <strong>1、ARC方案的原理是什么？它是在什么时候做的隐式添加release操作？</strong></p>
@@ -188,7 +321,7 @@
 <p>block外界声明weak是为了实现block对对象的弱持有，而里面的作用是为了保证在进到block时不会发生释放。</p>
 <p><strong>4、Autoreleasepool是实现机制是什么？它是什么时候释放内部的对象的？它内部的数据结构是什么样的？当我提到哨兵对象时，会继续问哨兵对象的作用是什么，为什么要设计它？</strong></p>
 <p>Autoreleasepool的原理是一个双向列表，它会对加入其中的对象实现延迟释放。当Autoreleasepool调用drain方法时会释放内部标记为autorelease的对象。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">class AutoreleasePoolPage &#123;</span><br><span class="line">    magic_t const magic;</span><br><span class="line">    id *next;</span><br><span class="line">    pthread_t const thread;</span><br><span class="line">    AutoreleasePoolPage * const parent;</span><br><span class="line">    AutoreleasePoolPage *child;</span><br><span class="line">    uint32_t const depth;</span><br><span class="line">    uint32_t hiwat;</span><br><span class="line">&#125;;</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">AutoreleasePoolPage</span> &#123;<br>    <span class="hljs-type">magic_t</span> <span class="hljs-type">const</span> magic;<br>    id *next;<br>    <span class="hljs-type">pthread_t</span> <span class="hljs-type">const</span> thread;<br>    AutoreleasePoolPage * <span class="hljs-type">const</span> parent;<br>    AutoreleasePoolPage *child;<br>    <span class="hljs-type">uint32_t</span> <span class="hljs-type">const</span> depth;<br>    <span class="hljs-type">uint32_t</span> hiwat;<br>&#125;;<br>复制代码<br></code></pre></td></tr></table></figure>
 
 <p>哨兵对象类似一个指针，指向自动释放池的栈顶位置，它的作用就是用于标记当前自动释放池需要释放内部对象时，释放到那个地方结束，每次入栈时它用于确定添加的位置，然后再次移动到栈顶。</p>
 <p>关于自动释放池的底层探究可以看draveness的这篇自动释放池的前世今生 —- 深入解析 autoreleasepool</p>
@@ -203,7 +336,7 @@
 <p>runTime会把对weak修饰的对象放到一个全局的哈希表中，用weak修饰的对象的内存地址为key，weak指针为值，在对象进行销毁时，用通过自身地址去哈希表中查找到所有指向此对象的weak指针，并把所有的weak指针置位nil。</p>
 <p>####Runtime <strong>1、消息发送的流程是怎样的？</strong></p>
 <p>OC中的方法调用会转化成给对象发送消息，发送消息会调用这个方法：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">objc_msgSend(receiver, @selector(message))</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs less"><span class="hljs-selector-tag">objc_msgSend</span>(receiver, <span class="hljs-variable">@selector</span>(message))<br>复制代码<br></code></pre></td></tr></table></figure>
 
 <p>该过程有以下关键步骤：</p>
 <ul>
@@ -229,7 +362,7 @@
 <li>在OC的世界里一切皆对象（借鉴于Smalltalk），metaclass的设计就是要为满足这一点。</li>
 <li>在OC中Class也是一种对象，它对应的类就是metaclass，metaclass也是一种对象，它的类是root metaclass，在往上根元类（root metaclass）指向自己，形成了一个闭环，一个完备的设计。</li>
 </ul>
-<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/eb5d1c16edd948799d01354004be9a89~tplv-k3u1fbpfcp-watermark.awebp" alt="12.5.png.png"></p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/eb5d1c16edd948799d01354004be9a89~tplv-k3u1fbpfcp-watermark.awebp" srcset="/img/loading.gif" lazyload alt="12.5.png.png"></p>
 <p>如果不要metaclass可不可以？也是可以的，在objc_class再加一个类方法指针。但是这样的设计会将消息传递的过程复杂化，所以为了消息传递流程的复用，为了一切皆对象的思想，就有了metaclass。</p>
 <p>关于这一话题的深入讨论可以参考这两篇文章：</p>
 <p>为什么要存在MetaClass</p>
@@ -237,7 +370,7 @@
 <p><strong>6、类方法是存储到什么地方的？类属性呢？</strong></p>
 <p>类方法和类属性都是存储到元类中的。</p>
 <p>类属性在Swift用的多些，OC中很少有人用到，但其实它也是有的，写法如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@interface Person : NSObject</span><br><span class="line">// 在属性类别中加上class</span><br><span class="line">@property (class, nonatomic, copy) NSString *name;</span><br><span class="line">@end</span><br><span class="line">// 调用方式</span><br><span class="line">NSString *temp = Person.name;</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs less"><span class="hljs-variable">@interface</span> <span class="hljs-attribute">Person </span>: NSObject<br><span class="hljs-comment">// 在属性类别中加上class</span><br><span class="hljs-variable">@property</span> (class, nonatomic, copy) NSString *name;<br><span class="hljs-variable">@end</span><br><span class="hljs-comment">// 调用方式</span><br>NSString *temp = Person.name;<br>复制代码<br></code></pre></td></tr></table></figure>
 
 <p>需要注意的是跟实例属性不一样，类属性不会自动生成实例变量和setter，getter方法，需要我们手动实现。具体实现方法可以参考这个文章：Objective-C Class Properties</p>
 <p><strong>7、讲几个runtime的应用场景</strong></p>
@@ -258,7 +391,7 @@
 <li>减少离屏渲染</li>
 </ul>
 <p><strong>2、Xcode的Instruments都有哪些调试的工具？</strong></p>
-<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f51227be20544b37a3c717c75dc4b3c2~tplv-k3u1fbpfcp-watermark.awebp" alt="12.6.png.png"></p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f51227be20544b37a3c717c75dc4b3c2~tplv-k3u1fbpfcp-watermark.awebp" srcset="/img/loading.gif" lazyload alt="12.6.png.png"></p>
 <ul>
 <li>Activity Monitor（活动监视器）：监控进程的CPU、内存、磁盘、网络使用情况。是程序在手机</li>
 </ul>
@@ -332,7 +465,7 @@
 <li>每当缓存命中时，则将数据移动到链表头部</li>
 <li>链表满时，将尾部数据清除</li>
 </ul>
-<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b998a18543964f1daabfd6c79dddaea6~tplv-k3u1fbpfcp-watermark.awebp" alt="12.7.png.png"> 这个算法在SDWebImage和Kingfisher等需要处理缓存的库中都有实现。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b998a18543964f1daabfd6c79dddaea6~tplv-k3u1fbpfcp-watermark.awebp" srcset="/img/loading.gif" lazyload alt="12.7.png.png"> 这个算法在SDWebImage和Kingfisher等需要处理缓存的库中都有实现。</p>
 <p><strong>6、知道哪些设计模式，怎么理解设计模式的作用？</strong></p>
 <p>工厂模式、观察者模式、中介者模式、单例模式。这个根据实际情况说吧。</p>
 <p><strong>7、如果有1000万个Int类型的数字，如何对他们排序？</strong></p>
@@ -350,7 +483,7 @@
 <p>静态库：链接时被完整复制到可执行文件中，多次使用就多份拷贝。</p>
 <p>动态库：链接时不复制，而是由系统动态加载到内存，内存中只会有一份该动态库。</p>
 <p><strong>5、了解Flutter吗？它有没有使用UIKit？它是如何渲染UI的？</strong></p>
-<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/93898ff40fd44cce84e1beddee24c105~tplv-k3u1fbpfcp-watermark.awebp" alt="12.8.png.png"> UIKit是基于CoreAnimation渲染的，而Flutter并没有用到它，而是自己基于C++实现了一套渲染框架。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/93898ff40fd44cce84e1beddee24c105~tplv-k3u1fbpfcp-watermark.awebp" srcset="/img/loading.gif" lazyload alt="12.8.png.png"> UIKit是基于CoreAnimation渲染的，而Flutter并没有用到它，而是自己基于C++实现了一套渲染框架。</p>
 <p><strong>6、二进制重排的核心依据是什么？</strong></p>
 <p>修改链接顺序，减少启动时的缺页中断。</p>
 <p>实践步骤可以参考李斌同学的这篇iOS 优化篇 - 启动优化之Clang插桩实现二进制重排</p>
@@ -369,7 +502,7 @@
 <p>如果使用字典的例子你可能联想不到冲突的情况，我们假设另一种情况：假设hash表的大小为9（即有9个槽），现在要把一串数据存到表里：5,28,19,15,20,33,12,17,10。我们使用的hash函数是对9取余。这样的话会出现hash(5)&#x3D;5，hash(28)&#x3D;1，hash(19)&#x3D;1。28和19都对应一个地址，这就出现了Hash冲突。</p>
 <p>解决Hash冲突的方式有开放定址法和链地址法。</p>
 <p>2、如何遍历二叉树？</p>
-<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/bd999676298f4ee38b98944cf1dfe1b9~tplv-k3u1fbpfcp-watermark.awebp" alt="12.9.png.png"> 二叉树的遍历有三种方式，对于上面这棵二叉树，他们的遍历结果为：</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/bd999676298f4ee38b98944cf1dfe1b9~tplv-k3u1fbpfcp-watermark.awebp" srcset="/img/loading.gif" lazyload alt="12.9.png.png"> 二叉树的遍历有三种方式，对于上面这棵二叉树，他们的遍历结果为：</p>
 <p>前序遍历：根节点 &gt; 左子节点 &gt; 右子节点。</p>
 <p>10，6，4，8，14，12，16</p>
 <p>中序遍历：左子节点 &gt; 根节点 &gt; 右子节点。</p>
@@ -379,14 +512,14 @@
 <p><strong>3、简述下快速排序的过程，时间复杂度是多少？</strong></p>
 <p>快排的思想是通过一趟排序将要排序的数据分割成独立的两部分，其中一部分的所有数据都比另外一部分的所有数据都要小，然后再按此方法对这两部分数据分别进行快速排序，整个排序过程可以递归进行。</p>
 <p>一个简单的Swift实现方式如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">func quicksort&lt;T: Comparable&gt;(_ a: [T]) -&gt; [T] &#123;</span><br><span class="line">  guard a.count &gt; 1 else &#123; return a &#125;</span><br><span class="line"></span><br><span class="line">  let pivot = a[a.count/2]</span><br><span class="line">  let less = a.filter &#123; $0 &lt; pivot &#125;</span><br><span class="line">  let equal = a.filter &#123; $0 == pivot &#125;</span><br><span class="line">  let greater = a.filter &#123; $0 &gt; pivot &#125;</span><br><span class="line"></span><br><span class="line">  return quicksort(less) + equal + quicksort(greater)</span><br><span class="line">&#125;</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs stylus">func quicksort&lt;T: Comparable&gt;(_ <span class="hljs-selector-tag">a</span>: <span class="hljs-selector-attr">[T]</span>) -&gt; <span class="hljs-selector-attr">[T]</span> &#123;<br>  guard <span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.count</span> &gt; <span class="hljs-number">1</span> <span class="hljs-keyword">else</span> &#123; return <span class="hljs-selector-tag">a</span> &#125;<br><br>  let pivot = <span class="hljs-selector-tag">a</span><span class="hljs-selector-attr">[a.count/2]</span><br>  let less = <span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.filter</span> &#123; $<span class="hljs-number">0</span> &lt; pivot &#125;<br>  let equal = <span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.filter</span> &#123; $<span class="hljs-number">0</span> == pivot &#125;<br>  let greater = <span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.filter</span> &#123; $<span class="hljs-number">0</span> &gt; pivot &#125;<br><br>  return <span class="hljs-built_in">quicksort</span>(less) + equal + <span class="hljs-built_in">quicksort</span>(greater)<br>&#125;<br>复制代码<br></code></pre></td></tr></table></figure>
 
 <p>快速排序是有好几种的，他们的区别在于如何实现filter和分区基准值的选取。</p>
 <p>快排的时间复杂度是O(nlogn)，空间复杂度是O(logn)</p>
 <p><strong>4、有一个整数数组，如何只遍历一遍就实现让该数组奇数都在前面，偶数都在后面？</strong></p>
 <p>这个是《剑指offer》里的一道题，leedcode也有对应题目：剑指offer 21</p>
 <p>这个相对比较简单，因为不要求有序，可以采用收尾遍历的方式，进行交换，我这有个参考答案：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">func sorted( _ nums: inout [Int]) -&gt; [Int] &#123;</span><br><span class="line">    guard !nums.isEmpty else &#123;</span><br><span class="line">        return []</span><br><span class="line">    &#125;</span><br><span class="line">    var start = 0</span><br><span class="line">    var end = nums.count - 1</span><br><span class="line">    while start &lt; end &#123;</span><br><span class="line">        if nums[start] % 2 != 0 &#123;</span><br><span class="line">            start += 1</span><br><span class="line">            continue</span><br><span class="line">        &#125;</span><br><span class="line">        if nums[end] % 2 == 0 &#123;</span><br><span class="line">            end -= 1</span><br><span class="line">            continue</span><br><span class="line">        &#125;</span><br><span class="line">        (nums[start], nums[end]) = (nums[end], nums[start])</span><br><span class="line">    &#125;</span><br><span class="line">    return num</span><br><span class="line">&#125;</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">func sorted( _ nums: <span class="hljs-keyword">inout</span> [<span class="hljs-type">Int</span>]) -&gt; [<span class="hljs-type">Int</span>] &#123;<br>    guard !nums.isEmpty <span class="hljs-keyword">else</span> &#123;<br>        <span class="hljs-keyword">return</span> []<br>    &#125;<br>    var start = <span class="hljs-number">0</span><br>    var end = nums.count - <span class="hljs-number">1</span><br>    <span class="hljs-keyword">while</span> <span class="hljs-keyword">start</span> &lt; <span class="hljs-keyword">end</span> &#123;<br>        <span class="hljs-keyword">if</span> nums[<span class="hljs-keyword">start</span>] % <span class="hljs-number">2</span> != <span class="hljs-number">0</span> &#123;<br>            <span class="hljs-keyword">start</span> += <span class="hljs-number">1</span><br>            <span class="hljs-keyword">continue</span><br>        &#125;<br>        <span class="hljs-keyword">if</span> nums[<span class="hljs-keyword">end</span>] % <span class="hljs-number">2</span> == <span class="hljs-number">0</span> &#123;<br>            <span class="hljs-keyword">end</span> -= <span class="hljs-number">1</span><br>            <span class="hljs-keyword">continue</span><br>        &#125;<br>        (nums[<span class="hljs-keyword">start</span>], nums[<span class="hljs-keyword">end</span>]) = (nums[<span class="hljs-keyword">end</span>], nums[<span class="hljs-keyword">start</span>])<br>    &#125;<br>    <span class="hljs-keyword">return</span> num<br>&#125;<br>复制代码<br></code></pre></td></tr></table></figure>
 
 <p><strong>5、假设你正在爬楼梯。需要 n 阶你才能到达楼顶。每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢？</strong></p>
 <p>leetcode 20</p>
@@ -399,129 +532,127 @@
 <p>现在牛牛有a个红气球，b个黄气球， c个蓝气球，牛牛想知道自己最多可以兑换多少张彩票。</p>
 <p>这个是牛客网里的一道算法题，这里有个题解可以参考。</p>
 
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/%E9%9D%A2%E8%AF%95%E9%A2%98.html" data-id="clgowampg000wtjd3etgb49nl" data-title="" class="article-share-link">Share</a>
-      
-      
-      
-    </footer>
-  </div>
+
   
-    
-  
+
 </article>
 
 
-</section>
-        
-          <aside id="sidebar">
-  
-    
 
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xcode/" rel="tag">Xcode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cocoaPods/" rel="tag">cocoaPods</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flutter/" rel="tag">flutter</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS-AppDelegate/" rel="tag">iOS AppDelegate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" rel="tag">强化学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" rel="tag">量化交易</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a> <a href="/tags/cocoaPods/" style="font-size: 10px;">cocoaPods</a> <a href="/tags/flutter/" style="font-size: 10px;">flutter</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOS-AppDelegate/" style="font-size: 10px;">iOS AppDelegate</a> <a href="/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" style="font-size: 15px;">强化学习</a> <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">机器学习</a> <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" style="font-size: 10px;">量化交易</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2023/01/11/%E5%AE%B9%E5%99%A8%E5%8C%96/">首页容器化</a>
-          </li>
-        
-          <li>
-            <a href="/2022/08/14/%E5%8A%A8%E6%80%81%E5%BA%93%E6%87%92%E5%8A%A0%E8%BD%BD/">动态库懒加载</a>
-          </li>
-        
-          <li>
-            <a href="/2022/03/17/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E9%97%AE%E9%A2%98%E4%B8%8E%E6%B2%BB%E7%90%86/">多线程问题专项治理</a>
-          </li>
-        
-          <li>
-            <a href="/2021/07/20/%E7%9B%B4%E6%92%AD%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7%E6%96%B9%E6%A1%88/">直播性能指标监控方案</a>
-          </li>
-        
-          <li>
-            <a href="/2021/05/14/%E8%A7%86%E9%A2%91%E7%9B%B8%E5%85%B3%E4%BC%98%E5%8C%96/">视频相关优化</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
-      
-      &copy; 2023 xushuanghui<br>
-      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
-
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
     
 
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
 
-<script src="/js/jquery-3.4.1.min.js"></script>
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
 
 
 
   
-<script src="/fancybox/jquery.fancybox.min.js"></script>
+    <script  src="/js/img-lazyload.js" ></script>
+  
 
 
 
 
-<script src="/js/script.js"></script>
+  <script  src="/js/local-search.js" ></script>
 
 
 
 
 
-  </div>
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
 </body>
 </html>

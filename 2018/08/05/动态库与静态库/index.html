@@ -1,102 +1,280 @@
+
+
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
   
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="xushuanghui">
+  <meta name="keywords" content="">
   
-  <title>动态库与静态库 | xushuanghui</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="dymanic framework原因在iOS8以前,苹果只允许发布静态库,当然cocoapods只支持静态库,但是在iOS8苹果推出了APP extension的概念,可以对项目进行扩展,感兴趣的可以看APP extension. 因为APP extension和主项目是两个独立的进程,为了共享代码,苹果允许我们创建动态库,即dynamic framework. swift第三方库在swift语">
+    <meta name="description" content="dymanic framework原因在iOS8以前,苹果只允许发布静态库,当然cocoapods只支持静态库,但是在iOS8苹果推出了APP extension的概念,可以对项目进行扩展,感兴趣的可以看APP extension. 因为APP extension和主项目是两个独立的进程,为了共享代码,苹果允许我们创建动态库,即dynamic framework. swift第三方库在swift语">
 <meta property="og:type" content="article">
 <meta property="og:title" content="动态库与静态库">
 <meta property="og:url" content="http://example.com/2018/08/05/%E5%8A%A8%E6%80%81%E5%BA%93%E4%B8%8E%E9%9D%99%E6%80%81%E5%BA%93/index.html">
 <meta property="og:site_name" content="xushuanghui">
 <meta property="og:description" content="dymanic framework原因在iOS8以前,苹果只允许发布静态库,当然cocoapods只支持静态库,但是在iOS8苹果推出了APP extension的概念,可以对项目进行扩展,感兴趣的可以看APP extension. 因为APP extension和主项目是两个独立的进程,为了共享代码,苹果允许我们创建动态库,即dynamic framework. swift第三方库在swift语">
-<meta property="og:locale" content="en_US">
+<meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2018-08-05T09:25:43.000Z">
 <meta property="article:modified_time" content="2023-04-13T10:34:27.658Z">
 <meta property="article:author" content="xushuanghui">
 <meta property="article:tag" content="iOS">
-<meta name="twitter:card" content="summary">
-  
-    <link rel="alternate" href="/atom.xml" title="xushuanghui" type="application/atom+xml">
+<meta name="twitter:card" content="summary_large_image">
   
   
-    <link rel="shortcut icon" href="/favicon.png">
   
-  
-    
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+  <title>动态库与静态库 - xushuanghui</title>
 
-  
-  
-<link rel="stylesheet" href="/css/style.css">
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
   
-    
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
 
   
 <meta name="generator" content="Hexo 6.3.0"></head>
 
+
 <body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">xushuanghui</a>
-      </h1>
-      
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Fluid</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
     </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"></a>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="动态库与静态库"></span>
+          
+        </div>
+
         
-          <a class="main-nav-link" href="/">Home</a>
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2018-08-05 17:25" pubdate>
+          2018年8月5日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
         
-          <a class="main-nav-link" href="/archives">Archives</a>
+          6.3k 字
         
-      </nav>
-      <nav id="sub-nav">
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
         
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+        
+          53 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
       </div>
+
+      
     </div>
   </div>
-</header>
+</div>
 
-      <div class="outer">
-        <section id="main"><article id="post-动态库与静态库" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2018/08/05/%E5%8A%A8%E6%80%81%E5%BA%93%E4%B8%8E%E9%9D%99%E6%80%81%E5%BA%93/" class="article-date">
-  <time class="dt-published" datetime="2018-08-05T09:25:43.000Z" itemprop="datePublished">2018-08-05</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 class="p-name article-title" itemprop="headline name">
-      动态库与静态库
-    </h1>
-  
+</div>
 
-      </header>
+  </header>
+
+  <main>
     
-    <div class="e-content article-entry" itemprop="articleBody">
       
-        <h4 id="dymanic-framework原因"><a href="#dymanic-framework原因" class="headerlink" title="dymanic framework原因"></a>dymanic framework原因</h4><p>在iOS8以前,苹果只允许发布静态库,当然cocoapods只支持静态库,但是在iOS8苹果推出了APP extension的概念,可以对项目进行扩展,感兴趣的可以看<a target="_blank" rel="noopener" href="https://developer.apple.com/library/content/documentation/General/Conceptual/ExtensibilityPG/index.html">APP extension</a>.<br> 因为APP extension和主项目是两个独立的进程,为了共享代码,苹果允许我们创建动态库,即<code>dynamic framework</code>.</p>
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">动态库与静态库</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h4 id="dymanic-framework原因"><a href="#dymanic-framework原因" class="headerlink" title="dymanic framework原因"></a>dymanic framework原因</h4><p>在iOS8以前,苹果只允许发布静态库,当然cocoapods只支持静态库,但是在iOS8苹果推出了APP extension的概念,可以对项目进行扩展,感兴趣的可以看<a target="_blank" rel="noopener" href="https://developer.apple.com/library/content/documentation/General/Conceptual/ExtensibilityPG/index.html">APP extension</a>.<br> 因为APP extension和主项目是两个独立的进程,为了共享代码,苹果允许我们创建动态库,即<code>dynamic framework</code>.</p>
 <h4 id="swift第三方库"><a href="#swift第三方库" class="headerlink" title="swift第三方库"></a>swift第三方库</h4><p>在swift语言日益优化的前提下,我们想要进行项目swift化,但是在Xcode 6.0 Beta 4的 Release Notes 中，可以找到这句话：<br> <code>Xcode does not support building ``static</code> <code>libraries that include Swift code. (17181019)</code></p>
 <h4 id="动态库导致的static-library报错"><a href="#动态库导致的static-library报错" class="headerlink" title="动态库导致的static library报错"></a>动态库导致的static library报错</h4><p>看了上面的原因,你会问pod直接使用动态库不就好了,但是对于pod来说,有这么几个问题</p>
 <ul>
@@ -198,24 +376,24 @@
 </li>
 </ol>
 <p>以上原因,使得pod在1.4.0提供了静态框架的支持.用法简单,只需要在podspec文件内,声明如下即可</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">s.static_framework = true</span><br></pre></td></tr></table></figure>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">s.static_framework</span> = <span class="hljs-literal">true</span><br></code></pre></td></tr></table></figure>
 
 <h3 id="限制"><a href="#限制" class="headerlink" title="限制"></a>限制</h3><p>所有swift库需要保持一致的版本,包含Swift文件的framework,必须指定swift的版本号,pod之后提供了新特性<a target="_blank" rel="noopener" href="https://github.com/CocoaPods/CocoaPods/issues/7134">pod制定swift版本范围</a></p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">`Pod::Spec.`</span><span class="string">`new`</span> <span class="string">`do`</span> <span class="string">`|s|`</span></span><br><span class="line"></span><br><span class="line"><span class="string">`s.name = `</span><span class="string">`&#x27;BanannaLib&#x27;`</span></span><br><span class="line"></span><br><span class="line"><span class="string">`s.version = `</span><span class="string">`&#x27;1.0.0&#x27;`</span></span><br><span class="line"></span><br><span class="line"><span class="string">`s.swift_version = `</span><span class="string">`&#x27;&gt;= 3.2&#x27;`</span></span><br><span class="line"></span><br><span class="line"><span class="string">`s.source_files = `</span><span class="string">`&#x27;**/*.swift&#x27;`</span></span><br><span class="line"></span><br><span class="line"><span class="string">`end`</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs go"><span class="hljs-string">`Pod::Spec.`</span><span class="hljs-string">`new`</span> <span class="hljs-string">`do`</span> <span class="hljs-string">`|s|`</span><br><br><span class="hljs-string">`s.name = `</span><span class="hljs-string">`&#x27;BanannaLib&#x27;`</span><br><br><span class="hljs-string">`s.version = `</span><span class="hljs-string">`&#x27;1.0.0&#x27;`</span><br><br><span class="hljs-string">`s.swift_version = `</span><span class="hljs-string">`&#x27;&gt;= 3.2&#x27;`</span><br><br><span class="hljs-string">`s.source_files = `</span><span class="hljs-string">`&#x27;**/*.swift&#x27;`</span><br><br><span class="hljs-string">`end`</span><br></code></pre></td></tr></table></figure>
 
 <h2 id="支持包含swift文件"><a href="#支持包含swift文件" class="headerlink" title="支持包含swift文件"></a>支持包含swift文件</h2><p>在创建私有pod时,如果项目中包含swift文件,需要在podfile内部添加use_framework!字段,如果不添加会报以下错误</p>
-<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[!] Pods written <span class="keyword">in</span> Swift can only be integrated <span class="keyword">as</span> frameworks; <span class="keyword">add</span> `use_frameworks!` to your Podfile <span class="keyword">or</span> target to opt <span class="keyword">into</span> <span class="keyword">using</span> it. The Swift Pod being used <span class="keyword">is</span>: erp-boss-common-ios</span><br></pre></td></tr></table></figure>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs csharp">[!] Pods written <span class="hljs-keyword">in</span> Swift can only be integrated <span class="hljs-keyword">as</span> frameworks; <span class="hljs-keyword">add</span> `use_frameworks!` to your Podfile <span class="hljs-keyword">or</span> target to opt <span class="hljs-keyword">into</span> <span class="hljs-keyword">using</span> it. The Swift Pod being used <span class="hljs-keyword">is</span>: erp-boss-common-ios<br></code></pre></td></tr></table></figure>
 
 <p>如果框架已经声明了static_framework &#x3D; true,则可以包含swift文件,且可以依赖其他的静态库.</p>
 <p>苹果官方的Xcode9发布文档有以下说明<a target="_blank" rel="noopener" href="https://developer.apple.com/library/content/releasenotes/DeveloperTools/RN-Xcode/Chapters/Introduction.html#//apple_ref/doc/uid/TP40001051-CH1-SW936">Xcode release文档</a></p>
-<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">Xcode</span> supports <span class="keyword">static</span> library targets which contain <span class="title class_">Swift</span> code. <span class="title class_">Debugging</span> applications that use <span class="title class_">Swift</span> <span class="keyword">static</span> libraries may <span class="built_in">require</span> a complete set <span class="keyword">of</span> build artifacts that are <span class="keyword">in</span> their original location. (<span class="string">``</span><span class="number">33297067</span><span class="string">``</span>)<span class="string">`</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight tsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs tsx"><span class="hljs-title class_">Xcode</span> supports <span class="hljs-keyword">static</span> library targets which contain <span class="hljs-title class_">Swift</span> code. <span class="hljs-title class_">Debugging</span> applications that use <span class="hljs-title class_">Swift</span> <span class="hljs-keyword">static</span> libraries may <span class="hljs-built_in">require</span> a complete set <span class="hljs-keyword">of</span> build artifacts that are <span class="hljs-keyword">in</span> their original location. (<span class="hljs-string">``</span><span class="hljs-number">33297067</span><span class="hljs-string">``</span>)<span class="hljs-string">`</span><br></code></pre></td></tr></table></figure>
 
 <p>Xcode支持包含swift代码的静态库项目.</p>
 <h4 id="tips"><a href="#tips" class="headerlink" title="tips:"></a>tips:</h4><p>包含.a的static library,可以用lipo查看.a库所支持的架构.</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">lipo -info libTestLib<span class="selector-class">.a</span> </span><br><span class="line"></span><br><span class="line">Architectures in the fat file: libTestLib.a are: armv7 i386 x86_64 arm64</span><br></pre></td></tr></table></figure>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs css">lipo -info libTestLib<span class="hljs-selector-class">.a</span> <br><br>Architectures in the fat file: libTestLib.a are: armv7 i386 x86_64 arm64<br></code></pre></td></tr></table></figure>
 
 <h1 id="静态库报错"><a href="#静态库报错" class="headerlink" title="静态库报错"></a>静态库报错</h1><h3 id="错误"><a href="#错误" class="headerlink" title="错误"></a>错误</h3><p>在我们使用use_frameworks!的时候,会遇到类似于下面的错误提示,引起这种提示的原因,和各种情况,下面分析一下.</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[!] <span class="title class_">The</span> <span class="string">&#x27;Pods-testDynamic_Example&#x27;</span><span class="string">` `</span>target has transitive dependencies that <span class="keyword">include</span> static <span class="symbol">binaries:</span> (<span class="regexp">/Users/zhaoyanan</span><span class="regexp">/Documents/projects</span><span class="regexp">/pod/test</span>Dynamic/<span class="title class_">Example</span>/<span class="title class_">Pods</span>/<span class="variable constant_">SAKC</span>-<span class="title class_">Ares</span>/lib/libcares_iOS.a)</span><br></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ruby">[!] <span class="hljs-title class_">The</span> <span class="hljs-string">&#x27;Pods-testDynamic_Example&#x27;</span><span class="hljs-string">` `</span>target has transitive dependencies that <span class="hljs-keyword">include</span> static <span class="hljs-symbol">binaries:</span> (<span class="hljs-regexp">/Users/zhaoyanan</span><span class="hljs-regexp">/Documents/projects</span><span class="hljs-regexp">/pod/test</span>Dynamic/<span class="hljs-title class_">Example</span>/<span class="hljs-title class_">Pods</span>/<span class="hljs-variable constant_">SAKC</span>-<span class="hljs-title class_">Ares</span>/lib/libcares_iOS.a)<br></code></pre></td></tr></table></figure>
 
 <p>boss-&gt;A-&gt;B-&gt;SL(static library)</p>
 <p>boss为主项目</p>
@@ -225,7 +403,7 @@
 <p>对于boss-&gt;A-&gt;B-&gt;C的情况,如果A,A’,A’’都依赖了B,需要保证他们依赖的方式相同,即都不指定版本号,都在都指定特定的版本号,或者都指定相同的范围,声明不同,则会报错.</p>
 <p>s.static_framework &#x3D; true, s.subspec不需要再设置</p>
 <h3 id="其他方法"><a href="#其他方法" class="headerlink" title="其他方法"></a>其他方法</h3><p>有一种做法,可以作为参考,没有测试,对于<code>A-&gt;B-&gt;C-SL</code>的情况十是否使用也不可知,感兴趣的可以研究下</p>
-<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">A库依赖B库为例,B库中有一个静态库libB.a :</span><br><span class="line"></span><br><span class="line">在A库中修改.podspec :</span><br><span class="line"></span><br><span class="line">s.pod_target_xcconfig = &#123;</span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;FRAMEWORK_SEARCH_PATHS&#x27;</span>`=&gt;<span class="string">&#x27;$(inherited) $(PODS_ROOT)/Crashlytics&#x27;</span>,</span><br><span class="line"></span><br><span class="line"><span class="string">&#x27;OTHER_LDFLAGS&#x27;</span>         =&gt; <span class="string">&#x27;$(inherited) -undefined dynamic_lookup&#x27;</span></span><br><span class="line"></span><br><span class="line">&#125;， </span><br><span class="line"></span><br><span class="line">然后在Podfile中添加hook：</span><br><span class="line"></span><br><span class="line">pre_install <span class="keyword">do</span> |installer|</span><br><span class="line"></span><br><span class="line"># workaround ``<span class="keyword">for</span>` `https:``<span class="comment">//github.com/CocoaPods/CocoaPods/issues/3289</span></span><br><span class="line"></span><br><span class="line">def installer.verify_no_static_framework_transitive_dependencies; end</span><br><span class="line"></span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs dart">A库依赖B库为例,B库中有一个静态库libB.a :<br><br>在A库中修改.podspec :<br><br>s.pod_target_xcconfig = &#123;<br><br><span class="hljs-string">&#x27;FRAMEWORK_SEARCH_PATHS&#x27;</span>`=&gt;<span class="hljs-string">&#x27;$(inherited) $(PODS_ROOT)/Crashlytics&#x27;</span>,<br><br><span class="hljs-string">&#x27;OTHER_LDFLAGS&#x27;</span>         =&gt; <span class="hljs-string">&#x27;$(inherited) -undefined dynamic_lookup&#x27;</span><br><br>&#125;， <br><br>然后在Podfile中添加hook：<br><br>pre_install <span class="hljs-keyword">do</span> |installer|<br><br># workaround ``<span class="hljs-keyword">for</span>` `https:``<span class="hljs-comment">//github.com/CocoaPods/CocoaPods/issues/3289</span><br><br>def installer.verify_no_static_framework_transitive_dependencies; end<br><br>end<br></code></pre></td></tr></table></figure>
 
 <h2 id="新特性"><a href="#新特性" class="headerlink" title="新特性"></a>新特性</h2><p>在pod1.5.0之后,安装包含swift第三方库的时候,不限制必须在podfile内声明<code>use_frameworks!</code>.但是,如果swift库依赖OC库,就需要在OC库内允许<code>modular headers</code></p>
 <h2 id="Modular-Headers"><a href="#Modular-Headers" class="headerlink" title="Modular Headers"></a>Modular Headers</h2><p>CocoaPods在创建之初,就致力于封装尽可能多的第三方库.pod管理了第三方库的头文件搜索路径(header search paths).pod允许任意pod之间的相互引用,不需要考虑命名空间,不用制定import &lt;nameSpace&#x2F;fileName&gt;.</p>
@@ -236,150 +414,351 @@
 </ol>
 <p>在pod1.5.0版本中,通过直接import和组件导入都能找到文件.对于pod开发者,可以在<code>pod_target_xcconfig</code>内添加<code>&#39;DEFINES_MODULE&#39; =&gt; &#39;YES&#39;</code>.对于使用者,可以在podfile内添加<code>use_modular_headers!</code>允许直接import和module map.也可以通过<code>:modular_headers =&gt; true</code>配置特定的pod.</p>
 
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/iOS/">#iOS</a>
       
     </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2018/08/05/%E5%8A%A8%E6%80%81%E5%BA%93%E4%B8%8E%E9%9D%99%E6%80%81%E5%BA%93/" data-id="clgowampr001utjd354et9sig" data-title="动态库与静态库" class="article-share-link">Share</a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li></ul>
+  
+</div>
 
-    </footer>
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>动态库与静态库</div>
+      <div>http://example.com/2018/08/05/动态库与静态库/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>xushuanghui</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2018年8月5日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
   </div>
-  
-    
-<nav id="article-nav">
-  
-    <a href="/2019/01/22/runtime-1/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          runtime小结
-        
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/01/22/runtime-1/" title="runtime小结">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">runtime小结</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2018/04/01/buildProcess/" title="buildProcess">
+                        <span class="hidden-mobile">buildProcess</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
       </div>
-    </a>
-  
-  
-    <a href="/2018/04/01/buildProcess/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">buildProcess</div>
-    </a>
-  
-</nav>
-
-  
-</article>
-
-
-</section>
-        
-          <aside id="sidebar">
-  
-    
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tags</h3>
-    <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Xcode/" rel="tag">Xcode</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cocoaPods/" rel="tag">cocoaPods</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flutter/" rel="tag">flutter</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS/" rel="tag">iOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iOS-AppDelegate/" rel="tag">iOS AppDelegate</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" rel="tag">强化学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag">机器学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" rel="tag">量化交易</a></li></ul>
     </div>
-  </div>
 
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Tag Cloud</h3>
-    <div class="widget tagcloud">
-      <a href="/tags/Xcode/" style="font-size: 10px;">Xcode</a> <a href="/tags/cocoaPods/" style="font-size: 10px;">cocoaPods</a> <a href="/tags/flutter/" style="font-size: 10px;">flutter</a> <a href="/tags/iOS/" style="font-size: 20px;">iOS</a> <a href="/tags/iOS-AppDelegate/" style="font-size: 10px;">iOS AppDelegate</a> <a href="/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" style="font-size: 15px;">强化学习</a> <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">机器学习</a> <a href="/tags/%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93/" style="font-size: 10px;">量化交易</a>
-    </div>
-  </div>
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/08/">August 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">March 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">December 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">October 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/08/">August 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">June 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/05/">May 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/04/">April 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/03/">March 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/02/">February 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/01/">January 2020</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/12/">December 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/11/">November 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/10/">October 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/09/">September 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/05/">May 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">March 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">January 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/08/">August 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/04/">April 2018</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/09/">September 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/04/">April 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/02/">February 2017</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/12/">December 2016</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2023/01/11/%E5%AE%B9%E5%99%A8%E5%8C%96/">首页容器化</a>
-          </li>
-        
-          <li>
-            <a href="/2022/08/14/%E5%8A%A8%E6%80%81%E5%BA%93%E6%87%92%E5%8A%A0%E8%BD%BD/">动态库懒加载</a>
-          </li>
-        
-          <li>
-            <a href="/2022/03/17/%E5%A4%9A%E7%BA%BF%E7%A8%8B%E9%97%AE%E9%A2%98%E4%B8%8E%E6%B2%BB%E7%90%86/">多线程问题专项治理</a>
-          </li>
-        
-          <li>
-            <a href="/2021/07/20/%E7%9B%B4%E6%92%AD%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87%E7%9B%91%E6%8E%A7%E6%96%B9%E6%A1%88/">直播性能指标监控方案</a>
-          </li>
-        
-          <li>
-            <a href="/2021/05/14/%E8%A7%86%E9%A2%91%E7%9B%B8%E5%85%B3%E4%BC%98%E5%8C%96/">视频相关优化</a>
-          </li>
-        
-      </ul>
-    </div>
-  </div>
-
-  
-</aside>
-        
-      </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
+    <div class="side-col d-none d-lg-block col-lg-2">
       
-      &copy; 2023 xushuanghui<br>
-      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
-    </div>
-  </div>
-</footer>
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
 
     </div>
-    <nav id="mobile-nav">
+  </div>
+</div>
+
+
+
+
+
   
-    <a href="/" class="mobile-nav-link">Home</a>
+
+
+
   
-    <a href="/archives" class="mobile-nav-link">Archives</a>
+
+
+
   
-</nav>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
     
 
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
 
-<script src="/js/jquery-3.4.1.min.js"></script>
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
 
 
 
   
-<script src="/fancybox/jquery.fancybox.min.js"></script>
+    <script  src="/js/img-lazyload.js" ></script>
+  
 
 
 
 
-<script src="/js/script.js"></script>
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
 
 
 
 
 
-  </div>
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
 </body>
 </html>
